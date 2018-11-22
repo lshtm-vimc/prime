@@ -1,6 +1,6 @@
 Package: prime2
 Title: HPV PRIME model -- Papillomavirus Rapid Interface for Modelling and Economics
-Version: 0.0.0.9000
+Version: 2.0.1.9000
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: PRIME is a static model of HPV vaccination that uses proportional impact to estimate the health impact and cost-effectiveness of HPV vaccination in low- and middle-income countries.
 Depends: R (>= 3.5.1)
@@ -8,7 +8,7 @@ Imports: data.table, foreach
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
