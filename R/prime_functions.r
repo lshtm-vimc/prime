@@ -7,27 +7,24 @@
 #' @export
 #'
 #' @examples #
-writelog <- function(logname, x){
+writelog <- function (logname, x) {
+
   #wait until logfile is yours
-  Sys.sleep(0.02)
-  while(
-    (file.exists(paste0(logname,"_locked")))
-  ){Sys.sleep(0.02)}
+  Sys.sleep (0.02)
+
+  while ((file.exists(paste0(logname,"_locked"))))
+    {Sys.sleep(0.02)}
+
   #lock logfile
-  file.create(paste0(logname,"_locked"))
+  file.create (paste0(logname,"_locked"))
+
   #write to logfile
-  write(
-    paste0(
-      format(Sys.time(), "%Y/%m/%d %H:%M:%S"),
-      " ",
-      x
-    ),
-    file=logname,
-    append=TRUE
-  )
+  write ( paste0 (format(Sys.time(), "%Y/%m/%d %H:%M:%S"), " ", x), file=logname, append=TRUE )
+
   #unlock logfile
-  file.remove(paste0(logname,"_locked"))
+  file.remove (paste0 (logname,"_locked") )
 }
+
 #' RegisterBatchData
 #'
 #' @param coverage_data - DT with columns country_code, year (of vaccination), age_first, age_last, coverage
@@ -38,7 +35,7 @@ writelog <- function(logname, x){
 #' @export
 #'
 #' @examples #
-RegisterBatchData <- function(coverage_data, reporting_years=-1, force=FALSE){
+RegisterBatchData <- function (coverage_data, reporting_years=-1, force=FALSE) {
   if(exists(".data.batch") & !force){
     stop("'.data.batch' already exists.")
   }
@@ -120,6 +117,7 @@ RegisterBatchData <- function(coverage_data, reporting_years=-1, force=FALSE){
   setorder(coverage_data, country_code, birthcohort, agevac)
   .data.batch <<- coverage_data
 }
+
 #' RegisterBatchDataGavi
 #'
 #' @param gavi_coverage
@@ -133,7 +131,7 @@ RegisterBatchData <- function(coverage_data, reporting_years=-1, force=FALSE){
 #' @export
 #'
 #' @examples #
-RegisterBatchDataGavi <- function(gavi_coverage, gavi_template, use_campaigns, use_routine, restrict_to_coverage_data=FALSE, force=FALSE, psa=0){
+RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns, use_routine, restrict_to_coverage_data=FALSE, force=FALSE, psa=0) {
   if(exists(".data.batch") & !force){
     stop("'.data.batch' already exists.")
   }
@@ -145,12 +143,12 @@ RegisterBatchDataGavi <- function(gavi_coverage, gavi_template, use_campaigns, u
   if(!use_routine){
     coverage_data[activity_type=="routine" & coverage > 0, "coverage"] <- 0
   }
-  coverage_data[target=="<NA>","target"] <- NA
-  class(coverage_data$target) <- "numeric"
-  coverage_data <- coverage_data[country_code %in% unique(gavi_template[,country])]
-  macs <- coverage_data[age_first != age_last]
-  nomacs <- coverage_data[age_first == coverage_data$age_last]
-  if(nrow(macs) > 0){
+  coverage_data [target=="<NA>","target"] <- NA
+  class (coverage_data$target) <- "numeric"
+  coverage_data <- coverage_data [country_code %in% unique(gavi_template[,country])]
+  macs <- coverage_data [age_first != age_last]
+  nomacs <- coverage_data [age_first == coverage_data$age_last]
+  if (nrow(macs) > 0) {
     for(m in 1:nrow(macs)){
       ages <- macs[m,age_first]:macs[m,age_last]
       for(a in ages){
@@ -161,12 +159,12 @@ RegisterBatchDataGavi <- function(gavi_coverage, gavi_template, use_campaigns, u
           )
         )
         if(a == ages[1]){
-          target <- as.numeric(nomacs[nrow(nomacs),target])
+          target <- as.numeric (nomacs[nrow(nomacs),target])
         }
-        nomacs[nrow(nomacs),"age_first"] <- a
-        nomacs[nrow(nomacs),"age_last"] <- a
+        nomacs [nrow(nomacs),"age_first"] <- a
+        nomacs [nrow(nomacs),"age_last"] <- a
         #spread size of target evenly over age-strata targetted
-        nomacs[nrow(nomacs),"target"] <- target/length(ages)
+        nomacs [nrow(nomacs),"target"] <- target/length(ages)
       }
     }
     coverage_data <- nomacs
@@ -212,20 +210,20 @@ RegisterBatchDataGavi <- function(gavi_coverage, gavi_template, use_campaigns, u
   birthcohorts <- year_first:year_last
 
   #remove birthcohorts which should not be modelled
-  coverage_data <- coverage_data[birthcohort %in% birthcohorts]
+  coverage_data <- coverage_data [birthcohort %in% birthcohorts]
 
-  countries <- sort( unique( coverage_data[,country_code] ) )
-  for(c in countries){
+  countries <- sort ( unique( coverage_data[,country_code] ) )
+  for(c in countries) {
     #create template for data not yet in coverage-data
     template <- coverage_data[country_code == c & activity_type == "routine" & birthcohort==min(coverage_data[country_code == c & activity_type == "routine", birthcohort])]
     #select birthcohorts which are not yet in the coverage-data and add to data
     missing_birthcohorts <- birthcohorts[!(birthcohorts %in% coverage_data[country_code == c,birthcohort])]
-    if(length(missing_birthcohorts) > 0 ){
-      for(b in missing_birthcohorts){
+    if (length(missing_birthcohorts) > 0 ) {
+      for (b in missing_birthcohorts) {
         t_coverage_data <- template
-        t_coverage_data[,"birthcohort"] <- b
-        t_coverage_data[,"coverage"] <- 0
-        coverage_data <- rbindlist(
+        t_coverage_data [,"birthcohort"] <- b
+        t_coverage_data [,"coverage"] <- 0
+        coverage_data <- rbindlist (
           list(
             coverage_data,
             t_coverage_data
@@ -234,20 +232,20 @@ RegisterBatchDataGavi <- function(gavi_coverage, gavi_template, use_campaigns, u
       }
     }
   }
-  colnames(coverage_data)[which(colnames(coverage_data)=="age_first")] <- "agevac"
-  coverage_data <- coverage_data[,c("country_code", "birthcohort", "coverage", "agevac", "activity_type", "target")]
+  colnames (coverage_data)[which(colnames(coverage_data)=="age_first")] <- "agevac"
+  coverage_data <- coverage_data [,c("country_code", "birthcohort", "coverage", "agevac", "activity_type", "target")]
 
   #model countries without coverage data but in template (with coverage-level of 0)
-  countries <- sort(unique(gavi_template[,country]))
-  countries <- countries[!(countries %in% unique(coverage_data[,country_code]))]
-  if(length(countries) > 0){
-    for(c in countries){
-      t_coverage_data <- coverage_data[country_code == unique(coverage_data[,country_code])[1]]
-      t_coverage_data[,"target"] <- 0
-      t_coverage_data[,"coverage"] <- 0
-      t_coverage_data[,"country_code"] <- c
+  countries <- sort (unique(gavi_template[,country]))
+  countries <- countries [!(countries %in% unique(coverage_data[,country_code]))]
+  if (length(countries) > 0) {
+    for (c in countries) {
+      t_coverage_data <- coverage_data[country_code == unique (coverage_data[,country_code])[1]]
+      t_coverage_data [,"target"] <- 0
+      t_coverage_data [,"coverage"] <- 0
+      t_coverage_data [,"country_code"] <- c
 
-      coverage_data <- rbindlist(
+      coverage_data <- rbindlist (
         list(
           t_coverage_data,
           coverage_data
@@ -255,19 +253,19 @@ RegisterBatchDataGavi <- function(gavi_coverage, gavi_template, use_campaigns, u
       )
     }
   }
-  setorder(coverage_data, country_code, birthcohort, agevac)
+  setorder (coverage_data, country_code, birthcohort, agevac)
   .data.batch <<- coverage_data
 
-  countries <- sort(unique(.data.batch[,country_code]))
+  countries <- sort (unique(.data.batch[,country_code]))
 
-	if(psa > 1){
+	if (psa > 1) {
 		psadat <- data.table(
 			country = character(0),
 			run_id = numeric(0),
 			incidence = numeric(0),
 			mortality = numeric(0)
 		)
-		for(c in countries){
+		for (c in countries){
 			#select proxy country if data not available
 			tc <- switch(
 				c,
@@ -278,9 +276,9 @@ RegisterBatchDataGavi <- function(gavi_coverage, gavi_template, use_campaigns, u
 				"SSD"="SDN",
 				c
 			)
-			inc_quality <- data.quality[iso3==tc, Incidence]
-			mort_quality <- data.quality[iso3==tc, Mortality]
-			if(inc_quality == 0){
+			inc_quality <- data.quality [iso3==tc, Incidence]
+			mort_quality <- data.quality [iso3==tc, Mortality]
+			if (inc_quality == 0){
 				inc_quality <- c(0.5,1.5)
 			} else {
 				inc_quality <- c(0.8,1.2)
@@ -296,19 +294,20 @@ RegisterBatchDataGavi <- function(gavi_coverage, gavi_template, use_campaigns, u
 					data.table(
 						country = rep(c, psa),
 						psa = c(1:psa),
-						incidence = runif(n=psa, min=inc_quality[1], max=inc_quality[2]),
-						mortality = runif(n=psa, min=inc_quality[1], max=mort_quality[2])
+						incidence = runif (n=psa, min=inc_quality[1], max=inc_quality[2]),
+						mortality = runif (n=psa, min=inc_quality[1], max=mort_quality[2])
 					)
 				)
 			)
 		}
-		if(exists(".data.batch") & !force){
+		if (exists(".data.batch") & !force) {
 			warning("'.data.batch.psa' already exists and is NOT overwritten.")
 		} else {
 			.data.batch.psa <<- psadat
 		}
 	}
 }
+
 #' BatchRun
 #'
 #' @param countries
@@ -333,9 +332,12 @@ RegisterBatchDataGavi <- function(gavi_coverage, gavi_template, use_campaigns, u
 #' @export
 #'
 #' @examples #
-BatchRun <- function(
-  countries=-1, coverage=-1, agevac=-1, agecohort=-1, canc.inc="2012", daly.canc.diag=0.08, daly.canc.terminal=0.78, sens=-1, unwpp_mortality=FALSE, year_born=-1, year_vac=-1, runs=1, vaccine_efficacy_beforesexdebut=1, vaccine_efficacy_aftersexdebut=0, log=-1, by_calendaryear = FALSE, use_proportions = TRUE, analyseCosts = FALSE, psa=0, psa_vals=".data.batch.psa"
-){
+BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1, canc.inc="2012",
+                      daly.canc.diag=0.08, daly.canc.terminal=0.78, sens=-1,
+                      unwpp_mortality=FALSE, year_born=-1, year_vac=-1, runs=1,
+                      vaccine_efficacy_beforesexdebut=1, vaccine_efficacy_aftersexdebut=0,
+                      log=-1, by_calendaryear = FALSE, use_proportions = TRUE,
+                      analyseCosts = FALSE, psa=0, psa_vals=".data.batch.psa") {
   ages <- as.numeric(colnames(data.incidence)[!grepl("\\D",colnames(data.incidence))])
   ages <- ages[!is.na(ages)]
   if(countries==-1){
@@ -510,6 +512,7 @@ BatchRun <- function(
   ###warningSexDebut(remove_file=TRUE)
   return(combine)
 }
+
 #' OutputGavi
 #'
 #' @param DT
@@ -521,7 +524,7 @@ BatchRun <- function(
 #' @export
 #'
 #' @examples #
-OutputGavi <- function(DT, age_stratified=TRUE, calendar_year=FALSE, gavi_template=-1){
+OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_template=-1) {
   #check if data by calendar_year
   if("year" %in% colnames(DT)){
     is_by_calendar_year <- TRUE
@@ -594,6 +597,7 @@ OutputGavi <- function(DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templa
   }
  return(DT)
 }
+
 #' Run PRIME for a single birth-cohort
 #' Runs PRIME for one birth-cohort. Usually called by another function such as RunCountry()
 #'
@@ -635,9 +639,11 @@ OutputGavi <- function(DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templa
 #' @import data.table foreach
 #' @import foreach
 #'
-RunCohort <- function(
-	lifetab, cohort, incidence, mortality_cecx, agevac, coverage, campaigns, vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq, daly.canc.terminal, cost_cancer, disc.cost=0.03, disc.ben=0.03, discounting=TRUE, country_iso3=NULL, run_country=FALSE
-){
+RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, agevac, coverage, campaigns,
+                       vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
+                       daly.canc.diag, daly.canc.seq, daly.canc.terminal,
+                       cost_cancer, disc.cost=0.03, disc.ben=0.03, discounting=TRUE,
+                       country_iso3=NULL, run_country=FALSE) {
 	#check if required variables are present
 	if(
 		sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
@@ -768,6 +774,7 @@ RunCohort <- function(
 	}
 	return(out)
 }
+
 #' Run PRIME for a specific country
 #'
 #' Runs RunCohort() using country-specific estimates
@@ -799,15 +806,16 @@ RunCohort <- function(
 #' @examples RunCountry("AFG")
 #' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88)
 #' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88, analyseCosts=TRUE)
-RunCountry=function(
-	country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexdebut=0, disc.cost=0.03, disc.ben=0.03, cov=1, agevac=10, agecohort=10,	cohort=-1, canc.cost="unadj",
-	canc.inc="2012", daly.canc.diag=0.08, daly.canc.terminal=0.78, sens=-1, unwpp_mortality=FALSE, year_born=-1, year_vac=-1, campaigns=-1, analyseCosts=FALSE, discounting=TRUE, run_batch=FALSE, psadat = -1
-){
+RunCountry <- function (country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexdebut=0,
+                        disc.cost=0.03, disc.ben=0.03, cov=1, agevac=10, agecohort=10,	cohort=-1, canc.cost="unadj",
+                        canc.inc="2012", daly.canc.diag=0.08, daly.canc.terminal=0.78,
+                        sens=-1, unwpp_mortality=FALSE, year_born=-1, year_vac=-1, campaigns=-1,
+                        analyseCosts=FALSE, discounting=TRUE, run_batch=FALSE, psadat = -1) {
 	##check if all required data is present in the global environment
 	#if(sum(!(c("data.incidence", "data.global", "data.costcecx", "data.popproj", "data.mortcecx", "data.mortall", "data.mortall.unwpp") %in% ls(name=.GlobalEnv, all.names=T))) > 0){
 	#	stop("Not all required datafiles seem to be present in your environment. Please load all datafiles required.")
 	#}
-	
+
 	#check if required variables are present (sanity check, sees if any variables passed to function have a length of 0)
 	if(
 		sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
@@ -980,6 +988,7 @@ RunCountry=function(
 		return(result_cohort)
 	}
 }
+
 #' Retrieve ISO3-code of country
 #'
 #' @param countryname Character string (required): Full name of the country
@@ -991,10 +1000,10 @@ RunCountry=function(
 #' @examples
 #' getISO3("Afghanistan")
 #' getISO3("Congo",name=TRUE)
-getISO3 <- function(countryname,name=FALSE){
+getISO3 <- function (countryname, name=FALSE) {
 	countryname <- data.table(country=countryname)
 	if(name){
-		country_iso3 <- dtColMatch(countryname,c("country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
+		country_iso3 <- dtColMatch (countryname,c("country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
 		name <- data.countryname[iso3==country_iso3, name1]
 		name_alt <- unique(unlist(data.countryname[iso3==country_iso3, c("name2","name3","name4"),with=FALSE],use.names=FALSE))
 		name_alt <- name_alt[!(name_alt %in% c(""," "))]
@@ -1027,7 +1036,7 @@ getISO3 <- function(countryname,name=FALSE){
 #' @export
 #'
 #' @examples analyseCosts(RunCountry("AFG"), 100, 561)
-analyseCosts <- function(results, vaccine_cost, gdp_per_capita){
+analyseCosts <- function (results, vaccine_cost, gdp_per_capita) {
 	#check if required variables are present
 	if(
 		sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
@@ -1125,7 +1134,7 @@ analyseCosts <- function(results, vaccine_cost, gdp_per_capita){
 #' A <- c()
 #' B <- c(1,2,3)
 #' sapply(c("A","B"),function(x){checkSize(get(x))})
-checkSize <- function(v){
+checkSize <- function (v) {
 	if(is.vector(v)){
 		size <- length(v)
 	} else if(
@@ -1141,6 +1150,7 @@ checkSize <- function(v){
 		return(FALSE)
 	}
 }
+
 #' Construct lifetable based on qx-column
 #'
 #' qx = age-specific probability of dying
@@ -1155,11 +1165,7 @@ checkSize <- function(v){
 #'
 #' qx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F], use.names=F)
 #' lifeTable(qx, 9)
-lifeTable <- function(
-	qx=NULL,
-	mx=NULL,
-	agecohort=0
-){
+lifeTable <- function (qx=NULL, mx=NULL, agecohort=0) {
 	if(is.null(qx) & is.null(mx)){
 		stop("Provide qx or mx values")
 	} else if(is.null(qx)){
@@ -1196,6 +1202,7 @@ lifeTable <- function(
 	lifetab[age < agecohort,"lx.adj"] <- 0
 	return(lifetab)
 }
+
 #' Get age-specific coverage-rates
 #'
 #' @param ages Numeric vector (required): ages in model
@@ -1217,17 +1224,8 @@ lifeTable <- function(
 #' cohort <- unlist(data.popproj[iso3=="AFG", "2020"], use.names=F)
 #' agevac <- 9
 #' ageCoverage(ages, routine_coverage, vaccine_efficacy, -1, lifetab, cohort, agevac)
-ageCoverage <- function(
-	ages,
-	routine_coverage,
-	vaccine_efficacy_nosexdebut,
-	vaccine_efficacy_sexdebut,
-	campaigns,
-	lifetab,
-	cohort,
-	agevac,
-	country_iso3 = NULL
-){
+ageCoverage <- function (ages, routine_coverage, vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
+                         campaigns, lifetab, cohort, agevac, country_iso3 = NULL) {
 	coverage <- data.table(
 		age=ages,
 		coverage=rep(0,length(ages))
@@ -1254,6 +1252,7 @@ ageCoverage <- function(
 	}
 	return(coverage)
 }
+
 #' warningSexDebut
 #'
 #' @param age
@@ -1265,9 +1264,7 @@ ageCoverage <- function(
 #' @export
 #'
 #' @examples #.
-warningSexDebut <- function(
-	age=999, country_iso3="ZZZ", remove_file=FALSE, return_file=FALSE
-){
+warningSexDebut <- function (age=999, country_iso3="ZZZ", remove_file=FALSE, return_file=FALSE) {
   while(file.exists("warning.flag")){
     #wait until flag is removed
   }
@@ -1328,18 +1325,17 @@ warningSexDebut <- function(
 	 }
   file.remove("warning.flag")
 }
+
 #' propSexDebut
 #'
 #' @param age
 #' @param country_iso3
 #'
-#' @return #returns proportion of girls in country that has sexually debuted
+#' @return # returns proportion of girls in country that has sexually debuted
 #' @export
 #'
 #' @examples #.
-propSexDebut <- function(
-	age, country_iso3
-){
+propSexDebut <- function (age, country_iso3) {
 	if(age < 12){
 		prop_sexdebut <- 0
 	} else {
@@ -1354,8 +1350,8 @@ propSexDebut <- function(
 			prop_sexdebut <- pgamma(
 				#prop will be 0 for ages lower than 12
 				(age + 1 - 12),
-				shape=data.sexual_debut[iso3 == country_iso3, a],
-				scale=data.sexual_debut[iso3 == country_iso3, b]
+				shape=data.sexual_debut [iso3 == country_iso3, a],
+				scale=data.sexual_debut [iso3 == country_iso3, b]
 			)
 		} else {
 			#estimate proportion sexual debut at 1+age-of-vaccination, based on parameters of country with highest proportion of girls sexually debuting at age 15
@@ -1364,15 +1360,16 @@ propSexDebut <- function(
 			prop_sexdebut <- pgamma(
 				#prop will be 0 for ages lower than 12
 				(age + 1 - 12),
-				shape=data.sexual_debut[iso3 == cluster_max, a],
-				scale=data.sexual_debut[iso3 == cluster_max, b]
+				shape=data.sexual_debut [iso3 == cluster_max, a],
+				scale=data.sexual_debut [iso3 == cluster_max, b]
 			)
 		}
 	}
 	return(prop_sexdebut)
 }
-#Extend data.table library
-#Used to match multiple columns of different data-tables. Return variable of interest.
+
+# Extend data.table library
+# Used to match multiple columns of different data-tables. Return variable of interest.
 #' Match two data-tables on multiple columns
 #'
 #' Returns vector with column-of-interest where columns match
@@ -1390,13 +1387,7 @@ propSexDebut <- function(
 #'
 #' @examples
 #' dtColMatch(data.global,c("Country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
-dtColMatch <- function(
-	input,
-	input_match_on,
-	reference,
-	reference_match_on,
-	reference_return
-){
+dtColMatch <- function (input, input_match_on, reference, reference_match_on, reference_return) {
 	rows <- rep(NA,nrow(input))
 	for(imatch in input_match_on){
 		for(rmatch in reference_match_on){
@@ -1412,6 +1403,7 @@ dtColMatch <- function(
 	}
 	return(unlist(data.countryname[rows,reference_return,with=F],use.names=F))
 }
+
 #' Collapse data-tables
 #'
 #' @param DT Data-table (required)
@@ -1428,11 +1420,10 @@ dtColMatch <- function(
 #' @export
 #'
 #' @examples dtAggregate(data.popproj,"iso3",id.vars="")
-dtAggregate <- function(DT,aggr_on,measure.vars=c(),id.vars=c(),func="sum",na.rm=TRUE){
+dtAggregate <- function (DT, aggr_on, measure.vars=c(), id.vars=c(), func="sum", na.rm=TRUE) {
+
   #private function
-  dtAggregateSingle <- function(
-    DT,aggr_on,measure.vars,id.vars,func="sum"
-  ){
+  dtAggregateSingle <- function (DT, aggr_on, measure.vars, id.vars,func="sum") {
     return(switch(
       func,
       "sum"= DT[
@@ -1485,6 +1476,7 @@ dtAggregate <- function(DT,aggr_on,measure.vars=c(),id.vars=c(),func="sum",na.rm
   }
   return(dt_main)
 }
+
 #' Convert monetary character-strings to numeric values
 #'
 #' @param x Character string to convert
@@ -1498,7 +1490,7 @@ dtAggregate <- function(DT,aggr_on,measure.vars=c(),id.vars=c(),func="sum",na.rm
 #'
 #' #Note that values using German or Dutch notation (i.e. using a comma to separate decimals and a dot to seperate thousands) are converted as well
 #' monetary_to_number("$2.200,20")
-monetary_to_number <- function(x){
+monetary_to_number <- function (x) {
 	if(!is.character(x)){
 		return(x)
 	} else {

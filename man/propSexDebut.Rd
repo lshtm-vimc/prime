@@ -10,7 +10,7 @@ propSexDebut(age, country_iso3)
 \item{country_iso3}{}
 }
 \value{
-#returns proportion of girls in country that has sexually debuted
+# returns proportion of girls in country that has sexually debuted
 }
 \description{
 propSexDebut
