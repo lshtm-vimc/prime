@@ -1,4 +1,4 @@
-#' writeLog
+#' writelog
 #'
 #' @param logname
 #' @param x
@@ -9,19 +9,19 @@
 #' @examples #
 writelog <- function (logname, x) {
 
-  #wait until logfile is yours
+  # wait until log file is yours
   Sys.sleep (0.02)
 
   while ((file.exists(paste0(logname,"_locked"))))
     {Sys.sleep(0.02)}
 
-  #lock logfile
+  # lock log file
   file.create (paste0(logname,"_locked"))
 
-  #write to logfile
+  # write to log file
   write ( paste0 (format(Sys.time(), "%Y/%m/%d %H:%M:%S"), " ", x), file=logname, append=TRUE )
 
-  #unlock logfile
+  # unlock log file
   file.remove (paste0 (logname,"_locked") )
 }
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/prime_functions.r
 \name{writelog}
 \alias{writelog}
-\title{writeLog}
+\title{writelog}
 \usage{
 writelog(logname, x)
 }
@@ -13,7 +13,7 @@ writelog(logname, x)
 #
 }
 \description{
-writeLog
+writelog
 }
 \examples{
 #
