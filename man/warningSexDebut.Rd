@@ -2,7 +2,7 @@
 % Please edit documentation in R/prime_functions.r
 \name{warningSexDebut}
 \alias{warningSexDebut}
-\title{warningSexDebut}
+\title{Warning for missing sexual debut data}
 \usage{
 warningSexDebut(age = 999, country_iso3 = "ZZZ", remove_file = FALSE,
   return_file = FALSE)
@@ -11,10 +11,10 @@ warningSexDebut(age = 999, country_iso3 = "ZZZ", remove_file = FALSE,
 \item{return_file}{}
 }
 \value{
-#processes warnings regarding sexdebuts
+processes warnings regarding sex debuts
 }
 \description{
-warningSexDebut
+Provide warning if sexual debut data for country is unavailable
 }
 \examples{
 #.

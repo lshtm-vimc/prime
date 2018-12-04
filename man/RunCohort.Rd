@@ -5,11 +5,11 @@
 \title{Run PRIME for a single birth-cohort
 Runs PRIME for one birth-cohort. Usually called by another function such as RunCountry()}
 \usage{
-RunCohort(lifetab, cohort, incidence, mortality_cecx, agevac, coverage,
-  campaigns, vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
-  daly.canc.diag, daly.canc.seq, daly.canc.terminal, cost_cancer,
-  disc.cost = 0.03, disc.ben = 0.03, discounting = TRUE,
-  country_iso3 = NULL, run_country = FALSE)
+RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
+  coverage, campaigns, vaccine_efficacy_nosexdebut,
+  vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq,
+  daly.canc.terminal, cost_cancer, disc.cost = 0.03, disc.ben = 0.03,
+  discounting = TRUE, country_iso3 = NULL, run_country = FALSE)
 }
 \arguments{
 \item{lifetab}{Data.table: The life-table for this cohort. Can be created using the lifeTable() function.}
@@ -19,6 +19,8 @@ RunCohort(lifetab, cohort, incidence, mortality_cecx, agevac, coverage,
 \item{incidence}{Numeric vector: Age-specific CeCx(16/18) incidence-rates.}
 
 \item{mortality_cecx}{Numeric vector: Age-specific CeCx(16/18) mortality-rates.}
+
+\item{prevalence}{Numeric vector: Age-specific CeCx(16/18) prevalence rates (5-year prevalence) -- referring to people who are alive within 5 years of diagnosis.}
 
 \item{agevac}{Number: Age at which the cohort is vaccinated.}
 
@@ -63,6 +65,6 @@ daly.canc.diag <- 0.0003
 daly.canc.seq <- 0.002
 daly.canc.terminal <- 0.1
 cost.cancer <- 100
-RunCohort(lifetab, cohort, incidence, mortality_cecx, agevac, coverage, campaigns, vaccine_efficacy ,daly.canc.diag, daly.canc.seq, daly.canc.terminal, daly.canc.terminal, cost.cancer)
+RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns, vaccine_efficacy, daly.canc.diag, daly.canc.seq, daly.canc.terminal, daly.canc.terminal, cost.cancer)
 
 }

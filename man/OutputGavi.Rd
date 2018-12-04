@@ -2,19 +2,25 @@
 % Please edit documentation in R/prime_functions.r
 \name{OutputGavi}
 \alias{OutputGavi}
-\title{OutputGavi}
+\title{Formatting output for VIMC Montagu}
 \usage{
 OutputGavi(DT, age_stratified = TRUE, calendar_year = FALSE,
   gavi_template = -1)
 }
 \arguments{
-\item{gavi_template}{}
+\item{DT}{data table with results}
+
+\item{age_stratified}{logical, whether output should be stratified by age}
+
+\item{calendar_year}{logical, whether output should be given by calendar year of event OR by year of birth of cohort}
+
+\item{gavi_template}{data table with template file downloaded from montagu}
 }
 \value{
 #
 }
 \description{
-OutputGavi
+\code{OutputGavi} takes result of BatchRun and outputs it in format to be uploaded to VIMC Montagu.
 }
 \examples{
 #

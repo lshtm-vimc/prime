@@ -2,19 +2,23 @@
 % Please edit documentation in R/prime_functions.r
 \name{propSexDebut}
 \alias{propSexDebut}
-\title{propSexDebut}
+\title{Proportion of girls sexually debuted}
 \usage{
 propSexDebut(age, country_iso3)
 }
 \arguments{
-\item{country_iso3}{}
+\item{age}{age of girls}
+
+\item{country_iso3}{ISO3 country code}
 }
 \value{
-# returns proportion of girls in country that has sexually debuted
+Returns proportion of girls in a given country that has sexually debuted at a given age.
 }
 \description{
-propSexDebut
+\code{propSexDebut} returns proportion of girls sexually debuted in country \code{country_iso3} at age \code{age}.
 }
 \examples{
-#.
+propSexDebut (20, "IND")
+propSexDebut (30, "ETH")
+
 }

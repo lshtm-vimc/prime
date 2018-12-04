@@ -2,18 +2,20 @@
 % Please edit documentation in R/prime_functions.r
 \name{writelog}
 \alias{writelog}
-\title{writelog}
+\title{Simulation log reporting}
 \usage{
 writelog(logname, x)
 }
 \arguments{
-\item{x}{}
+\item{logname}{log filename}
+
+\item{x}{message of simulation run}
 }
 \value{
-#
+none
 }
 \description{
-writelog
+Appends message of simulation run (\code{x}) to log file (\code{logname}).
 }
 \examples{
 #
