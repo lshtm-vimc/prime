@@ -5,7 +5,7 @@
 #' @param logname log filename
 #' @param x message of simulation run
 #'
-#' @return none
+#' @return None
 #' @export
 #'
 #' @examples #
@@ -27,13 +27,21 @@ writelog <- function (logname, x) {
   file.remove (paste0 (logname,"_locked") )
 }
 
-#' RegisterBatchData
+#' Creates .data.batch for running multiple birth cohorts
 #'
-#' @param coverage_data - DT with columns country_code, year (of vaccination), age_first, age_last, coverage
-#' @param reporting_years - numeric_vector for which years should be reported
-#' @param force
+#' Creates .data.batch which is used when running/looping over multiple birth cohorts ( runCohort() ) at once.
 #'
-#' @return #
+#' .data.batch is based on the data.table (DT) coverage_data, which is a DT with columns country_code (ISO3),
+#'     year (of vaccination), age_first (age at vaccination), age_last (age at vaccination),
+#'     coverage (in proportion, for all the agegroups specified).
+#'
+#' If you only want to run 1 age in this country/coverage combination, age_first==age_last
+#'
+#' @param coverage_data data table with columns country_code, year (of vaccination), age_first, age_last, coverage
+#' @param reporting_years numeric_vector, years that should be reported (parameter: not required)
+#' @param force logical, whether .data.batch should be overwritten if it already exists (parameter: not required)
+#'
+#' @return None
 #' @export
 #'
 #' @examples #
@@ -120,16 +128,27 @@ RegisterBatchData <- function (coverage_data, reporting_years=-1, force=FALSE) {
   .data.batch <<- coverage_data
 }
 
-#' RegisterBatchDataGavi
+
+#' Creates .data.batch for running multiple birth cohorts (Gavi runs)
 #'
-#' @param gavi_coverage
-#' @param gavi_template
-#' @param use_campaigns
-#' @param use_routine
-#' @param restrict_to_coverage_data
-#' @param force
+#' Creates .data.batch which is used when running/looping over multiple birth cohorts ( runCohort() ) at once.
+#'     Similar to RegisterBatchData, but for when we make runs for Gavi.
 #'
-#' @return #
+#' .data.batch is based on the data.table (DT) coverage_data, which is a DT with columns country_code (ISO3),
+#'     year (of vaccination), age_first (age at vaccination), age_last (age at vaccination),
+#'     coverage (in proportion, for all the age groups specified).
+#'
+#' @param gavi_coverage data table with coverage estimates as downloaded from VIMC montagu
+#' @param gavi_template data table with reporting template as downloaded from VIMC montagu
+#' @param use_campaigns logical, whether campaigns as stated in coverage files should be modelled
+#' @param use_routine logical, whether routine vaccination as stated in coverage file should be modelled
+#' @param restrict_to_coverage_data logical, whether the first birth-cohort should be the first cohort that is mentioned in the coverage data.
+#'     If TRUE, restrict to coverage data.
+#'     If FALSE, restrict to cohorts provided in gavi_template.
+#' @param force logical, whether .data.batch should be overwritten if it already exists
+#' @param psa integer, indicating how many runs for probabilistic sensitivity analysis (PSA). 0 to run no PSA.
+#'
+#' @return None
 #' @export
 #'
 #' @examples #
@@ -309,6 +328,7 @@ RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns, 
 		}
 	}
 }
+
 
 #' Run multiple cohorts in a batch
 #'

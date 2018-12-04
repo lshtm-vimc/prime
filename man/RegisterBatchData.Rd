@@ -2,22 +2,29 @@
 % Please edit documentation in R/prime_functions.r
 \name{RegisterBatchData}
 \alias{RegisterBatchData}
-\title{RegisterBatchData}
+\title{Creates .data.batch for running multiple birth cohorts}
 \usage{
 RegisterBatchData(coverage_data, reporting_years = -1, force = FALSE)
 }
 \arguments{
-\item{coverage_data}{- DT with columns country_code, year (of vaccination), age_first, age_last, coverage}
+\item{coverage_data}{data table with columns country_code, year (of vaccination), age_first, age_last, coverage}
 
-\item{reporting_years}{- numeric_vector for which years should be reported}
+\item{reporting_years}{numeric_vector, years that should be reported (parameter: not required)}
 
-\item{force}{}
+\item{force}{logical, whether .data.batch should be overwritten if it already exists (parameter: not required)}
 }
 \value{
-#
+None
 }
 \description{
-RegisterBatchData
+Creates .data.batch which is used when running/looping over multiple birth cohorts ( runCohort() ) at once.
+}
+\details{
+.data.batch is based on the data.table (DT) coverage_data, which is a DT with columns country_code (ISO3),
+    year (of vaccination), age_first (age at vaccination), age_last (age at vaccination),
+    coverage (in proportion, for all the agegroups specified).
+
+If you only want to run 1 age in this country/coverage combination, age_first==age_last
 }
 \examples{
 #

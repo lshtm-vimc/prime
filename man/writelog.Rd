@@ -12,7 +12,7 @@ writelog(logname, x)
 \item{x}{message of simulation run}
 }
 \value{
-none
+None
 }
 \description{
 Appends message of simulation run (\code{x}) to log file (\code{logname}).
