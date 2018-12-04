@@ -515,17 +515,6 @@ BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1, canc.i
     colnames(combine)[colnames(combine) == "cost.cecx"] <- "costs"
   }
 
-  #check for warnings regarding sexual debut data
-  ###.warning_sexdebut <<- warningSexDebut(return_file=TRUE)
-  ###if(nrow(.warning_sexdebut) > 0){
-  ###	warning(
-  ###		paste0(
-  ###			"There are ", nrow(.warning_sexdebut)," warnings regarding assumptions about proportion of girls sexually debuted at certain ages. There is no data regarding proportion of girls sexually debuted for ", unique(.warning_sexdebut$country)," countries, and no information on similar countries to impute this data. See '.warning_sexdebut' for a complete list, and update data.sexual_debut if possible."
-  ###		)
-  ###	)
-  ###}
-  ###warningSexDebut(remove_file=TRUE)
-
   return(combine)
 }
 
@@ -780,19 +769,6 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 	)
 	out <- out[,c("scenario","type","age","cohort_size","vaccinated","immunized","inc.cecx","mort.cecx","lifey","disability","cost.cecx"),with=F]
 
-	if(!run_country){
-	  #check for warnings regarding sexual debut data
-	  ###.warning_sexdebut <<- warningSexDebut(return_file=TRUE)
-		###if(nrow(.warning_sexdebut) > 0){
-		###	warning(
-		###		paste0(
-		###			"There are ", nrow(.warning_sexdebut)," warnings regarding assumptions about proportion of girls sexually debuted at certain ages. There is no data regarding proportion of girls sexually debuted for ", length(unique(.warning_sexdebut$country))," countries, and no information on similar countries to impute this data. See '.warning_sexdebut' for a complete list, and update data.sexual_debut if possible."
-		###		)
-		###	)
-		###}
-		###warningSexDebut(remove_file=TRUE)
-	}
-
 	return(out)
 }
 
@@ -1006,19 +982,6 @@ RunCountry <- function (country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexde
 		vaccine_efficacy_nosexdebut=vaceff_beforesexdebut, vaccine_efficacy_sexdebut=vaceff_aftersexdebut, daly.canc.diag=daly.canc.diag, daly.canc.seq=daly.canc.seq, daly.canc.terminal=daly.canc.terminal,
 		cost_cancer=cost.canc, disc.cost=disc.cost, disc.ben=disc.ben, discounting, country_iso3=country_iso3, run_country=TRUE
 	)
-
-	if(!run_batch){
-	  #check for warnings regarding sexual debut data
-	  ###.warning_sexdebut <<- warningSexDebut(return_file=TRUE)
-		###if(nrow(.warning_sexdebut) > 0){
-		###	warning(
-		###		paste0(
-		###			"There are ", nrow(.warning_sexdebut)," warnings regarding assumptions about proportion of girls sexually debuted at certain ages. There is no data regarding proportion of girls sexually debuted for ", unique(.warning_sexdebut$country)," countries, and no information on similar countries to impute this data. See '.warning_sexdebut' for a complete list, and update data.sexual_debut if possible."
-		###		)
-		###	)
-		###}
-		###warningSexDebut(remove_file=TRUE)
-	}
 
 	if(analyseCosts){
 		gdp_per_capita <- monetary_to_number(data.global[iso3==country_iso3,`GDP per capita (2011 i$) [7]`])
@@ -1293,83 +1256,6 @@ ageCoverage <- function (ages, routine_coverage, vaccine_efficacy_nosexdebut, va
 	return(coverage)
 }
 
-#' Warning for missing sexual debut data
-#'
-#' Provide warning if sexual debut data for country is unavailable
-#'
-#' @param age
-#' @param country_iso3
-#' @param remove_file
-#' @param return_file
-#'
-#' @return processes warnings regarding sex debuts
-#' @export
-#'
-#' @examples #.
-# warningSexDebut: ignore, currently not used
-# provides some warnings if calling the propSexDebut function if data is not available for country
-warningSexDebut <- function (age=999, country_iso3="ZZZ", remove_file=FALSE, return_file=FALSE) {
-  while(file.exists("warning.flag")){
-    #wait until flag is removed
-  }
-  file.create("warning.flag")
-  if(file.exists("warning_sexdebut.csv")){
-	 	if(remove_file){
-	 		file.remove("warning_sexdebut.csv")
-	 	} else {
-	 		DT_warning <- fread("warning_sexdebut.csv")
-	 		if(return_file){
-	 			#only show unique country-age combinations
-	 		  for(c in unique(DT_warning[,country])){
-	 		    ages <- unique(DT_warning[country==c,age])
-	 		    DT_warning <- rbindlist(
-	 		      list(
-	 		        DT_warning[country != c],
-	 		        data.table(
-	 		          country=rep(c,length(ages)),
-	 		          ages
-	 		        )
-	 		      )
-	 		    )
-	 		  }
-	 		  #return DT
-	 		  setorder(DT_warning,country,age)
-	 			return(DT_warning)
-	 		} else {
-	 			#append row to DT
-	 			DT_warning <- rbindlist(
-	 				list(
-	 					DT_warning,
-	 					data.table(
-	 						country=country_iso3,
-	 						age=age
-	 					)
-	 				)
-	 			)
-	 		}
-	 	}
-	 } else {
-	 	if(return_file){
-	 		#return empty DT
-	 		return(data.table())
-	 	} else if(!remove_file){
-	 		#create DT
-	 		DT_warning <- data.table(
-	 			country=country_iso3,
-	 			age=age
-	 		)
-	 	}
-	 }
-	 if(!remove_file && !return_file){
-	 	#write new DT
-	 	fwrite(
-	 		DT_warning,
-	 		"warning_sexdebut.csv"
-	 	)
-	 }
-  file.remove("warning.flag")
-}
-
 
 #' Proportion of girls sexually debuted
 #'
@@ -1391,10 +1277,8 @@ propSexDebut <- function (age, country_iso3) {
 	} else {
 		#calculate proportion of girls that have sexually debuted at age a + 1
 		if( nrow(data.sexual_debut[iso3 == country_iso3]) != 1 || is.na(data.sexual_debut[iso3 == country_iso3, a]) || is.na(data.sexual_debut[iso3 == country_iso3, b]) || is.na(data.sexual_debut[iso3 == country_iso3, cluster.id]) ){
-			#cannot estimate data.sexual_debut, use prop_sexdebut of 0 but create warning
+			#cannot estimate data.sexual_debut, use prop_sexdebut of 0
 			prop_sexdebut <- 0
-			###warningSexDebut(age, country_iso3)
-			#stop("Cannot estimate proportion of girls sexually debuted for this country, as either country or required parameters are missing in 'data.sexual_debut' data. Please update 'data.sexual_debut' before vaccinating for 12 year or over.")
 		} else if( !is.na(data.sexual_debut[iso3 == country_iso3, a]) & !is.na(data.sexual_debut[iso3 == country_iso3, b]) ){
 			#estimate proportion sexual debut with country specific parameters
 			prop_sexdebut <- pgamma(
