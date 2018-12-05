@@ -1,0 +1,188 @@
+---
+title: "PRIME - Papillomavirus Rapid Interface for Modelling and Economics"
+author: "LSHTM"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PRIME Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+# load package - prime2
+library(prime2)
+```
+
+## PRIME
+PRIME stands for “Papillomavirus Rapid Interface for Modelling and Economics”. 
+The R package (prime2) is based of the spreadsheet-based tool (see http://primetool.org). 
+
+PRIME provides users with an idea of: 
+
+* The magnitude of the burden of cervical cancer
+* The impact of introducing HPV vaccination for girls prior to sexual debut
+* Healthcare costs incurred as a result of cervical cancer treatment
+* Costs associated with vaccination
+* Long-term savings which may result from a vaccination program
+
+
+### Functions
+The main PRIME functions are:
+
+* RunCohort
+* RunCountry
+* analyseCosts
+
+Other functions include:
+
+* writelog
+* RegisterBatchData
+* RegisterBatchDataGavi
+* BatchRun
+* OutputGavi
+* getISO3
+* checkSize
+* lifeTable
+* ageCoverage
+* propSexDebut
+* dtColMatch
+* dtAggregate
+* monetary_to_number
+
+R code for the functions are in the R-folder of the package, i.e. ./R/
+
+Documentation of a function can be viewed, by running ?functionname in the console, i.e. ?RunCohort
+```{r eval=FALSE}
+
+# View documentation of RunCohort function
+?RunCohort
+
+```
+
+The source code of a function can be viewed by running the functionname without any brackets in the console.
+```{r eval=FALSE}
+
+# View source code of RunCohort function
+RunCohort
+
+```
+
+
+### Data
+Several data sets are included in the package. The data files (.rda files) are stored as data tables (data.table) in the data folder of the package, i.e. ./data/
+
+* data.cecx_1y_prevalence
+* data.cecx_3y_prevalence
+* data.cecx_5y_prevalence
+* data.costcecx
+* data.countryname
+* data.global
+* data.incidence
+* data.mortall
+* data.mortall.unwpp.mx
+* data.mortcecx
+* data.pop
+* data.popproj
+* data.quality
+* data.sexual_debut
+* data.valid
+
+Documentation of a data set can be viewed, by running ?dataset-name in the console, i.e. ?data.incidence
+```{r eval=FALSE}
+
+# View documentation of data.incidence data set
+?data.incidence
+
+```
+
+A data set can be viewed by typing the data file name in the console.
+```{r eval=FALSE}
+
+# View data set for age-specific incidence of cervical cancer in different countries (estimated by Globocan)
+data.incidence
+
+```
+
+
+### Examples
+Use RunCountry to run PRIME for a single birthcohort in a single country. 
+
+* Countries are referenced by their ISO3 code.
+```{r}
+RunCountry ("RWA")
+```
+
+* This returns the age-specific rates for a country, given the values passed to RunCountry. 
+* The size of the cohort at each age is given in the cohort_size column. 
+* In order to get the number of people rather than the rates, the columns can be multiplied with the cohort_size.
+```{r}
+result <- RunCountry ("RWA")
+result [,c("vaccinated", "immunized", "inc.cecx", "mort.cecx", "lifey","disability", "cost.cecx")] <- result[, cohort_size] * result[,c("vaccinated", "immunized", "inc.cecx", "mort.cecx", "lifey", "disability", "cost.cecx")]
+result [age>15]
+```
+
+If you don't know the exact ISO3 code for a country, you can try to look it up using the getISO3 function.
+```{r}
+getISO3 ("Malawi")
+```
+
+If you want to analyse the costs/benefits of vaccinating this specific cohort, set analyseCosts to TRUE.
+```{r}
+RunCountry ("MWI", analyseCosts=TRUE)
+```
+
+
+RunCountry automatically assumes 100% coverage, 100% vaccine-efficacy, and age of vaccination at 12.
+
+* If no year is provided, it will assume that vaccination will occur this year. Year can be provided as year-of-vaccination or birthcohort-year (i.e. year in which girls of this birth-cohort was born).
+* Tweak the different values by passing them to the function. 
+* See ?RunCountry for all options.
+```{r}
+RunCountry("MWI", analyseCosts=TRUE, discounting=TRUE, agevac=10, agecohort=10, vaceff_beforesexdebut=0.98, vaceff_aftersexdebut=0, cov=0.75, year_vac=2020)
+```
+
+* In essence, RunCountry() calls RunCohort(), and will provide it with country-specific estimates.
+* When analyseCosts is set to TRUE, RunCountry() calls analyseCosts() and passes the results of RunCohort(). 
+* You could also run it yourself, providing your own estimates for vaccine-costs and GDP per capita.
+
+```{r}
+analyseCosts (
+  RunCountry("MWI", analyseCosts=FALSE, discounting=TRUE, agevac=10, agecohort=10, vaceff_beforesexdebut=0.98, vaceff_aftersexdebut=0, cov=0.75, year_vac=2020),
+  vaccine_cost=100,
+  gdp_per_capita=561
+)
+```
+
+* Lifetables are used to follow the size of a birth-cohort over time. 
+* They are generated based on values for the qx-column (i.e. probability of dying by age). 
+* The lifeTable() function makes it easy to generate a lifetable.
+```{r}
+qx <- unlist(data.mortall[iso3=="MWI", as.character(0:100), with=F], use.names=F)
+lifeTable(qx)
+```
+
+* RunCohort() uses this lifetable. It calculates age-specific coverage-rates using the ageCoverage() function.
+```{r}
+ages <- c(0:100)
+routine_coverage <- 0.75
+vaccine_efficacy_nosexdebut <- 0.99
+vaccine_efficacy_sexdebut <- 0
+lifetab <- lifeTable(unlist(data.mortall[iso3=="MWI", as.character(0:100), with=F], use.names=F), 9)
+cohort <- unlist(data.popproj[iso3=="MWI", "2020"], use.names=F)
+agevac <- 9
+ageCoverage(ages, routine_coverage, vaccine_efficacy_nosexdebut=1, vaccine_efficacy_sexdebut=0, -1, lifetab, cohort, agevac, country_iso3="MWI")
+```
+
+* Data can be aggregated using the dtAggregate() function.
+```{r}
+result <- RunCountry ("MWI", analyseCosts=FALSE, discounting=TRUE, agevac=10, agecohort=10, vaceff_beforesexdebut=0.98, vaceff_aftersexdebut=0, cov=0.75, year_vac=2020)
+
+result [,c("vaccinated", "immunized", "inc.cecx", "mort.cecx", "lifey", "disability", "cost.cecx")] <- result [, cohort_size] * result[,c("vaccinated", "immunized", "inc.cecx", "mort.cecx", "lifey", "disability", "cost.cecx")]
+
+# aggregate results on age
+result <- dtAggregate (result, "age", id.vars=c("scenario", "type") )
+result
+```
+
+

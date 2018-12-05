@@ -56,8 +56,8 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
 data.table with country-specific results of HPV vaccination. Returns cost-analysis if analyseCosts=TRUE
 }
 \description{
-Runs RunCohort() using country-specific estimates
-If year_born and year_vac are not provided, assumes vaccination occurs in the current year
+Runs RunCohort() using country-specific estimates.
+If year_born and year_vac are not provided, assumes vaccination occurs in the current year.
 }
 \examples{
 RunCountry("AFG")

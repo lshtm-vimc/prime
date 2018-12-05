@@ -1,3 +1,6 @@
+# prime_functions.r - This program includes the functions used in the PRIME model.
+
+
 #' Simulation log reporting
 #'
 #' Appends message of simulation run (\code{x}) to log file (\code{logname}).
@@ -626,7 +629,8 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
 }
 
 #' Run PRIME for a single birth-cohort
-#' Runs PRIME for one birth-cohort. Usually called by another function such as RunCountry()
+#'
+#' Runs PRIME for one birth-cohort. Usually called by another function such as RunCountry().
 #'
 #' @param lifetab Data.table: The life-table for this cohort. Can be created using the lifeTable() function.
 #' @param cohort Number: The cohort-size of this birth-cohort at the time where the lifetable starts.
@@ -795,8 +799,8 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 
 #' Run PRIME for a specific country
 #'
-#' Runs RunCohort() using country-specific estimates
-#' If year_born and year_vac are not provided, assumes vaccination occurs in the current year
+#' Runs RunCohort() using country-specific estimates.
+#' If year_born and year_vac are not provided, assumes vaccination occurs in the current year.
 #'
 #' @param country_iso3 Character string (required): ISO3 code of the country
 #' @param vaceff Number (optional): Proportion indicating vaccine-efficacy

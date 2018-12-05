@@ -2,8 +2,7 @@
 % Please edit documentation in R/prime_functions.r
 \name{RunCohort}
 \alias{RunCohort}
-\title{Run PRIME for a single birth-cohort
-Runs PRIME for one birth-cohort. Usually called by another function such as RunCountry()}
+\title{Run PRIME for a single birth-cohort}
 \usage{
 RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
   coverage, campaigns, vaccine_efficacy_nosexdebut,
@@ -49,8 +48,7 @@ Returns a data.table with size of the birth-cohort and age-specific incidence-ra
     mortality-rates, years-of-life-lost, years-of-healthy-life-lost, and cancer-costs before and after vaccination
 }
 \description{
-Run PRIME for a single birth-cohort
-Runs PRIME for one birth-cohort. Usually called by another function such as RunCountry()
+Runs PRIME for one birth-cohort. Usually called by another function such as RunCountry().
 }
 \examples{
 lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F], use.names=F), 9)
