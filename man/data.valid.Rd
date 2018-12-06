@@ -3,21 +3,19 @@
 \docType{data}
 \name{data.valid}
 \alias{data.valid}
-\title{Prices of 50,000 round cut diamonds.}
-\format{A data frame with 53940 rows and 10 variables:
+\title{Global data table}
+\format{A data table with 194 observations of 35 variables.
 \describe{
-  \item{price}{price, in US dollars}
-  \item{carat}{weight of the diamond, in carats}
-  ...
+  \item{Country}{Country name}
+  \item{iso2}{ISO2 country code}
 }}
 \source{
-\url{http://www.diamondse.info/}
+\url{}
 }
 \usage{
 data.valid
 }
 \description{
-A dataset containing the prices and other attributes of almost 54,000
-diamonds.
+A dataset containing a global range of variables.
 }
 \keyword{datasets}

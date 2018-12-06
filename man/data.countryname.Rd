@@ -3,15 +3,21 @@
 \docType{data}
 \name{data.countryname}
 \alias{data.countryname}
-\title{Country names and codes.}
-\format{A data table with 251 observations of 13 variables (251 row * 13 col).
+\title{Country names and codes}
+\format{A data table with 251 observations of 13 variables.
 \describe{
-  \item{name1, name2, name3, name4}{country names}
-  \item{name2}{}
-  ...
+  \item{name1, name2, name3, name4}{Country names}
+  \item{iso2, iso3}{ISO2 and ISO3 country codes}
+  \item{isonum}{ISO number}
+  \item{WHOcode}{WHO country code}
+  \item{who_region}{WHO region}
+  \item{who_mort}{WHO mortality stratum - A/B/C/D/E}
+  \item{WBincome}{WB income classification of countries}
+  \item{UNgroup}{UN group classification of countries}
+  \item{GDPpc2011id}{GDP per capita (2011)}
 }}
 \source{
-\url{http://www.diamondse.info/}
+\url{}
 }
 \usage{
 data.countryname

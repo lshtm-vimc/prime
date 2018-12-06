@@ -1,3 +1,5 @@
+# package.R - This file includes introductory information of package.
+
 #' prime2: Papillomavirus Rapid Interface for Modelling and Economics (PRIME).
 #'
 #' PRIME stands for “Papillomavirus Rapid Interface for Modelling and Economics”.

@@ -1,4 +1,4 @@
-# prime_functions.r - This program includes the functions used in the PRIME model.
+# functions.R - This program includes the functions used in the PRIME model.
 
 
 #' Simulation log reporting

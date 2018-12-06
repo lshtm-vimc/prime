@@ -4,10 +4,10 @@
 \name{data.cecx_3y_prevalence}
 \alias{data.cecx_3y_prevalence}
 \title{3-year prevalence of cervical cancer}
-\format{A data table containing 185 observations of 103 variables (185 row * 103 col).
+\format{A data table containing 185 observations of 103 variables.
 \describe{
   \item{Country}{Country name}
-  \item{Age}{Age 0-100}
+  \item{0..100}{Age 0-100}
   \item{iso3}{ISO3 country code}
 }}
 \source{

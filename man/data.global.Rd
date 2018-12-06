@@ -3,21 +3,49 @@
 \docType{data}
 \name{data.global}
 \alias{data.global}
-\title{Prices of 50,000 round cut diamonds.}
-\format{A data frame with 53940 rows and 10 variables:
+\title{Global data table}
+\format{A data table with 194 observations of 35 variables.
 \describe{
-  \item{price}{price, in US dollars}
-  \item{carat}{weight of the diamond, in carats}
-  ...
+  \item{Country}{Country name}
+  \item{iso2}{ISO2 country code}
+  \item{WHO Region}{WHO regions}
+  \item{WHO Mortality Stratum}{WHO mortality stratum}
+  \item{World Bank Income Group (2011)}{World Bank income group levels}
+  \item{GAVI Eligibility}{GAVI eligibility status}
+  \item{PAHO Revolving Fund}{PAHO revolving fund status}
+  \item{Cohort size (2010) [1]}{Cohort size}
+  \item{Coverage (3 doses at year 10) [2]}{Vaccination coverage at age 10}
+  \item{Vaccine efficacy vs vaccine type infection [2]}{Vaccine efficacy}
+  \item{Duration of protection [2]}{Duration of vaccine protection}
+  \item{Age group [3]}{Age group}
+  \item{Vaccine price [4]}{Vaccine price}
+  \item{Vaccine delivery/ operational/ admin costs [5]}{Vaccine delivery, operational and administration costs}
+  \item{Cancer treatment costs - primary level hospital i$ (per episode, over lifetime) [6]}{Cancer treatment costs - primary level hospital i$ (per episode, over lifetime)}
+  \item{Cancer treatment costs  - primary level hospital US$ (per episode, over lifetime) [6]}{Cancer treatment costs  - primary level hospital US$ (per episode, over lifetime)}
+  \item{Cancer treatment costs - secondary level hospital i$ (per episode, over lifetime) [6]}{Cancer treatment costs - secondary level hospital i$ (per episode, over lifetime)}
+  \item{Cancer treatment costs - secondary level hospital US$ (per episode, over lifetime) [6]}{Cancer treatment costs - secondary level hospital US$ (per episode, over lifetime)}
+  \item{Cancer treatment costs - teaching hospital i$ (per episode, over lifetime) [6]}{Cancer treatment costs - teaching hospital i$ (per episode, over lifetime)}
+  \item{Cancer treatment costs - teaching hospital US$ (per episode, over lifetime) [6]}{Cancer treatment costs - teaching hospital US$ (per episode, over lifetime)}
+  \item{Discount rate [2]}{Disount rate}
+  \item{Perspective [2]}{Perspective}
+  \item{Costs [2]}{}
+  \item{Time horizon [2]}{Time horizon}
+  \item{"Percent" CeCx due to 16/18}{Percentage of cervical cancer due to HPV strains 16 and 18}
+  \item{Vaccine programme}{Vaccine programme}
+  \item{Vaccine programme Oct2013}{Vaccine programme Oct2013}
+  \item{Econ evaluation}{Economic evaluation}
+  \item{GDP per capita (2011 US$) [7]}{GDP per capita (2011 US$)}
+  \item{GDP per capita (2011 i$) [7]}{GDP per capita (2011 i$)}
+  \item{GNI per capita (2011 i$) [7]}{GNI per capita (2011 i$)}
+  \item{GNI per capita (2011 US$) [7]}{GNI per capita (2011 US$)}
+  \item{V33}{International$}
+  \item{V34}{US$}
+  \item{iso3}{ISO3 country code}
 }}
-\source{
-\url{http://www.diamondse.info/}
-}
 \usage{
 data.global
 }
 \description{
-A dataset containing the prices and other attributes of almost 54,000
-diamonds.
+A dataset containing a global range of variables.
 }
 \keyword{datasets}

@@ -3,21 +3,21 @@
 \docType{data}
 \name{data.mortcecx}
 \alias{data.mortcecx}
-\title{Prices of 50,000 round cut diamonds.}
-\format{A data frame with 53940 rows and 10 variables:
+\title{Cost of cervical cancer treatment}
+\format{A data table with 194 observations of 4 variables.
 \describe{
-  \item{price}{price, in US dollars}
-  \item{carat}{weight of the diamond, in carats}
-  ...
+  \item{country}{Country name}
+  \item{cancer_cost}{cost per cancer episode, in $US}
+  \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
+  \item{iso3}{ISO3 country code}
 }}
 \source{
-\url{http://www.diamondse.info/}
+\url{}
 }
 \usage{
 data.mortcecx
 }
 \description{
-A dataset containing the prices and other attributes of almost 54,000
-diamonds.
+A dataset containing the cost of cervical cancer treatment.
 }
 \keyword{datasets}

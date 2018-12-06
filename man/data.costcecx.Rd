@@ -4,7 +4,7 @@
 \name{data.costcecx}
 \alias{data.costcecx}
 \title{Cost of cervical cancer treatment}
-\format{A data table with 194 observations of 4 variables (194 row * 4 col).
+\format{A data table with 194 observations of 4 variables.
 \describe{
   \item{country}{Country name}
   \item{cancer_cost}{cost per cancer episode, in $US}
