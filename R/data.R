@@ -68,7 +68,7 @@
 #'   \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
 #'   \item{iso3}{ISO3 country code}
 #' }
-#' @source \url{}
+#' @source {?}
 "data.costcecx"
 
 
@@ -88,7 +88,7 @@
 #'   \item{UNgroup}{UN group classification of countries}
 #'   \item{GDPpc2011id}{GDP per capita (2011)}
 #' }
-#' @source \url{}
+#' @source {?}
 "data.countryname"
 
 
@@ -134,6 +134,7 @@
 #'   \item{V34}{US$}
 #'   \item{iso3}{ISO3 country code}
 #' }
+#' @source {?}
 "data.global"
 
 
@@ -163,7 +164,7 @@
 #'   \item{V103..V106}{na}
 #'   \item{iso3}{ISO3 country code}
 #' }
-#' @source \url{}
+#' @source \url{https://www.who.int/gho/mortality_burden_disease/life_tables/life_tables/en/}
 "data.mortall"
 
 
@@ -201,74 +202,134 @@
 "data.mortcecx"
 
 
-#' Cost of cervical cancer treatment
+#' UNWPP population estimates
 #'
-#' A dataset containing the cost of cervical cancer treatment.
+#' A dataset containing the UNWPP population estimates -- World Population Prospects 2017.
 #'
-#' @format A data table with 194 observations of 4 variables.
+#' @format A data table with 3306163 observations of 8 variables.
 #' \describe{
+#'   \item{country_code_numeric}{Country code numeric}
+#'   \item{country_code}{ISO3 country code}
 #'   \item{country}{Country name}
-#'   \item{cancer_cost}{cost per cancer episode, in $US}
-#'   \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
-#'   \item{iso3}{ISO3 country code}
+#'   \item{age_from}{age from (start-age)}
+#'   \item{age_to}{age to (end-age)}
+#'   \item{year}{Year}
+#'   \item{gender}{Gender}
+#'   \item{value}{Population size}
 #' }
-#' @source \url{}
+#' @source \url{https://population.un.org/wpp/Download/Standard/Population/}
+#' @source {VIMC}
 "data.pop"
 
 
-#' Cost of cervical cancer treatment
+#' Population projections of 5-year old girls
 #'
-#' A dataset containing the cost of cervical cancer treatment.
+#' A dataset containing population projections of 5-year old girls.
 #'
-#' @format A data table with 194 observations of 4 variables.
+#' @format A data table with 98 observations of 91 variables.
 #' \describe{
-#'   \item{country}{Country name}
-#'   \item{cancer_cost}{cost per cancer episode, in $US}
-#'   \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
 #'   \item{iso3}{ISO3 country code}
+#'   \item{2011..2100}{Year -- 2011..2100}
 #' }
-#' @source \url{}
+#' @source {?}
 "data.popproj"
 
 
-#' Cost of cervical cancer treatment
+#' Data quality of incidence and mortality
 #'
-#' A dataset containing the cost of cervical cancer treatment.
+#' A dataset indicating data quality of cervical cancer incidence and mortality.
 #'
-#' @format A data table with 194 observations of 4 variables.
+#' @format A data table with 186 observations of 4 variables.
 #' \describe{
-#'   \item{country}{Country name}
-#'   \item{cancer_cost}{cost per cancer episode, in $US}
-#'   \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
+#'   \item{Country}{Country name}
+#'   \item{Incidence}{Quality of cervical cancer incidence data}
+#'   \item{Mortality}{Quality of cervical cancer mortality data}
 #'   \item{iso3}{ISO3 country code}
 #' }
-#' @source \url{}
+#' @source {?}
 "data.quality"
 
 
-#' Cost of cervical cancer treatment
+#' Sexual debut data
 #'
-#' A dataset containing the cost of cervical cancer treatment.
+#' A dataset containing sexual debut data and (2) parameters for the sexual debut curve (logistic model).
 #'
-#' @format A data table with 194 observations of 4 variables.
+#' @format A data table with 94 observations of 14 variables.
 #' \describe{
+#'   \item{V1}{Row number}
+#'   \item{iso2}{ISO2 country code}
 #'   \item{country}{Country name}
-#'   \item{cancer_cost}{cost per cancer episode, in $US}
-#'   \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
 #'   \item{iso3}{ISO3 country code}
+#'   \item{who}{WHO region}
+#'   \item{X15}{Proportion of people who have sexually debuted at age 15}
+#'   \item{X18}{Proportion of people who have sexually debuted at age 18}
+#'   \item{X20}{Proportion of people who have sexually debuted at age 20}
+#'   \item{X22}{Proportion of people who have sexually debuted at age 22}
+#'   \item{X25}{Proportion of people who have sexually debuted at age 25}
+#'   \item{Never}{Proportion of people who had not sexually debuted}
+#'   \item{cluster.id}{Clustering countries with similar characteristics}
+#'   \item{a}{Parameter for sexual debut curve (logistic model)}
+#'   \item{b}{Parameter for sexual debut curve (logistic model)}
 #' }
-#' @source \url{}
+#' @source {?}
 "data.sexual_debut"
 
 
-#' Global data table
+#' Model validation
 #'
-#' A dataset containing a global range of variables.
+#' A dataset containing data for validation (not used for VIMC runs).
 #'
-#' @format A data table with 194 observations of 35 variables.
+#' @format A data table with 26 observations of 49 variables.
 #' \describe{
 #'   \item{Country}{Country name}
 #'   \item{iso2}{ISO2 country code}
+#'   \item{WHO Region}{}
+#'   \item{World Bank Income Group (2011)}{}
+#'   \item{Author}{}
+#'   \item{Year}{}
+#'   \item{Title}{}
+#'   \item{Currency}{}
+#'   \item{Currency year}{}
+#'   \item{Conversion to I$2011}{}
+#'   \item{ICER vs no prevention}{}
+#'   \item{ICER vs screen}{}
+#'   \item{Denominator}{}
+#'   \item{Vaccine total costs}{}
+#'   \item{Vaccine coverage}{}
+#'   \item{Vaccine efficacy vs vaccine type infection}{}
+#'   \item{Duration of protection}{}
+#'   \item{Cohort size}{}
+#'   \item{Age at vaccination}{}
+#'   \item{Cancer treatment cost per episode}{}
+#'   \item{Discount rate: costs}{}
+#'   \item{Discount rate: benefits}{}
+#'   \item{Perspective}{}
+#'   \item{Comparator is no screening}{}
+#'   \item{Time horizon}{}
+#'   \item{GDP per capita}{}
+#'   \item{Cervical cancer due to 16/18}{}
+#'   \item{CeCx cost low original}{}
+#'   \item{CeCx cost high original}{}
+#'   \item{CeCx cost low}{}
+#'   \item{CeCx cost high}{}
+#'   \item{CeCx data available}{}
+#'   \item{0-4}{}
+#'   \item{5-9}{}
+#'   \item{9-14}{}
+#'   \item{15-19}{}
+#'   \item{20-24}{}
+#'   \item{25-29}{}
+#'   \item{30-34}{}
+#'   \item{35-39}{}
+#'   \item{40-44}{}
+#'   \item{45-49}{}
+#'   \item{50-54}{}
+#'   \item{55-59}{}
+#'   \item{60-64}{}
+#'   \item{65-69}{}
+#'   \item{70-74}{}
+#'   \item{75-79}{}
+#'   \item{80+}{}
 #' }
-#' @source \url{}
+#' @source {?}
 "data.valid"

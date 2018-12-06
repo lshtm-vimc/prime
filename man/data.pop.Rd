@@ -3,21 +3,27 @@
 \docType{data}
 \name{data.pop}
 \alias{data.pop}
-\title{Cost of cervical cancer treatment}
-\format{A data table with 194 observations of 4 variables.
+\title{UNWPP population estimates}
+\format{A data table with 3306163 observations of 8 variables.
 \describe{
+  \item{country_code_numeric}{Country code numeric}
+  \item{country_code}{ISO3 country code}
   \item{country}{Country name}
-  \item{cancer_cost}{cost per cancer episode, in $US}
-  \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
-  \item{iso3}{ISO3 country code}
+  \item{age_from}{age from (start-age)}
+  \item{age_to}{age to (end-age)}
+  \item{year}{Year}
+  \item{gender}{Gender}
+  \item{value}{Population size}
 }}
 \source{
-\url{}
+\url{https://population.un.org/wpp/Download/Standard/Population/}
+
+{VIMC}
 }
 \usage{
 data.pop
 }
 \description{
-A dataset containing the cost of cervical cancer treatment.
+A dataset containing the UNWPP population estimates -- World Population Prospects 2017.
 }
 \keyword{datasets}

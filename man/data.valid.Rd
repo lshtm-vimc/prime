@@ -3,7 +3,7 @@
 \docType{data}
 \name{data.valid}
 \alias{data.valid}
-\title{Global data table}
+\title{AAA}
 \format{A data table with 194 observations of 35 variables.
 \describe{
   \item{Country}{Country name}

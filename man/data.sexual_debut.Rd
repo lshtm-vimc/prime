@@ -3,13 +3,23 @@
 \docType{data}
 \name{data.sexual_debut}
 \alias{data.sexual_debut}
-\title{Cost of cervical cancer treatment}
-\format{A data table with 194 observations of 4 variables.
+\title{Sexual debut data}
+\format{A data table with 94 observations of 14 variables.
 \describe{
+  \item{V1}{Row number}
+  \item{iso2}{ISO2 country code}
   \item{country}{Country name}
-  \item{cancer_cost}{cost per cancer episode, in $US}
-  \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
   \item{iso3}{ISO3 country code}
+  \item{who}{WHO region}
+  \item{X15}{?}
+  \item{X18}{?}
+  \item{X20}{?}
+  \item{X22}{?}
+  \item{X25}{?}
+  \item{Never}{Proportion of people who had not sexually debuted}
+  \item{cluster.id}{?}
+  \item{a}{Parameter for sexual debut curve (logistic model)}
+  \item{b}{Parameter for sexual debut curve (logistic model)}
 }}
 \source{
 \url{}
@@ -18,6 +28,6 @@
 data.sexual_debut
 }
 \description{
-A dataset containing the cost of cervical cancer treatment.
+A dataset containing sexual debut data and (2) parameters for the sexual debut curve (logistic model).
 }
 \keyword{datasets}

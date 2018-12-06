@@ -3,13 +3,11 @@
 \docType{data}
 \name{data.popproj}
 \alias{data.popproj}
-\title{Cost of cervical cancer treatment}
-\format{A data table with 194 observations of 4 variables.
+\title{Population projections of 5-year old girls}
+\format{A data table with 98 observations of 91 variables.
 \describe{
-  \item{country}{Country name}
-  \item{cancer_cost}{cost per cancer episode, in $US}
-  \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
   \item{iso3}{ISO3 country code}
+  \item{2011..2100}{Year -- 2011..2100}
 }}
 \source{
 \url{}
@@ -18,6 +16,6 @@
 data.popproj
 }
 \description{
-A dataset containing the cost of cervical cancer treatment.
+A dataset containing population projections of 5-year old girls.
 }
 \keyword{datasets}

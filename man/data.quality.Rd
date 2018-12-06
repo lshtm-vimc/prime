@@ -3,12 +3,12 @@
 \docType{data}
 \name{data.quality}
 \alias{data.quality}
-\title{Cost of cervical cancer treatment}
-\format{A data table with 194 observations of 4 variables.
+\title{Data quality of incidence and mortality}
+\format{A data table with 186 observations of 4 variables.
 \describe{
-  \item{country}{Country name}
-  \item{cancer_cost}{cost per cancer episode, in $US}
-  \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
+  \item{Country}{Country name}
+  \item{Incidence}{Quality of cervical cancer incidence data}
+  \item{Mortality}{Quality of cervical cancer mortality data}
   \item{iso3}{ISO3 country code}
 }}
 \source{
@@ -18,6 +18,6 @@
 data.quality
 }
 \description{
-A dataset containing the cost of cervical cancer treatment.
+A dataset indicating data quality of cervical cancer incidence and mortality.
 }
 \keyword{datasets}

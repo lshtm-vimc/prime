@@ -3,21 +3,25 @@
 \docType{data}
 \name{data.mortall.unwpp.mx}
 \alias{data.mortall.unwpp.mx}
-\title{Cost of cervical cancer treatment}
-\format{A data table with 194 observations of 4 variables.
+\title{UNWPP life table}
+\format{A data table with 115710 observations of 8 variables.
 \describe{
+  \item{country_code_numeric}{Country code numeric}
+  \item{country_code}{ISO3 country code}
   \item{country}{Country name}
-  \item{cancer_cost}{cost per cancer episode, in $US}
-  \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
-  \item{iso3}{ISO3 country code}
+  \item{age_from}{age from (start-age)}
+  \item{age_to}{age to (end-age)}
+  \item{year}{Year}
+  \item{gender}{Gender}
+  \item{value}{mx mortality rate in year = proportion of individuals of age x dying by age x+1}
 }}
 \source{
-\url{}
+\url{https://population.un.org/wpp/}
 }
 \usage{
 data.mortall.unwpp.mx
 }
 \description{
-A dataset containing the cost of cervical cancer treatment.
+A dataset containing the UNWPP life table (World Population Prospects 2017).
 }
 \keyword{datasets}
