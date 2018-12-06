@@ -8,8 +8,7 @@
 \describe{
   \item{Country ¦ Age [12]}{Country name}
   \item{0..100}{Age 0-100}
-  \item{cancer_cost}{cost per cancer episode, in $US}
-  \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
+  \item{V103..V106}{na}
   \item{iso3}{ISO3 country code}
 }}
 \source{

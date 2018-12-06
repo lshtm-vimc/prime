@@ -137,6 +137,21 @@
 "data.global"
 
 
+#' Incidence of cervical cancer
+#'
+#' A dataset containing the incidence of cervical cancer in 185 countries, as reported by
+#'     IARC's Globocan 2018 database.
+#'
+#' @format A data table with 185 observations of 103 variables.
+#' \describe{
+#'   \item{Country}{Country name}
+#'   \item{0..100}{Age 0-100}
+#'   \item{iso3}{ISO3 country code}
+#' }
+#' @source \url{https://gco.iarc.fr/today/online-analysis-table}
+"data.incidence"
+
+
 #' WHO life table
 #'
 #' A dataset containing the WHO life table.
@@ -145,41 +160,44 @@
 #' \describe{
 #'   \item{Country ¦ Age [12]}{Country name}
 #'   \item{0..100}{Age 0-100}
-#'   \item{cancer_cost}{cost per cancer episode, in $US}
-#'   \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
+#'   \item{V103..V106}{na}
 #'   \item{iso3}{ISO3 country code}
 #' }
 #' @source \url{}
 "data.mortall"
 
 
-#' Cost of cervical cancer treatment
+#' UNWPP life table
 #'
-#' A dataset containing the cost of cervical cancer treatment.
+#' A dataset containing the UNWPP life table (World Population Prospects 2017).
 #'
-#' @format A data table with 194 observations of 4 variables.
+#' @format A data table with 115710 observations of 8 variables.
 #' \describe{
+#'   \item{country_code_numeric}{Country code numeric}
+#'   \item{country_code}{ISO3 country code}
 #'   \item{country}{Country name}
-#'   \item{cancer_cost}{cost per cancer episode, in $US}
-#'   \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
-#'   \item{iso3}{ISO3 country code}
+#'   \item{age_from}{age from (start-age)}
+#'   \item{age_to}{age to (end-age)}
+#'   \item{year}{Year}
+#'   \item{gender}{Gender}
+#'   \item{value}{mx mortality rate in year = proportion of individuals of age x dying by age x+1}
 #' }
-#' @source \url{}
+#' @source \url{https://population.un.org/wpp/}
 "data.mortall.unwpp.mx"
 
 
-#' Cost of cervical cancer treatment
+#' Mortality from cervical cancer
 #'
-#' A dataset containing the cost of cervical cancer treatment.
+#' A dataset containing the mortality from cervical cancer in 185 countries, as reported by
+#'     IARC's Globocan 2018 database.
 #'
-#' @format A data table with 194 observations of 4 variables.
+#' @format A data table with 185 observations of 103 variables.
 #' \describe{
-#'   \item{country}{Country name}
-#'   \item{cancer_cost}{cost per cancer episode, in $US}
-#'   \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
+#'   \item{Country}{Country name}
+#'   \item{0..100}{Age 0-100}
 #'   \item{iso3}{ISO3 country code}
 #' }
-#' @source \url{}
+#' @source \url{https://gco.iarc.fr/today/online-analysis-table}
 "data.mortcecx"
 
 
