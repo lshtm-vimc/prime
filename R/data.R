@@ -68,7 +68,6 @@
 #'   \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
 #'   \item{iso3}{ISO3 country code}
 #' }
-#' @source {?}
 "data.costcecx"
 
 
@@ -88,7 +87,6 @@
 #'   \item{UNgroup}{UN group classification of countries}
 #'   \item{GDPpc2011id}{GDP per capita (2011)}
 #' }
-#' @source {?}
 "data.countryname"
 
 
@@ -134,7 +132,6 @@
 #'   \item{V34}{US$}
 #'   \item{iso3}{ISO3 country code}
 #' }
-#' @source {?}
 "data.global"
 
 
@@ -231,7 +228,6 @@
 #'   \item{iso3}{ISO3 country code}
 #'   \item{2011..2100}{Year -- 2011..2100}
 #' }
-#' @source {?}
 "data.popproj"
 
 
@@ -246,7 +242,6 @@
 #'   \item{Mortality}{Quality of cervical cancer mortality data}
 #'   \item{iso3}{ISO3 country code}
 #' }
-#' @source {?}
 "data.quality"
 
 
@@ -271,7 +266,6 @@
 #'   \item{a}{Parameter for sexual debut curve (logistic model)}
 #'   \item{b}{Parameter for sexual debut curve (logistic model)}
 #' }
-#' @source {?}
 "data.sexual_debut"
 
 
@@ -283,36 +277,36 @@
 #' \describe{
 #'   \item{Country}{Country name}
 #'   \item{iso2}{ISO2 country code}
-#'   \item{WHO Region}{}
-#'   \item{World Bank Income Group (2011)}{}
-#'   \item{Author}{}
-#'   \item{Year}{}
-#'   \item{Title}{}
-#'   \item{Currency}{}
-#'   \item{Currency year}{}
-#'   \item{Conversion to I$2011}{}
-#'   \item{ICER vs no prevention}{}
-#'   \item{ICER vs screen}{}
-#'   \item{Denominator}{}
-#'   \item{Vaccine total costs}{}
-#'   \item{Vaccine coverage}{}
-#'   \item{Vaccine efficacy vs vaccine type infection}{}
-#'   \item{Duration of protection}{}
-#'   \item{Cohort size}{}
-#'   \item{Age at vaccination}{}
-#'   \item{Cancer treatment cost per episode}{}
-#'   \item{Discount rate: costs}{}
-#'   \item{Discount rate: benefits}{}
-#'   \item{Perspective}{}
-#'   \item{Comparator is no screening}{}
-#'   \item{Time horizon}{}
-#'   \item{GDP per capita}{}
-#'   \item{Cervical cancer due to 16/18}{}
-#'   \item{CeCx cost low original}{}
-#'   \item{CeCx cost high original}{}
-#'   \item{CeCx cost low}{}
-#'   \item{CeCx cost high}{}
-#'   \item{CeCx data available}{}
+#'   \item{WHO Region}{WHO region}
+#'   \item{World Bank Income Group (2011)}{World Bank income group classification (2011)}
+#'   \item{Author}{Author}
+#'   \item{Year}{Year of publication}
+#'   \item{Title}{Title of publication}
+#'   \item{Currency}{Currency}
+#'   \item{Currency year}{Currency year}
+#'   \item{Conversion to I$2011}{International dollar (I$2011)}
+#'   \item{ICER vs no prevention}{Incremental cost-effectiveness ratio of vaccination versus no prevention (CHECK)}
+#'   \item{ICER vs screen}{Incremental cost-effectiveness ratio of vaccination versus no prevention (CHECK)}
+#'   \item{Denominator}{Denominator for health impact}
+#'   \item{Vaccine total costs}{Vaccine total costs}
+#'   \item{Vaccine coverage}{Vaccine coverage}
+#'   \item{Vaccine efficacy vs vaccine type infection}{Vaccine efficacy versus vaccine type infection}
+#'   \item{Duration of protection}{Duration of protective immunity from vaccination}
+#'   \item{Cohort size}{Cohort size}
+#'   \item{Age at vaccination}{Age at vaccination, years}
+#'   \item{Cancer treatment cost per episode}{Cancer treatment cost per episode, dollars}
+#'   \item{Discount rate: costs}{Discount rate for costs}
+#'   \item{Discount rate: benefits}{Discount rate for benefits}
+#'   \item{Perspective}{Perspective of economic evaluation}
+#'   \item{Comparator is no screening}{Comparator refers to no scereening, logical (Y/N)}
+#'   \item{Time horizon}{Time horizon of analysis}
+#'   \item{GDP per capita}{GDP per capita}
+#'   \item{Cervical cancer due to 16/18}{Proportion of cervical cancer due to HPV types 16 and 18}
+#'   \item{CeCx cost low original}{Cervical cancer cost / low / original}
+#'   \item{CeCx cost high original}{Cervical cancer cost / high / original}
+#'   \item{CeCx cost low}{Cervical cancer cost / low}
+#'   \item{CeCx cost high}{Cervical cancer cost / high}
+#'   \item{CeCx data available}{Cervical cancer data available, logical (Y/N)}
 #'   \item{0-4}{0-4 years}
 #'   \item{5-9}{5-9 years}
 #'   \item{9-14}{9-14 years}
@@ -331,5 +325,4 @@
 #'   \item{75-79}{75-79 years}
 #'   \item{80+}{80+ years}
 #' }
-#' @source {?}
 "data.valid"

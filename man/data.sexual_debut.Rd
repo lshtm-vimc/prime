@@ -11,19 +11,16 @@
   \item{country}{Country name}
   \item{iso3}{ISO3 country code}
   \item{who}{WHO region}
-  \item{X15}{?}
-  \item{X18}{?}
-  \item{X20}{?}
-  \item{X22}{?}
-  \item{X25}{?}
+  \item{X15}{Proportion of people who have sexually debuted at age 15}
+  \item{X18}{Proportion of people who have sexually debuted at age 18}
+  \item{X20}{Proportion of people who have sexually debuted at age 20}
+  \item{X22}{Proportion of people who have sexually debuted at age 22}
+  \item{X25}{Proportion of people who have sexually debuted at age 25}
   \item{Never}{Proportion of people who had not sexually debuted}
-  \item{cluster.id}{?}
+  \item{cluster.id}{Clustering countries with similar characteristics}
   \item{a}{Parameter for sexual debut curve (logistic model)}
   \item{b}{Parameter for sexual debut curve (logistic model)}
 }}
-\source{
-\url{}
-}
 \usage{
 data.sexual_debut
 }

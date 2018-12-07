@@ -3,19 +3,63 @@
 \docType{data}
 \name{data.valid}
 \alias{data.valid}
-\title{AAA}
-\format{A data table with 194 observations of 35 variables.
+\title{Model validation}
+\format{A data table with 26 observations of 49 variables.
 \describe{
   \item{Country}{Country name}
   \item{iso2}{ISO2 country code}
+  \item{WHO Region}{WHO region}
+  \item{World Bank Income Group (2011)}{World Bank income group classification (2011)}
+  \item{Author}{Author}
+  \item{Year}{Year of publication}
+  \item{Title}{Title of publication}
+  \item{Currency}{Currency}
+  \item{Currency year}{Currency year}
+  \item{Conversion to I$2011}{International dollar (I$2011)}
+  \item{ICER vs no prevention}{Incremental cost-effectiveness ratio of vaccination versus no prevention (CHECK)}
+  \item{ICER vs screen}{Incremental cost-effectiveness ratio of vaccination versus no prevention (CHECK)}
+  \item{Denominator}{Denominator for health impact}
+  \item{Vaccine total costs}{Vaccine total costs}
+  \item{Vaccine coverage}{Vaccine coverage}
+  \item{Vaccine efficacy vs vaccine type infection}{Vaccine efficacy versus vaccine type infection}
+  \item{Duration of protection}{Duration of protective immunity from vaccination}
+  \item{Cohort size}{Cohort size}
+  \item{Age at vaccination}{Age at vaccination, years}
+  \item{Cancer treatment cost per episode}{Cancer treatment cost per episode, dollars}
+  \item{Discount rate: costs}{Discount rate for costs}
+  \item{Discount rate: benefits}{Discount rate for benefits}
+  \item{Perspective}{Perspective of economic evaluation}
+  \item{Comparator is no screening}{Comparator refers to no scereening, logical (Y/N)}
+  \item{Time horizon}{Time horizon of analysis}
+  \item{GDP per capita}{GDP per capita}
+  \item{Cervical cancer due to 16/18}{Proportion of cervical cancer due to HPV types 16 and 18}
+  \item{CeCx cost low original}{Cervical cancer cost / low / original}
+  \item{CeCx cost high original}{Cervical cancer cost / high / original}
+  \item{CeCx cost low}{Cervical cancer cost / low}
+  \item{CeCx cost high}{Cervical cancer cost / high}
+  \item{CeCx data available}{Cervical cancer data available, logical (Y/N)}
+  \item{0-4}{0-4 years}
+  \item{5-9}{5-9 years}
+  \item{9-14}{9-14 years}
+  \item{15-19}{15-19 years}
+  \item{20-24}{20-24 years}
+  \item{25-29}{25-29 years}
+  \item{30-34}{30-34 years}
+  \item{35-39}{35-39 years}
+  \item{40-44}{40-44 years}
+  \item{45-49}{45-49 years}
+  \item{50-54}{50-54 years}
+  \item{55-59}{55-59 years}
+  \item{60-64}{60-64 years}
+  \item{65-69}{65-69 years}
+  \item{70-74}{70-74 years}
+  \item{75-79}{75-79 years}
+  \item{80+}{80+ years}
 }}
-\source{
-\url{}
-}
 \usage{
 data.valid
 }
 \description{
-A dataset containing a global range of variables.
+A dataset containing data for validation.
 }
 \keyword{datasets}

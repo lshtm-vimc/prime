@@ -16,9 +16,6 @@
   \item{UNgroup}{UN group classification of countries}
   \item{GDPpc2011id}{GDP per capita (2011)}
 }}
-\source{
-\url{}
-}
 \usage{
 data.countryname
 }

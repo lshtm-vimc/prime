@@ -9,9 +9,6 @@
   \item{iso3}{ISO3 country code}
   \item{2011..2100}{Year -- 2011..2100}
 }}
-\source{
-\url{}
-}
 \usage{
 data.popproj
 }

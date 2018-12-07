@@ -11,9 +11,6 @@
   \item{Mortality}{Quality of cervical cancer mortality data}
   \item{iso3}{ISO3 country code}
 }}
-\source{
-\url{}
-}
 \usage{
 data.quality
 }

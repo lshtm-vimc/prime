@@ -11,9 +11,6 @@
   \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
   \item{iso3}{ISO3 country code}
 }}
-\source{
-\url{}
-}
 \usage{
 data.costcecx
 }
