@@ -277,7 +277,7 @@
 
 #' Model validation
 #'
-#' A dataset containing data for validation (not used for VIMC runs).
+#' A dataset containing data for validation.
 #'
 #' @format A data table with 26 observations of 49 variables.
 #' \describe{
@@ -313,23 +313,23 @@
 #'   \item{CeCx cost low}{}
 #'   \item{CeCx cost high}{}
 #'   \item{CeCx data available}{}
-#'   \item{0-4}{}
-#'   \item{5-9}{}
-#'   \item{9-14}{}
-#'   \item{15-19}{}
-#'   \item{20-24}{}
-#'   \item{25-29}{}
-#'   \item{30-34}{}
-#'   \item{35-39}{}
-#'   \item{40-44}{}
-#'   \item{45-49}{}
-#'   \item{50-54}{}
-#'   \item{55-59}{}
-#'   \item{60-64}{}
-#'   \item{65-69}{}
-#'   \item{70-74}{}
-#'   \item{75-79}{}
-#'   \item{80+}{}
+#'   \item{0-4}{0-4 years}
+#'   \item{5-9}{5-9 years}
+#'   \item{9-14}{9-14 years}
+#'   \item{15-19}{15-19 years}
+#'   \item{20-24}{20-24 years}
+#'   \item{25-29}{25-29 years}
+#'   \item{30-34}{30-34 years}
+#'   \item{35-39}{35-39 years}
+#'   \item{40-44}{40-44 years}
+#'   \item{45-49}{45-49 years}
+#'   \item{50-54}{50-54 years}
+#'   \item{55-59}{55-59 years}
+#'   \item{60-64}{60-64 years}
+#'   \item{65-69}{65-69 years}
+#'   \item{70-74}{70-74 years}
+#'   \item{75-79}{75-79 years}
+#'   \item{80+}{80+ years}
 #' }
 #' @source {?}
 "data.valid"
