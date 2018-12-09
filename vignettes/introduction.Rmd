@@ -10,13 +10,12 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-# load package - prime2
-library(prime2)
+# load package - prime
+library(prime)
 ```
 
 ## PRIME
-PRIME stands for “Papillomavirus Rapid Interface for Modelling and Economics”. 
-The R package (prime2) is based of the spreadsheet-based tool (see http://primetool.org). 
+PRIME stands for Papillomavirus Rapid Interface for Modelling and Economics. The R package (prime) is based of the spreadsheet-based tool (see http://primetool.org). 
 
 PRIME provides users with an idea of: 
 

@@ -1,5 +1,5 @@
-Package: prime2
-Title: HPV PRIME model -- Papillomavirus Rapid Interface for Modelling and Economics
+Package: prime
+Title: PRIME -- Papillomavirus Rapid Interface for Modelling and Economics
 Version: 2.0.1
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: PRIME is a static model of HPV vaccination that uses proportional impact to estimate the health impact and cost-effectiveness of HPV vaccination in low- and middle-income countries.

@@ -400,7 +400,7 @@ BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1, canc.i
   init_agecohort <- agecohort
   combine <- foreach(
     c=1:length(countries),
-    .packages=c("data.table","prime2"),
+    .packages=c("data.table","prime"),
     #.errorhandling="pass",
     .export=c(".data.batch","data.pop","writelog")
   ) %:% foreach(
