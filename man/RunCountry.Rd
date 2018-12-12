@@ -8,6 +8,7 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
   vaceff_aftersexdebut = 0, disc.cost = 0.03, disc.ben = 0.03,
   cov = 1, agevac = 10, agecohort = 10, cohort = -1,
   canc.cost = "unadj", canc.inc = "2018", daly.canc.diag = 0.288,
+  daly.canc.control = 0.049, daly.canc.metastatic = 0.451,
   daly.canc.terminal = 0.54, sens = -1, unwpp_mortality = FALSE,
   year_born = -1, year_vac = -1, campaigns = -1,
   analyseCosts = FALSE, discounting = TRUE, run_batch = FALSE,
@@ -33,6 +34,10 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
 \item{canc.inc}{Integer (optional): Reference year for cancer incidence rates (2018 or 2012 or 2008)}
 
 \item{daly.canc.diag}{Number (optional): Daly weight for cancer diagnosis}
+
+\item{daly.canc.control}{Number: daly-weight for controlled phase of cervical cancer}
+
+\item{daly.canc.metastatic}{Number: daly-weight for metastatic phase of cervical cancer}
 
 \item{daly.canc.terminal}{Number (optional): Daly weight for cancer death}
 

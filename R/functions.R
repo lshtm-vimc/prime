@@ -343,6 +343,8 @@ RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns, 
 #' @param agecohort ignore, read from .data.batch
 #' @param canc.inc year from where incidence data is read (2018; old data: 2008/2012) -- with updated 2018 Globocan data, DALY weights from GBD, and DALY estimation based on prevalence instead of age of incidence, only 2018 is valid and 2008/2012 is not sensible
 #' @param daly.canc.diag disability weight of diagnosis and primary therapy phase of cervical cancer
+#' @param daly.canc.control Number: daly-weight for controlled phase of cervical cancer
+#' @param daly.canc.metastatic Number: daly-weight for metastatic phase of cervical cancer
 #' @param daly.canc.terminal disability weight of terminal phase of cervical cancer
 #' @param sens ignore, doesn’t do anything anymore
 #' @param unwpp_mortality logical, whether to create lifetables based on UNWPP mx estimates or WHO data
@@ -363,8 +365,8 @@ RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns, 
 #'
 #' @examples #
 BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1, canc.inc="2018",
-                      daly.canc.diag=0.288, daly.canc.terminal=0.54, sens=-1,
-                      unwpp_mortality=FALSE, year_born=-1, year_vac=-1, runs=1,
+                      daly.canc.diag=0.288, daly.canc.control=0.049, daly.canc.metastatic=0.451, daly.canc.terminal=0.54,
+                      sens=-1, unwpp_mortality=FALSE, year_born=-1, year_vac=-1, runs=1,
                       vaccine_efficacy_beforesexdebut=1, vaccine_efficacy_aftersexdebut=0,
                       log=-1, by_calendaryear = FALSE, use_proportions = TRUE,
                       analyseCosts = FALSE, psa=0, psa_vals=".data.batch.psa") {
@@ -494,6 +496,8 @@ BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1, canc.i
         agecohort=agecohort,
         cohort=cohort,
         daly.canc.diag=daly.canc.diag,
+		    daly.canc.control=daly.canc.control,
+		    daly.canc.metastatic=daly.canc.metastatic,
         daly.canc.terminal=daly.canc.terminal,
         unwpp_mortality=unwpp_mortality,
         year_born=years[y],
@@ -628,6 +632,7 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
  return(DT)
 }
 
+
 #' Run PRIME for a single birth-cohort
 #'
 #' Runs PRIME for one birth-cohort. Usually called by another function such as RunCountry().
@@ -643,6 +648,8 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
 #' @param vaccine_efficacy Number: proportion indicating vaccine-efficacy.
 #' @param daly.canc.diag Number: daly-weight for cancer diagnosis.
 #' @param daly.canc.seq Number: daly-weight for cancer...
+#' @param daly.canc.control Number: daly-weight for controlled phase of cervical cancer
+#' @param daly.canc.metastatic Number: daly-weight for metastatic phase of cervical cancer
 #' @param daly.canc.terminal Number: daly-weight for death from cancer.
 #' @param cost_cancer Number: total per capita cost of cancer.
 #' @param disc.cost Number (optional): discounting for cancer cost.
@@ -665,7 +672,7 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
 #' daly.canc.seq <- 0.002
 #' daly.canc.terminal <- 0.1
 #' cost.cancer <- 100
-#' RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns, vaccine_efficacy, daly.canc.diag, daly.canc.seq, daly.canc.terminal, daly.canc.terminal, cost.cancer)
+#' RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns, vaccine_efficacy, daly.canc.diag, daly.canc.seq, daly.canc.terminal, cost.cancer)
 #'
 #' @export
 #' @import data.table foreach
@@ -673,7 +680,7 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
 #'
 RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns,
                        vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
-                       daly.canc.diag, daly.canc.seq, daly.canc.terminal,
+                       daly.canc.diag, daly.canc.seq, daly.canc.control, daly.canc.metastatic, daly.canc.terminal,
                        cost_cancer, disc.cost=0.03, disc.ben=0.03, discounting=TRUE,
                        country_iso3=NULL, run_country=FALSE) {
 	#check if required variables are present
@@ -686,7 +693,7 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 	ages <- lifetab [,age]
 	lexp <- lifetab [,ex]
 
-	#calculate weights for DALYs
+	#calculate weights for DALYs (This calculation of daly.canc.nonfatal and daly.canc.fatal is redundant for 2018)
 	daly.canc.nonfatal <- daly.canc.diag + daly.canc.seq * 4
 	daly.canc.fatal <- daly.canc.diag + daly.canc.terminal
 
@@ -722,6 +729,10 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 	#expected number of cases, deaths, dalys, and costs (static)
 	coverage <- ageCoverage(ages,coverage,vaccine_efficacy_nosexdebut,vaccine_efficacy_sexdebut,campaigns,lifetab,cohort,agevac,country_iso3=country_iso3)
 
+	# In out.pre data table, 'lifey' refers to YLL and 'disability' refers to YLD
+	# YLL - Years of Life Lost due to premature mortality
+	# YLD - Years of Life lost due to Disability
+
 	out.pre <- data.table (
 		age         = ages,
 		cohort_size = cohort*lifetab[,lx.adj],
@@ -730,7 +741,8 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 		inc.cecx    = incidence,
 		mort.cecx   = mortality_cecx,
 		lifey       = mortality_cecx*lexp,
-		disability  = (incidence - mortality_cecx)*daly.canc.nonfatal + mortality_cecx*daly.canc.fatal,
+		# disability  = (incidence - mortality_cecx)*daly.canc.nonfatal + mortality_cecx*daly.canc.fatal,
+		disability  = (incidence  * daly.canc.diag * 4.8/12) + (prevalence * daly.canc.control) + (mortality_cecx * (daly.canc.metastatic * 9.21/12 + daly.canc.terminal * 1/12) ),
 		cost.cecx   = incidence*cost_cancer
 	)
 
@@ -813,6 +825,8 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 #' @param canc.cost Character (optional): Is cost of cancer adjusted ("adj") or not ("unadj")
 #' @param canc.inc Integer (optional): Reference year for cancer incidence rates (2018 or 2012 or 2008)
 #' @param daly.canc.diag Number (optional): Daly weight for cancer diagnosis
+#' @param daly.canc.control Number: daly-weight for controlled phase of cervical cancer
+#' @param daly.canc.metastatic Number: daly-weight for metastatic phase of cervical cancer
 #' @param daly.canc.terminal Number (optional): Daly weight for cancer death
 #' @param sens Numeric-vector (optional): Specific values to be used in a PSA. -1 if PSA's are not used
 #' @param unwpp_mortality Logical (optional): If TRUE, uses year-specific UNWPP mortality estimates to construct life-tables. If FALSE, use WHO based mortality estimates
@@ -830,7 +844,7 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 #' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88, analyseCosts=TRUE)
 RunCountry <- function (country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexdebut=0,
                         disc.cost=0.03, disc.ben=0.03, cov=1, agevac=10, agecohort=10,	cohort=-1, canc.cost="unadj",
-                        canc.inc="2018", daly.canc.diag=0.288, daly.canc.terminal=0.54,
+                        canc.inc="2018", daly.canc.diag=0.288, daly.canc.control=0.049, daly.canc.metastatic=0.451, daly.canc.terminal=0.54,
                         sens=-1, unwpp_mortality=FALSE, year_born=-1, year_vac=-1, campaigns=-1,
                         analyseCosts=FALSE, discounting=TRUE, run_batch=FALSE, psadat = -1) {
 	##check if all required data is present in the global environment
@@ -1003,7 +1017,8 @@ RunCountry <- function (country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexde
   # calling RunCohort function
 	result_cohort <- RunCohort(
 		lifetab=lifetab, cohort=cohort, incidence=inc, mortality_cecx=mort.cecx, prevalence = cecx_5y_prev, agevac=agevac, coverage=cov, campaigns=campaigns,
-		vaccine_efficacy_nosexdebut=vaceff_beforesexdebut, vaccine_efficacy_sexdebut=vaceff_aftersexdebut, daly.canc.diag=daly.canc.diag, daly.canc.seq=daly.canc.seq, daly.canc.terminal=daly.canc.terminal,
+		vaccine_efficacy_nosexdebut=vaceff_beforesexdebut, vaccine_efficacy_sexdebut=vaceff_aftersexdebut,
+		daly.canc.diag=daly.canc.diag, daly.canc.seq=daly.canc.seq, daly.canc.control=daly.canc.control, daly.canc.metastatic=daly.canc.metastatic, daly.canc.terminal=daly.canc.terminal,
 		cost_cancer=cost.canc, disc.cost=disc.cost, disc.ben=disc.ben, discounting, country_iso3=country_iso3, run_country=TRUE
 	)
 
@@ -1050,6 +1065,7 @@ getISO3 <- function (countryname, name=FALSE) {
 		)
 	}
 }
+
 
 #' Returns cost-effectiveness for a single birthcohort in a single country
 #'
@@ -1178,6 +1194,7 @@ checkSize <- function (v) {
 	}
 }
 
+
 #' Construct lifetable based on qx-column
 #'
 #' qx = age-specific probability of dying
@@ -1229,6 +1246,7 @@ lifeTable <- function (qx=NULL, mx=NULL, agecohort=0) {
 	lifetab[age < agecohort,"lx.adj"] <- 0
 	return(lifetab)
 }
+
 
 #' Get age-specific coverage-rates
 #'
@@ -1361,6 +1379,7 @@ dtColMatch <- function (input, input_match_on, reference, reference_match_on, re
 	}
 	return(unlist(data.countryname[rows,reference_return,with=F],use.names=F))
 }
+
 
 #' Collapse data-tables
 #'

@@ -6,6 +6,7 @@
 \usage{
 BatchRun(countries = -1, coverage = -1, agevac = -1,
   agecohort = -1, canc.inc = "2018", daly.canc.diag = 0.288,
+  daly.canc.control = 0.049, daly.canc.metastatic = 0.451,
   daly.canc.terminal = 0.54, sens = -1, unwpp_mortality = FALSE,
   year_born = -1, year_vac = -1, runs = 1,
   vaccine_efficacy_beforesexdebut = 1,
@@ -25,6 +26,10 @@ BatchRun(countries = -1, coverage = -1, agevac = -1,
 \item{canc.inc}{year from where incidence data is read (2018; old data: 2008/2012) -- with updated 2018 Globocan data, DALY weights from GBD, and DALY estimation based on prevalence instead of age of incidence, only 2018 is valid and 2008/2012 is not sensible}
 
 \item{daly.canc.diag}{disability weight of diagnosis and primary therapy phase of cervical cancer}
+
+\item{daly.canc.control}{Number: daly-weight for controlled phase of cervical cancer}
+
+\item{daly.canc.metastatic}{Number: daly-weight for metastatic phase of cervical cancer}
 
 \item{daly.canc.terminal}{disability weight of terminal phase of cervical cancer}
 
