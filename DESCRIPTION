@@ -5,7 +5,7 @@ Authors@R: person("First", "Last", email = "first.last@example.com", role = c("a
 Description: PRIME is a static model of HPV vaccination that uses proportional impact to estimate the health impact and cost-effectiveness of HPV vaccination in low- and middle-income countries.
 Depends: R (>= 3.4.3)
 Imports: data.table, foreach
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
