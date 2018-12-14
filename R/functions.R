@@ -729,6 +729,13 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 	#expected number of cases, deaths, dalys, and costs (static)
 	coverage <- ageCoverage(ages,coverage,vaccine_efficacy_nosexdebut,vaccine_efficacy_sexdebut,campaigns,lifetab,cohort,agevac,country_iso3=country_iso3)
 
+	# diability weights for different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal)
+	dw = list (diag = daly.canc.diag, control = daly.canc.control, metastatic = daly.canc.metastatic, terminal = daly.canc.terminal)
+
+	# duration of different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
+	cecx_duration = list (diag = 4.8/12, metastatic = 9.21/12, terminal = 1/12)
+	# duration of controlled phases is based on remainder of time after attributing to other phases
+
 	# In out.pre data table, 'lifey' refers to YLL and 'disability' refers to YLD
 	# YLL - Years of Life Lost due to premature mortality
 	# YLD - Years of Life lost due to Disability
@@ -742,7 +749,8 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 		mort.cecx   = mortality_cecx,
 		lifey       = mortality_cecx*lexp,
 		# disability  = (incidence - mortality_cecx)*daly.canc.nonfatal + mortality_cecx*daly.canc.fatal,
-		disability  = (incidence  * daly.canc.diag * 4.8/12) + (prevalence * daly.canc.control) + (mortality_cecx * (daly.canc.metastatic * 9.21/12 + daly.canc.terminal * 1/12) ),
+		# disability  = (incidence  * daly.canc.diag * 4.8/12) + (prevalence * daly.canc.control) + (mortality_cecx * (daly.canc.metastatic * 9.21/12 + daly.canc.terminal * 1/12) ),
+		disability  = (incidence  * dw$diag * cecx_duration$diag) + (prevalence * dw$control) + (mortality_cecx * (dw$metastatic * cecx_duration$metastatic + dw$terminal * cecx_duration$terminal) ),
 		cost.cecx   = incidence*cost_cancer
 	)
 
