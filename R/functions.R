@@ -645,9 +645,10 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
 #' @param agevac Number: Age at which the cohort is vaccinated.
 #' @param coverage Number: Proportion of the cohort that will receive a vaccination.
 #' @param campaigns List or number: MAC cohort-vaccinations (needs to be changed).
-#' @param vaccine_efficacy Number: proportion indicating vaccine-efficacy.
+#' @param vaccine_efficacy_nosexdebut Number: proportion indicating vaccine-efficacy before sexual debut.
+#' @param vaccine_efficacy_sexdebut Number: proportion indicating vaccine-efficacy after sexual debut.
 #' @param daly.canc.diag Number: daly-weight for cancer diagnosis.
-#' @param daly.canc.seq Number: daly-weight for cancer...
+#' @param daly.canc.seq Number: daly-weight for cancer treatment.
 #' @param daly.canc.control Number: daly-weight for controlled phase of cervical cancer
 #' @param daly.canc.metastatic Number: daly-weight for metastatic phase of cervical cancer
 #' @param daly.canc.terminal Number: daly-weight for death from cancer.
@@ -657,7 +658,8 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
 #' @param discounting Logical: should discounting be applied?
 #'
 #' @return Returns a data.table with size of the birth-cohort and age-specific incidence-rates,
-#'     mortality-rates, years-of-life-lost, years-of-healthy-life-lost, and cancer-costs before and after vaccination
+#'     mortality-rates, years-of-life-lost, years-of-healthy-life-lost, and cancer-costs before and after vaccination.
+#'     Also displays whether discounting has been used ("type" column).
 #'
 #' @examples
 #' lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F], use.names=F), 9)
@@ -677,12 +679,10 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
 #' daly.canc.terminal <- 0.1
 #' cost_cancer <- 100
 #' 
-#' RunCohort(lifetab = lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, 
-#'                     coverage, campaigns, vaccine_efficacy_nosexdebut, 
-#'                     vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq, 
-#'                     daly.canc.control, daly.canc.metastatic, daly.canc.terminal, cost_cancer, 
-#'                     disc.cost=0.03, disc.ben=0.03, discounting=FALSE,
-#'                     country_iso3="AFG", run_country=FALSE)
+#' RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns, 
+#'  vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq, daly.canc.control, 
+#'  daly.canc.metastatic, daly.canc.terminal, cost_cancer, disc.cost=0.03, disc.ben=0.03, discounting=FALSE,
+#'  country_iso3="AFG", run_country=FALSE)
 #'                      
 #' @export
 #' @import data.table foreach
