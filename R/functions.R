@@ -672,7 +672,7 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
 #' campaigns <- -1
 #' vaccine_efficacy_nosexdebut <- 0.95
 #' vaccine_efficacy_sexdebut <- 0
-#' daly.canc.diag <- 0.0003
+#' daly.canc.diag <- 0.002
 #' daly.canc.seq <- 0.002
 #' daly.canc.control <- 0.05
 #' daly.canc.metastatic <- 0.05
