@@ -678,12 +678,12 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
 #' daly.canc.metastatic <- 0.05
 #' daly.canc.terminal <- 0.1
 #' cost_cancer <- 100
-#' 
-#' RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns, 
-#'  vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq, daly.canc.control, 
+#'
+#' RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns,
+#'  vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq, daly.canc.control,
 #'  daly.canc.metastatic, daly.canc.terminal, cost_cancer, disc.cost=0.03, disc.ben=0.03, discounting=FALSE,
 #'  country_iso3="AFG", run_country=FALSE)
-#'                      
+#'
 #' @export
 #' @import data.table foreach
 #' @import foreach
@@ -1533,4 +1533,11 @@ monetary_to_number <- function (x) {
 		x <- as.numeric(x)
 		return(x)
 	}
+}
+
+#' greeting
+greeting <- function () {
+
+  print ("hello world")
+
 }
