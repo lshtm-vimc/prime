@@ -2,10 +2,10 @@
 % Please edit documentation in R/functions.R
 \name{greeting}
 \alias{greeting}
-\title{greeting}
+\title{Greeting}
 \usage{
 greeting()
 }
 \description{
-greeting
+Greeting
 }

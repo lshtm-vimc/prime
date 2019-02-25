@@ -1536,7 +1536,13 @@ monetary_to_number <- function (x) {
 	}
 }
 
-#' greeting
+
+#' Greeting
+#'
+#' @return
+#' @export
+#'
+#' @examples
 greeting <- function () {
 
   print ("hello world")
