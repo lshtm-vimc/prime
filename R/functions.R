@@ -1532,13 +1532,6 @@ monetary_to_number <- function (x) {
 		#fix to keep decimalvalues with big numbers
 		x <- as.numeric(x)
 
-		##### REMOVE this snippet of code
-		# testing
-		print ("running function: monetary_to_number")
-		x = x *10
-		##### REMOVE the above snippet of code
-
-
 		return(x)
 	}
 }
