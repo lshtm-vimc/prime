@@ -28,9 +28,13 @@ RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
 
 \item{campaigns}{List or number: MAC cohort-vaccinations (needs to be changed).}
 
+\item{vaccine_efficacy_nosexdebut}{Number: proportion indicating vaccine-efficacy before sexual debut.}
+
+\item{vaccine_efficacy_sexdebut}{Number: proportion indicating vaccine-efficacy after sexual debut.}
+
 \item{daly.canc.diag}{Number: daly-weight for cancer diagnosis.}
 
-\item{daly.canc.seq}{Number: daly-weight for cancer...}
+\item{daly.canc.seq}{Number: daly-weight for cancer treatment.}
 
 \item{daly.canc.control}{Number: daly-weight for controlled phase of cervical cancer}
 
@@ -45,12 +49,11 @@ RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
 \item{disc.ben}{Number (optional): discounting for...}
 
 \item{discounting}{Logical: should discounting be applied?}
-
-\item{vaccine_efficacy}{Number: proportion indicating vaccine-efficacy.}
 }
 \value{
 Returns a data.table with size of the birth-cohort and age-specific incidence-rates,
-    mortality-rates, years-of-life-lost, years-of-healthy-life-lost, and cancer-costs before and after vaccination
+    mortality-rates, years-of-life-lost, years-of-healthy-life-lost, and cancer-costs before and after vaccination.
+    Also displays whether discounting has been used ("type" column).
 }
 \description{
 Runs PRIME for one birth-cohort. Usually called by another function such as RunCountry().
@@ -60,14 +63,22 @@ lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG", as.character(0:100), with=
 cohort <- unlist(data.popproj[iso3=="AFG", "2020"], use.names=F)
 incidence <- unlist(data.incidence[iso3=="AFG",as.character(0:100),with=F],use.names=F)
 mortality_cecx <- unlist(data.mortall[iso3=="AFG",as.character(0:100),with=F],use.names=F)
+prevalence <- unlist(data.cecx_5y_prevalence[iso3=="AFG",as.character(0:100),with=F],use.names=F)
 agevac <- 9
 coverage <- 0.8
 campaigns <- -1
-vaccine_efficacy <- 0.95
-daly.canc.diag <- 0.0003
+vaccine_efficacy_nosexdebut <- 0.95
+vaccine_efficacy_sexdebut <- 0
+daly.canc.diag <- 0.002
 daly.canc.seq <- 0.002
+daly.canc.control <- 0.05
+daly.canc.metastatic <- 0.05
 daly.canc.terminal <- 0.1
-cost.cancer <- 100
-RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns, vaccine_efficacy, daly.canc.diag, daly.canc.seq, daly.canc.terminal, cost.cancer)
+cost_cancer <- 100
+
+RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns,
+ vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq, daly.canc.control,
+ daly.canc.metastatic, daly.canc.terminal, cost_cancer, disc.cost=0.03, disc.ben=0.03, discounting=FALSE,
+ country_iso3="AFG", run_country=FALSE)
 
 }
