@@ -18,13 +18,14 @@ writelog <- function (logname, x) {
   Sys.sleep (0.02)
 
   while ((file.exists(paste0(logname,"_locked"))))
-    {Sys.sleep(0.02)}
+  {Sys.sleep(0.02)}
 
   # lock log file
   file.create (paste0(logname,"_locked"))
 
   # write to log file
-  write ( paste0 (format(Sys.time(), "%Y/%m/%d %H:%M:%S"), " ", x), file=logname, append=TRUE )
+  write ( paste0 (format(Sys.time(), "%Y/%m/%d %H:%M:%S"), " ", x),
+          file=logname, append=TRUE )
 
   # unlock log file
   file.remove (paste0 (logname,"_locked") )
@@ -32,17 +33,23 @@ writelog <- function (logname, x) {
 
 #' Creates .data.batch for running multiple birth cohorts
 #'
-#' Creates .data.batch which is used when running/looping over multiple birth cohorts ( runCohort() ) at once.
+#' Creates .data.batch which is used when running/looping over multiple birth
+#'   cohorts ( runCohort() ) at once.
 #'
-#' .data.batch is based on the data.table (DT) coverage_data, which is a DT with columns country_code (ISO3),
-#'     year (of vaccination), age_first (age at vaccination), age_last (age at vaccination),
-#'     coverage (in proportion, for all the agegroups specified).
+#' .data.batch is based on the data.table (DT) coverage_data, which is a DT with
+#'   columns country_code (ISO3), year (of vaccination),
+#'   age_first (age at vaccination), age_last (age at vaccination),
+#'   coverage (in proportion, for all the agegroups specified).
 #'
-#' If you only want to run 1 age in this country/coverage combination, age_first==age_last
+#' If you only want to run 1 age in this country/coverage combination,
+#'   age_first==age_last
 #'
-#' @param coverage_data data table with columns country_code, year (of vaccination), age_first, age_last, coverage
-#' @param reporting_years numeric_vector, years that should be reported (parameter: not required)
-#' @param force logical, whether .data.batch should be overwritten if it already exists (parameter: not required)
+#' @param coverage_data Data table with columns country_code, year (of vaccination),
+#'   age_first, age_last, coverage.
+#' @param reporting_years Numeric_vector, years that should be reported
+#'   (parameter: not required)
+#' @param force Logical, whether .data.batch should be overwritten if it already
+#'   exists (parameter: not required)
 #'
 #' @return None
 #' @export
@@ -71,6 +78,7 @@ RegisterBatchData <- function (coverage_data, reporting_years=-1, force=FALSE) {
     }
     coverage_data <- nomacs
   }
+
   coverage_data[,"birthcohort"] <- coverage_data[,year] - coverage_data[,age_first]
   setorder(coverage_data, country_code, birthcohort, age_first)
   demographic_years <- sort(as.numeric(unique(data.pop[country_code %in% unique(coverage_data[,country_code]),year])))
@@ -105,12 +113,16 @@ RegisterBatchData <- function (coverage_data, reporting_years=-1, force=FALSE) {
   } else {
     year_last <- max_year
   }
+
   birthcohorts <- year_first:year_last
-  template <- coverage_data[birthcohort==coverage_years[1]]
+  template <- coverage_data[birthcohort==coverage_years[1]
+                            ]
   #remove birthcohorts which should not be modelled
   coverage_data <- coverage_data[birthcohort %in% birthcohorts]
+
   #select birthcohorts which are not yet in the coverage-data
   birthcohorts <- birthcohorts[!(birthcohorts %in% coverage_data[,birthcohort])]
+
   #add birthcohorts to coverage data
   for(b in birthcohorts){
     t_coverage_data <- template
@@ -123,10 +135,12 @@ RegisterBatchData <- function (coverage_data, reporting_years=-1, force=FALSE) {
       )
     )
   }
+
   colnames(coverage_data)[which(colnames(coverage_data)=="age_first")] <- "agevac"
   coverage_data[,"activity_type"] <- NA
   coverage_data[,"target"] <- NA
-  coverage_data <- coverage_data[,c("country_code", "birthcohort", "coverage", "agevac", "activity_type", "target")]
+  coverage_data <- coverage_data[,c("country_code", "birthcohort", "coverage",
+                                    "agevac", "activity_type", "target")]
   setorder(coverage_data, country_code, birthcohort, agevac)
   .data.batch <<- coverage_data
 }
@@ -134,46 +148,65 @@ RegisterBatchData <- function (coverage_data, reporting_years=-1, force=FALSE) {
 
 #' Creates .data.batch for running multiple birth cohorts (Gavi runs)
 #'
-#' Creates .data.batch which is used when running/looping over multiple birth cohorts ( runCohort() ) at once.
-#'     Similar to RegisterBatchData, but for when we make runs for Gavi.
+#' Creates .data.batch which is used when running/looping over multiple birth
+#'   cohorts ( runCohort() ) at once. Similar to RegisterBatchData, but for when
+#'   we make runs for Gavi.
 #'
-#' .data.batch is based on the data.table (DT) coverage_data, which is a DT with columns country_code (ISO3),
-#'     year (of vaccination), age_first (age at vaccination), age_last (age at vaccination),
-#'     coverage (in proportion, for all the age groups specified).
+#' .data.batch is based on the data.table (DT) coverage_data, which is a DT with
+#'   columns country_code (ISO3), year (of vaccination),
+#'   age_first (age at vaccination), age_last (age at vaccination),
+#'   coverage (in proportion, for all the age groups specified).
 #'
-#' @param gavi_coverage data table with coverage estimates as downloaded from VIMC montagu
-#' @param gavi_template data table with reporting template as downloaded from VIMC montagu
-#' @param use_campaigns logical, whether campaigns as stated in coverage files should be modelled
-#' @param use_routine logical, whether routine vaccination as stated in coverage file should be modelled
-#' @param restrict_to_coverage_data logical, whether the first birth-cohort should be the first cohort that is mentioned in the coverage data.
+#' @param gavi_coverage data table with coverage estimates as downloaded from
+#'   VIMC montagu
+#' @param gavi_template data table with reporting template as downloaded from
+#'   VIMC montagu
+#' @param use_campaigns logical, whether campaigns as stated in coverage files
+#'   should be modelled
+#' @param use_routine logical, whether routine vaccination as stated in coverage
+#'   file should be modelled
+#' @param restrict_to_coverage_data logical, whether the first birth-cohort
+#'   should be the first cohort that is mentioned in the coverage data.
 #'     If TRUE, restrict to coverage data.
 #'     If FALSE, restrict to cohorts provided in gavi_template.
-#' @param force logical, whether .data.batch should be overwritten if it already exists
-#' @param psa integer, indicating how many runs for probabilistic sensitivity analysis (PSA). 0 to run no PSA.
+#' @param force logical, whether .data.batch should be overwritten if it already
+#'   exists
+#' @param psa integer, indicating how many runs for probabilistic sensitivity
+#'   analysis (PSA). 0 to run no PSA.
 #'
 #' @return None
 #' @export
 #'
 #' @examples #
-RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns, use_routine, restrict_to_coverage_data=FALSE, force=FALSE, psa=0) {
+RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns,
+                                   use_routine,
+                                   restrict_to_coverage_data=FALSE,
+                                   force=FALSE,
+                                   psa=0) {
+
   if(exists(".data.batch") & !force){
     stop("'.data.batch' already exists.")
   }
+
   if(use_campaigns){
-    coverage_data <- gavi_coverage[activity_type=="routine" | (activity_type=="campaign" & coverage > 0)]
+    coverage_data <- gavi_coverage[activity_type=="routine" |
+                                     (activity_type=="campaign" &
+                                        coverage > 0)]
   } else {
     coverage_data <- gavi_coverage[activity_type=="routine"]
   }
   if(!use_routine){
     coverage_data[activity_type=="routine" & coverage > 0, "coverage"] <- 0
   }
+
   coverage_data [target=="<NA>","target"] <- NA
   class (coverage_data$target) <- "numeric"
   coverage_data <- coverage_data [country_code %in% unique(gavi_template[,country])]
   macs <- coverage_data [age_first != age_last]
   nomacs <- coverage_data [age_first == coverage_data$age_last]
+
   if (nrow(macs) > 0) {
-    for(m in 1:nrow(macs)){
+    for(m in 1:nrow(macs)) {
       ages <- macs[m,age_first]:macs[m,age_last]
       for(a in ages){
         nomacs <- rbindlist(
@@ -182,7 +215,7 @@ RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns, 
             macs[m,]
           )
         )
-        if(a == ages[1]){
+        if(a == ages[1]) {
           target <- as.numeric (nomacs[nrow(nomacs),target])
         }
         nomacs [nrow(nomacs),"age_first"] <- a
@@ -236,12 +269,19 @@ RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns, 
   #remove birthcohorts which should not be modelled
   coverage_data <- coverage_data [birthcohort %in% birthcohorts]
 
+  # sort by country code
   countries <- sort ( unique( coverage_data[,country_code] ) )
+
   for(c in countries) {
+
     #create template for data not yet in coverage-data
-    template <- coverage_data[country_code == c & activity_type == "routine" & birthcohort==min(coverage_data[country_code == c & activity_type == "routine", birthcohort])]
+    template <- coverage_data[country_code == c &
+                                activity_type == "routine" &
+                                birthcohort==min(coverage_data[country_code == c & activity_type == "routine", birthcohort])]
+
     #select birthcohorts which are not yet in the coverage-data and add to data
     missing_birthcohorts <- birthcohorts[!(birthcohorts %in% coverage_data[country_code == c,birthcohort])]
+
     if (length(missing_birthcohorts) > 0 ) {
       for (b in missing_birthcohorts) {
         t_coverage_data <- template
@@ -262,6 +302,7 @@ RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns, 
   #model countries without coverage data but in template (with coverage-level of 0)
   countries <- sort (unique(gavi_template[,country]))
   countries <- countries [!(countries %in% unique(coverage_data[,country_code]))]
+
   if (length(countries) > 0) {
     for (c in countries) {
       t_coverage_data <- coverage_data[country_code == unique (coverage_data[,country_code])[1]]
@@ -277,59 +318,62 @@ RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns, 
       )
     }
   }
+
   setorder (coverage_data, country_code, birthcohort, agevac)
   .data.batch <<- coverage_data
 
+  # sort by country code
   countries <- sort (unique(.data.batch[,country_code]))
 
-	if (psa > 1) {
-		psadat <- data.table(
-			country = character(0),
-			run_id = numeric(0),
-			incidence = numeric(0),
-			mortality = numeric(0)
-		)
-		for (c in countries){
-			#select proxy country if data not available
-			tc <- switch(
-				c,
-				"XK"="ALB",
-				"MHL"="KIR",
-				"TUV"="FJI",
-				"PSE"="JOR",
-				"SSD"="SDN",
-				c
-			)
-			inc_quality <- data.quality [iso3==tc, Incidence]
-			mort_quality <- data.quality [iso3==tc, Mortality]
-			if (inc_quality == 0){
-				inc_quality <- c(0.5,1.5)
-			} else {
-				inc_quality <- c(0.8,1.2)
-			}
-			if(mort_quality == 0){
-				mort_quality <- c(0.5,1.5)
-			} else {
-				mort_quality <- c(0.8,1.2)
-			}
-			psadat <- rbindlist(
-				list(
-					psadat,
-					data.table(
-						country = rep(c, psa),
-						psa = c(1:psa),
-						incidence = runif (n=psa, min=inc_quality[1], max=inc_quality[2]),
-						mortality = runif (n=psa, min=inc_quality[1], max=mort_quality[2])
-					)
-				)
-			)
-		}
-		if (exists(".data.batch") & !force) {
-			warning("'.data.batch.psa' already exists and is NOT overwritten.")
-		} else {
-			.data.batch.psa <<- psadat
-		}
-	}
+  # sensitivity analysis
+  if (psa > 1) {
+    psadat <- data.table(
+      country = character(0),
+      run_id = numeric(0),
+      incidence = numeric(0),
+      mortality = numeric(0)
+    )
+    for (c in countries){
+      #select proxy country if data not available
+      tc <- switch(
+        c,
+        "XK"="ALB",
+        "MHL"="KIR",
+        "TUV"="FJI",
+        "PSE"="JOR",
+        "SSD"="SDN",
+        c
+      )
+      inc_quality <- data.quality [iso3==tc, Incidence]
+      mort_quality <- data.quality [iso3==tc, Mortality]
+      if (inc_quality == 0){
+        inc_quality <- c(0.5,1.5)
+      } else {
+        inc_quality <- c(0.8,1.2)
+      }
+      if(mort_quality == 0){
+        mort_quality <- c(0.5,1.5)
+      } else {
+        mort_quality <- c(0.8,1.2)
+      }
+      psadat <- rbindlist(
+        list(
+          psadat,
+          data.table(
+            country = rep(c, psa),
+            psa = c(1:psa),
+            incidence = runif (n=psa, min=inc_quality[1], max=inc_quality[2]),
+            mortality = runif (n=psa, min=inc_quality[1], max=mort_quality[2])
+          )
+        )
+      )
+    }
+    if (exists(".data.batch") & !force) {
+      warning("'.data.batch.psa' already exists and is NOT overwritten.")
+    } else {
+      .data.batch.psa <<- psadat
+    }
+  }
 }
 
 
@@ -364,8 +408,9 @@ RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns, 
 #' @export
 #'
 #' @examples #
-BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1, canc.inc="2018",
-                      daly.canc.diag=0.288, daly.canc.control=0.049, daly.canc.metastatic=0.451, daly.canc.terminal=0.54,
+BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1,
+                      canc.inc="2018", daly.canc.diag=0.288, daly.canc.control=0.049,
+                      daly.canc.metastatic=0.451, daly.canc.terminal=0.54,
                       sens=-1, unwpp_mortality=FALSE, year_born=-1, year_vac=-1, runs=1,
                       vaccine_efficacy_beforesexdebut=1, vaccine_efficacy_aftersexdebut=0,
                       log=-1, by_calendaryear = FALSE, use_proportions = TRUE,
@@ -383,17 +428,17 @@ BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1, canc.i
   }
 
   if(psa>1){
-	  psadat <- get(".data.batch.psa")
-	  if(length(unique(psadat[,run_id])) != psa){
-	  	stop("Number of specified PSA does not correspond to number of run ids in PSA file")
-	  } else {
-	  	runs <- psa
-	  	dopsa <- TRUE
-	  }
+    psadat <- get(".data.batch.psa")
+    if(length(unique(psadat[,run_id])) != psa){
+      stop("Number of specified PSA does not correspond to number of run ids in PSA file")
+    } else {
+      runs <- psa
+      dopsa <- TRUE
+    }
   } else {
-	  dopsa <- FALSE
-	  runs <- 1
-	  psadat <- -1
+    dopsa <- FALSE
+    runs <- 1
+    psadat <- -1
   }
 
   #create initial variables that won't be overwritten in foreach loops
@@ -410,7 +455,7 @@ BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1, canc.i
   ) %:% foreach(
     r=1:runs
   ) %dopar% {
-  #) %do% {
+    #) %do% {
     .t_data.batch <- .data.batch[country_code==countries[c] & birthcohort==years[y]]
     if(init_coverage==-1){
       coverage <- .t_data.batch[1, coverage]
@@ -477,41 +522,41 @@ BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1, canc.i
     }
 
     if(dopsa){
-		cpsadat <- list(
-			incidence = psadat[country == countries[c] & run_id == r, incidence],
-			mortality = psadat[country == countries[c] & run_id == r, mortality]
-		)
-	} else {
-		cpsadat <- list(
-			incidence = 1,
-			mortality = 1
-		)
-	}
+      cpsadat <- list(
+        incidence = psadat[country == countries[c] & run_id == r, incidence],
+        mortality = psadat[country == countries[c] & run_id == r, mortality]
+      )
+    } else {
+      cpsadat <- list(
+        incidence = 1,
+        mortality = 1
+      )
+    }
     data <- RunCountry(
-        country_iso3=countries[c],
-        vaceff_beforesexdebut=vaccine_efficacy_beforesexdebut,
-		vaceff_aftersexdebut=vaccine_efficacy_aftersexdebut,
-        cov=coverage,
-        agevac=agevac,
-        agecohort=agecohort,
-        cohort=cohort,
-        daly.canc.diag=daly.canc.diag,
-		    daly.canc.control=daly.canc.control,
-		    daly.canc.metastatic=daly.canc.metastatic,
-        daly.canc.terminal=daly.canc.terminal,
-        unwpp_mortality=unwpp_mortality,
-        year_born=years[y],
-        campaigns=campaigns,
-        discounting=FALSE,
-		run_batch=TRUE,
-		analyseCosts = analyseCosts,
-		psadat = cpsadat
+      country_iso3=countries[c],
+      vaceff_beforesexdebut=vaccine_efficacy_beforesexdebut,
+      vaceff_aftersexdebut=vaccine_efficacy_aftersexdebut,
+      cov=coverage,
+      agevac=agevac,
+      agecohort=agecohort,
+      cohort=cohort,
+      daly.canc.diag=daly.canc.diag,
+      daly.canc.control=daly.canc.control,
+      daly.canc.metastatic=daly.canc.metastatic,
+      daly.canc.terminal=daly.canc.terminal,
+      unwpp_mortality=unwpp_mortality,
+      year_born=years[y],
+      campaigns=campaigns,
+      discounting=FALSE,
+      run_batch=TRUE,
+      analyseCosts = analyseCosts,
+      psadat = cpsadat
     )
     data[,"country"] <- countries[c]
     data[,"birthcohort"] <- years[y]
-	if(dopsa){
-		data[,"run_id"] <- r
-	}
+    if(dopsa){
+      data[,"run_id"] <- r
+    }
     return(data)
   }
   for(l in 1:length(combine)){
@@ -564,7 +609,7 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
     is_by_calendar_year <- TRUE
   } else {
     is_by_calendar_year <- FALSE
-	colnames(DT)[which(colnames(DT) == "birthcohort")] <- "year"
+    colnames(DT)[which(colnames(DT) == "birthcohort")] <- "year"
   }
 
   #check if values are proportions
@@ -629,7 +674,7 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
     }
     setorder(DT, scenario, country, year, age)
   }
- return(DT)
+  return(DT)
 }
 
 
@@ -693,137 +738,137 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
                        daly.canc.diag, daly.canc.seq, daly.canc.control, daly.canc.metastatic, daly.canc.terminal,
                        cost_cancer, disc.cost=0.03, disc.ben=0.03, discounting=TRUE,
                        country_iso3=NULL, run_country=FALSE) {
-	#check if required variables are present
-	if(
-		sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
-	){
-		stop("Not all values have the required length")
-	}
+  #check if required variables are present
+  if(
+    sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
+  ){
+    stop("Not all values have the required length")
+  }
 
-	ages <- lifetab [,age]
-	lexp <- lifetab [,ex]
+  ages <- lifetab [,age]
+  lexp <- lifetab [,ex]
 
-	#calculate weights for DALYs (This calculation of daly.canc.nonfatal and daly.canc.fatal is redundant for 2018)
-	daly.canc.nonfatal <- daly.canc.diag + daly.canc.seq * 4
-	daly.canc.fatal <- daly.canc.diag + daly.canc.terminal
+  #calculate weights for DALYs (This calculation of daly.canc.nonfatal and daly.canc.fatal is redundant for 2018)
+  daly.canc.nonfatal <- daly.canc.diag + daly.canc.seq * 4
+  daly.canc.fatal <- daly.canc.diag + daly.canc.terminal
 
-	#discounting
-	if(discounting){
-		daly.canc.nonfatal.disc <- daly.canc.diag + daly.canc.seq * ( 1/(1+disc.ben) + 1/(1+disc.ben)^2 + 1/(1+disc.ben)^3 + 1/(1+disc.ben)^4 )
-		daly.canc.fatal.disc <- daly.canc.diag + daly.canc.terminal * 1/(1+disc.ben)
-		disc.cost.yr <- rep(0,length(ages))
-		disc.ben.yr <- rep(0,length(ages))
-		disc.cost.yr[1:(which(ages==agevac))] <- 1
-		disc.ben.yr[1:(which(ages==agevac))] <- 1
-		for(a in ages[which(ages >= agevac)]){
-			disc.cost.yr[which(ages==a)] <- 1/(1+disc.cost)^((a-1)-agevac)
-			disc.ben.yr[which(ages==a)] <- 1/(1+disc.ben)^((a-1)-agevac)
-		}
-		lexp.disc <- rep(0,length(ages))
-		for(a in ages[-which(ages==max(ages))]){
-			lexp.disc[which(ages==a)] <- sum(
-				disc.ben.yr[1:floor(
-					lexp[which(ages==a)]
-				)]
-			)+(
-				lexp[which(ages==a)]
-				-floor(
-					lexp[which(ages==a)]
-				)
-			)*disc.ben.yr[floor(
-				lexp[which(ages==a)]
-			)+1]
-		}
-	}
+  #discounting
+  if(discounting){
+    daly.canc.nonfatal.disc <- daly.canc.diag + daly.canc.seq * ( 1/(1+disc.ben) + 1/(1+disc.ben)^2 + 1/(1+disc.ben)^3 + 1/(1+disc.ben)^4 )
+    daly.canc.fatal.disc <- daly.canc.diag + daly.canc.terminal * 1/(1+disc.ben)
+    disc.cost.yr <- rep(0,length(ages))
+    disc.ben.yr <- rep(0,length(ages))
+    disc.cost.yr[1:(which(ages==agevac))] <- 1
+    disc.ben.yr[1:(which(ages==agevac))] <- 1
+    for(a in ages[which(ages >= agevac)]){
+      disc.cost.yr[which(ages==a)] <- 1/(1+disc.cost)^((a-1)-agevac)
+      disc.ben.yr[which(ages==a)] <- 1/(1+disc.ben)^((a-1)-agevac)
+    }
+    lexp.disc <- rep(0,length(ages))
+    for(a in ages[-which(ages==max(ages))]){
+      lexp.disc[which(ages==a)] <- sum(
+        disc.ben.yr[1:floor(
+          lexp[which(ages==a)]
+        )]
+      )+(
+        lexp[which(ages==a)]
+        -floor(
+          lexp[which(ages==a)]
+        )
+      )*disc.ben.yr[floor(
+        lexp[which(ages==a)]
+      )+1]
+    }
+  }
 
-	#expected number of cases, deaths, dalys, and costs (static)
-	coverage <- ageCoverage(ages,coverage,vaccine_efficacy_nosexdebut,vaccine_efficacy_sexdebut,campaigns,lifetab,cohort,agevac,country_iso3=country_iso3)
+  #expected number of cases, deaths, dalys, and costs (static)
+  coverage <- ageCoverage(ages,coverage,vaccine_efficacy_nosexdebut,vaccine_efficacy_sexdebut,campaigns,lifetab,cohort,agevac,country_iso3=country_iso3)
 
-	# diability weights for different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal)
-	dw = list (diag = daly.canc.diag, control = daly.canc.control, metastatic = daly.canc.metastatic, terminal = daly.canc.terminal)
+  # diability weights for different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal)
+  dw = list (diag = daly.canc.diag, control = daly.canc.control, metastatic = daly.canc.metastatic, terminal = daly.canc.terminal)
 
-	# duration of different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
-	cecx_duration = list (diag = 4.8/12, metastatic = 9.21/12, terminal = 1/12)
-	# duration of controlled phases is based on remainder of time after attributing to other phases
+  # duration of different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
+  cecx_duration = list (diag = 4.8/12, metastatic = 9.21/12, terminal = 1/12)
+  # duration of controlled phases is based on remainder of time after attributing to other phases
 
-	# In out.pre data table, 'lifey' refers to YLL and 'disability' refers to YLD
-	# YLL - Years of Life Lost due to premature mortality
-	# YLD - Years of Life lost due to Disability
+  # In out.pre data table, 'lifey' refers to YLL and 'disability' refers to YLD
+  # YLL - Years of Life Lost due to premature mortality
+  # YLD - Years of Life lost due to Disability
 
-	out.pre <- data.table (
-		age         = ages,
-		cohort_size = cohort*lifetab[,lx.adj],
-		vaccinated  = rep(0,length(ages)),
-		immunized   = rep(0,length(ages)),
-		inc.cecx    = incidence,
-		mort.cecx   = mortality_cecx,
-		lifey       = mortality_cecx*lexp,
-		# disability  = (incidence - mortality_cecx)*daly.canc.nonfatal + mortality_cecx*daly.canc.fatal,
-		# disability  = (incidence  * daly.canc.diag * 4.8/12) + (prevalence * daly.canc.control) + (mortality_cecx * (daly.canc.metastatic * 9.21/12 + daly.canc.terminal * 1/12) ),
-		disability  = (incidence  * dw$diag * cecx_duration$diag) + (prevalence * dw$control) + (mortality_cecx * (dw$metastatic * cecx_duration$metastatic + dw$terminal * cecx_duration$terminal) ),
-		cost.cecx   = incidence*cost_cancer
-	)
+  out.pre <- data.table (
+    age         = ages,
+    cohort_size = cohort*lifetab[,lx.adj],
+    vaccinated  = rep(0,length(ages)),
+    immunized   = rep(0,length(ages)),
+    inc.cecx    = incidence,
+    mort.cecx   = mortality_cecx,
+    lifey       = mortality_cecx*lexp,
+    # disability  = (incidence - mortality_cecx)*daly.canc.nonfatal + mortality_cecx*daly.canc.fatal,
+    # disability  = (incidence  * daly.canc.diag * 4.8/12) + (prevalence * daly.canc.control) + (mortality_cecx * (daly.canc.metastatic * 9.21/12 + daly.canc.terminal * 1/12) ),
+    disability  = (incidence  * dw$diag * cecx_duration$diag) + (prevalence * dw$control) + (mortality_cecx * (dw$metastatic * cecx_duration$metastatic + dw$terminal * cecx_duration$terminal) ),
+    cost.cecx   = incidence*cost_cancer
+  )
 
-	out.post <- out.pre
-	out.post <- out.post*(1-coverage[,effective_coverage])
-	out.post[,"age"] <- ages
-	out.post[,"cohort_size"] <- cohort*lifetab[,lx.adj]
-	out.post[,"vaccinated"] <- coverage[,coverage]
-	out.post[,"immunized"] <- coverage[,effective_coverage]
+  out.post <- out.pre
+  out.post <- out.post*(1-coverage[,effective_coverage])
+  out.post[,"age"] <- ages
+  out.post[,"cohort_size"] <- cohort*lifetab[,lx.adj]
+  out.post[,"vaccinated"] <- coverage[,coverage]
+  out.post[,"immunized"] <- coverage[,effective_coverage]
 
-	#discounted
-	if(discounting){
-		out.pre.disc <- out.pre
-		out.pre.disc[,"inc.cecx"] <- out.pre.disc[,inc.cecx]*disc.ben.yr
-		out.pre.disc[,"mort.cecx"] <- out.pre.disc[,mort.cecx]*disc.ben.yr
-		out.pre.disc[,"lifey"] <- out.pre[,mort.cecx]*lexp.disc*disc.ben.yr
-		out.pre.disc[,"disability"] <- (
-			(out.pre[,inc.cecx] - out.pre[,mort.cecx])*daly.canc.nonfatal.disc +out.pre[,mort.cecx]*daly.canc.fatal.disc
-		)*disc.ben.yr
-		out.pre.disc[,"cost.cecx"] <- out.pre[,cost.cecx]*disc.cost.yr
+  #discounted
+  if(discounting){
+    out.pre.disc <- out.pre
+    out.pre.disc[,"inc.cecx"] <- out.pre.disc[,inc.cecx]*disc.ben.yr
+    out.pre.disc[,"mort.cecx"] <- out.pre.disc[,mort.cecx]*disc.ben.yr
+    out.pre.disc[,"lifey"] <- out.pre[,mort.cecx]*lexp.disc*disc.ben.yr
+    out.pre.disc[,"disability"] <- (
+      (out.pre[,inc.cecx] - out.pre[,mort.cecx])*daly.canc.nonfatal.disc +out.pre[,mort.cecx]*daly.canc.fatal.disc
+    )*disc.ben.yr
+    out.pre.disc[,"cost.cecx"] <- out.pre[,cost.cecx]*disc.cost.yr
 
-		out.post.disc <- out.pre.disc
-		out.post.disc <- out.pre.disc*(1-coverage[,effective_coverage])
-		out.post.disc[,"age"] <- ages
-		out.post.disc[,"cohort_size"] <- cohort*lifetab[,lx.adj]
-		out.post.disc[,"vaccinated"] <- coverage[,coverage]
-		out.post.disc[,"immunized"] <- coverage[,effective_coverage]
+    out.post.disc <- out.pre.disc
+    out.post.disc <- out.pre.disc*(1-coverage[,effective_coverage])
+    out.post.disc[,"age"] <- ages
+    out.post.disc[,"cohort_size"] <- cohort*lifetab[,lx.adj]
+    out.post.disc[,"vaccinated"] <- coverage[,coverage]
+    out.post.disc[,"immunized"] <- coverage[,effective_coverage]
 
-		out.pre.disc[,"scenario"] <- "pre-vaccination"
-		out.pre.disc[,"type"] <- "discounted"
-		out.post.disc[,"scenario"] <- "post-vaccination"
-		out.post.disc[,"type"] <- "discounted"
-	}
+    out.pre.disc[,"scenario"] <- "pre-vaccination"
+    out.pre.disc[,"type"] <- "discounted"
+    out.post.disc[,"scenario"] <- "post-vaccination"
+    out.post.disc[,"type"] <- "discounted"
+  }
 
-	out.pre[,"scenario"] <- "pre-vaccination"
-	out.pre[,"type"] <- "undiscounted"
-	out.post[,"scenario"] <- "post-vaccination"
-	out.post[,"type"] <- "undiscounted"
+  out.pre[,"scenario"] <- "pre-vaccination"
+  out.pre[,"type"] <- "undiscounted"
+  out.post[,"scenario"] <- "post-vaccination"
+  out.post[,"type"] <- "undiscounted"
 
-	#combine results
-	if(discounting){
-		out.pre <- rbindlist(
-			list(
-				out.pre,
-				out.pre.disc
-			)
-		)
-		out.post <- rbindlist(
-			list(
-				out.post,
-				out.post.disc
-			)
-		)
-	}
-	out <- rbindlist(
-		list(
-			out.pre,
-			out.post
-		)
-	)
-	out <- out[,c("scenario","type","age","cohort_size","vaccinated","immunized","inc.cecx","mort.cecx","lifey","disability","cost.cecx"),with=F]
+  #combine results
+  if(discounting){
+    out.pre <- rbindlist(
+      list(
+        out.pre,
+        out.pre.disc
+      )
+    )
+    out.post <- rbindlist(
+      list(
+        out.post,
+        out.post.disc
+      )
+    )
+  }
+  out <- rbindlist(
+    list(
+      out.pre,
+      out.post
+    )
+  )
+  out <- out[,c("scenario","type","age","cohort_size","vaccinated","immunized","inc.cecx","mort.cecx","lifey","disability","cost.cecx"),with=F]
 
-	return(out)
+  return(out)
 }
 
 
@@ -865,188 +910,188 @@ RunCountry <- function (country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexde
                         canc.inc="2018", daly.canc.diag=0.288, daly.canc.control=0.049, daly.canc.metastatic=0.451, daly.canc.terminal=0.54,
                         sens=-1, unwpp_mortality=FALSE, year_born=-1, year_vac=-1, campaigns=-1,
                         analyseCosts=FALSE, discounting=TRUE, run_batch=FALSE, psadat = -1) {
-	##check if all required data is present in the global environment
-	#if(sum(!(c("data.incidence", "data.global", "data.costcecx", "data.popproj", "data.mortcecx", "data.mortall", "data.mortall.unwpp") %in% ls(name=.GlobalEnv, all.names=T))) > 0){
-	#	stop("Not all required datafiles seem to be present in your environment. Please load all datafiles required.")
-	#}
+  ##check if all required data is present in the global environment
+  #if(sum(!(c("data.incidence", "data.global", "data.costcecx", "data.popproj", "data.mortcecx", "data.mortall", "data.mortall.unwpp") %in% ls(name=.GlobalEnv, all.names=T))) > 0){
+  #	stop("Not all required datafiles seem to be present in your environment. Please load all datafiles required.")
+  #}
 
-	#check if required variables are present (sanity check, sees if any variables passed to function have a length of 0)
-	if(
-		sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
-	){
-		stop("Not all values have the required length")
-	}
-	#retrieve year of birthcohort
-	if(year_vac!=-1 & year_born!=-1 ){
-		#check if year of vaccination corresponds with age of vaccination for this birth-cohort
-		if(year_vac-agevac != year_born){
-			stop(
-				paste0(
-					"Year of vaccination (",year_vac,") and age of vaccination (",agevac,") do not correspond with chosen birthcohort (",year_born,"). Please change accordingly or omit 'year_born' or 'year_vac'."
-				)
-			)
-		}
-	} else if(year_vac==-1 & year_born!=-1){
-		year_vac <- year_born+agevac
-	} else if(year_vac!=-1 & year_born==-1){
-		year_born <- year_vac-agevac
-	} else if(year_vac==-1 & year_born==-1){
-		#assume vaccination in current year
-		year_vac <- as.numeric(format(Sys.time(),format="%Y"))
-		year_born <- year_vac-agevac
-	}
-	ages <- as.numeric(colnames(data.incidence)[!grepl("\\D",colnames(data.incidence))])
-	ages <- ages[!is.na(ages)]
+  #check if required variables are present (sanity check, sees if any variables passed to function have a length of 0)
+  if(
+    sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
+  ){
+    stop("Not all values have the required length")
+  }
+  #retrieve year of birthcohort
+  if(year_vac!=-1 & year_born!=-1 ){
+    #check if year of vaccination corresponds with age of vaccination for this birth-cohort
+    if(year_vac-agevac != year_born){
+      stop(
+        paste0(
+          "Year of vaccination (",year_vac,") and age of vaccination (",agevac,") do not correspond with chosen birthcohort (",year_born,"). Please change accordingly or omit 'year_born' or 'year_vac'."
+        )
+      )
+    }
+  } else if(year_vac==-1 & year_born!=-1){
+    year_vac <- year_born+agevac
+  } else if(year_vac!=-1 & year_born==-1){
+    year_born <- year_vac-agevac
+  } else if(year_vac==-1 & year_born==-1){
+    #assume vaccination in current year
+    year_vac <- as.numeric(format(Sys.time(),format="%Y"))
+    year_born <- year_vac-agevac
+  }
+  ages <- as.numeric(colnames(data.incidence)[!grepl("\\D",colnames(data.incidence))])
+  ages <- ages[!is.na(ages)]
 
-	#If no data available, use other country as proxy
-	if( country_iso3 %in% c("XK","MHL","TUV","PSE") ){
-	  proxy <- TRUE
-	  country_iso3 <- switch(
-	    country_iso3,
-	    "XK" = "ALB",
-	    "MHL" = "KIR",
-	    "TUV" = "FJI",
-	    "PSE" = "JOR",
-	    country_iso3
-	  )
-	} else {
-	  proxy <- FALSE
-	}
+  #If no data available, use other country as proxy
+  if( country_iso3 %in% c("XK","MHL","TUV","PSE") ){
+    proxy <- TRUE
+    country_iso3 <- switch(
+      country_iso3,
+      "XK" = "ALB",
+      "MHL" = "KIR",
+      "TUV" = "FJI",
+      "PSE" = "JOR",
+      country_iso3
+    )
+  } else {
+    proxy <- FALSE
+  }
 
-	#get country specific variables
-	#cost per FVG
-	cost.vac <- monetary_to_number(
-		data.global[iso3==country_iso3,`Vaccine price [4]`]
-	) + monetary_to_number(
-		data.global[iso3==country_iso3,`Vaccine delivery/ operational/ admin costs [5]`]
-	)
+  #get country specific variables
+  #cost per FVG
+  cost.vac <- monetary_to_number(
+    data.global[iso3==country_iso3,`Vaccine price [4]`]
+  ) + monetary_to_number(
+    data.global[iso3==country_iso3,`Vaccine delivery/ operational/ admin costs [5]`]
+  )
 
-	#cost per cancer episode
-	if(canc.cost=="unadj"){
-		cost.canc <- monetary_to_number(data.costcecx[iso3==country_iso3,cancer_cost])
-	} else if(canc.cost=="adj"){
-		cost.canc <- monetary_to_number(data.costcecx[iso3==country_iso3,cancer_cost_adj])
-	}
+  #cost per cancer episode
+  if(canc.cost=="unadj"){
+    cost.canc <- monetary_to_number(data.costcecx[iso3==country_iso3,cancer_cost])
+  } else if(canc.cost=="adj"){
+    cost.canc <- monetary_to_number(data.costcecx[iso3==country_iso3,cancer_cost_adj])
+  }
 
-	# % of CeCx due to 16/18
-	p1618 <- data.global[iso3==country_iso3,`% CeCx due to 16/18`]/100
+  # % of CeCx due to 16/18
+  p1618 <- data.global[iso3==country_iso3,`% CeCx due to 16/18`]/100
 
-	# age-dependent parameters
-	if (canc.inc == "2018") {
-	  inc          <- unlist (data.incidence           [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
-	  mort.cecx    <- unlist (data.mortcecx            [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
-	  cecx_5y_prev <- unlist (data.cecx_5y_prevalence  [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
-	}
-	else if (canc.inc == "2012") {
-		#inc <- unlist(data.incidence2012[iso3==country_iso3,as.character(ages),with=F],use.names=F)*p1618
-		#mort.cecx <- unlist(data.mortcecx2012[iso3==country_iso3,as.character(ages),with=F],use.names=F)*p1618
-	}
-	else if (canc.inc == "2008") {
-		#inc=as.numeric(data.incidence08[c,2:(maxage+2)])*p1618
-		#mort.cecx=as.numeric(data.mortcecx08[c,2:(maxage+2)])*p1618
-	}
+  # age-dependent parameters
+  if (canc.inc == "2018") {
+    inc          <- unlist (data.incidence           [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
+    mort.cecx    <- unlist (data.mortcecx            [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
+    cecx_5y_prev <- unlist (data.cecx_5y_prevalence  [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
+  }
+  else if (canc.inc == "2012") {
+    #inc <- unlist(data.incidence2012[iso3==country_iso3,as.character(ages),with=F],use.names=F)*p1618
+    #mort.cecx <- unlist(data.mortcecx2012[iso3==country_iso3,as.character(ages),with=F],use.names=F)*p1618
+  }
+  else if (canc.inc == "2008") {
+    #inc=as.numeric(data.incidence08[c,2:(maxage+2)])*p1618
+    #mort.cecx=as.numeric(data.mortcecx08[c,2:(maxage+2)])*p1618
+  }
 
-	# set incidence and mortality and prevalence values to 0 if they are missing
-	inc          [which (is.na (inc)          )] <- 0
-	mort.cecx    [which (is.na (mort.cecx)    )] <- 0
-	cecx_5y_prev [which (is.na (cecx_5y_prev) )] <- 0
+  # set incidence and mortality and prevalence values to 0 if they are missing
+  inc          [which (is.na (inc)          )] <- 0
+  mort.cecx    [which (is.na (mort.cecx)    )] <- 0
+  cecx_5y_prev [which (is.na (cecx_5y_prev) )] <- 0
 
-	daly.canc.seq <- switch(
-		data.global[iso3==country_iso3,`WHO Mortality Stratum`],
-		"A"=0.04,
-		"B"=0.11,
-		"C"=0.13,
-		"D"=0.17,
-		"E"=0.17
-	)
+  daly.canc.seq <- switch(
+    data.global[iso3==country_iso3,`WHO Mortality Stratum`],
+    "A"=0.04,
+    "B"=0.11,
+    "C"=0.13,
+    "D"=0.17,
+    "E"=0.17
+  )
 
-	#Calculate total and vaccinated cohort size
-	#If UN population projections unavailable, cohort size = 1 otherwise cohort size = number of 10-14y/5
-	if(cohort==-1){
-		cohort <- unlist(data.popproj[iso3==country_iso3,as.character(year_born+agecohort),with=F],use.names=F)/5
-		if(length(cohort)==0){
-			cohort <- 1
-		} else if(proxy){
-		  cohort <- switch(
-		    country_iso3,
-		    "ALB" = cohort * 1824000/2774000,
-		    "KIR" = cohort * 52634/102351,
-		    "FJI" = cohort * 9876/881065,
-		    "JOR" = cohort * 4170000/6459000,
-		    cohort
-		  )
-		}
-	}
+  #Calculate total and vaccinated cohort size
+  #If UN population projections unavailable, cohort size = 1 otherwise cohort size = number of 10-14y/5
+  if(cohort==-1){
+    cohort <- unlist(data.popproj[iso3==country_iso3,as.character(year_born+agecohort),with=F],use.names=F)/5
+    if(length(cohort)==0){
+      cohort <- 1
+    } else if(proxy){
+      cohort <- switch(
+        country_iso3,
+        "ALB" = cohort * 1824000/2774000,
+        "KIR" = cohort * 52634/102351,
+        "FJI" = cohort * 9876/881065,
+        "JOR" = cohort * 4170000/6459000,
+        cohort
+      )
+    }
+  }
 
-	#create lifetables
-	if(!unwpp_mortality){
-		#Use WHO mortality estimates
-	  mort.all <- unlist(data.mortall[iso3==country_iso3,as.character(ages),with=F],use.names=F)
-		lifetab <- lifeTable(qx=mort.all,agecohort)
-	} else {
-		#Use UNWPP mortality estimates
-		#if year is outside of scope of mortality estimates, use last available data
-		mx <- numeric(length(ages))
-		for(a in ages){
-			if(year_born+a > max(data.mortall.unwpp.mx[country_code==country_iso3,year])){
-				lookup.yr <- max(data.mortall.unwpp.mx[country_code==country_iso3,year])
-			} else if(year_born+a < min(data.mortall.unwpp.mx[country_code==country_iso3,year])){
-				lookup.yr <- min(data.mortall.unwpp.mx[country_code==country_iso3,year])
-			} else {
-				lookup.yr <- year_born+a
-			}
-			mortality <- data.mortall.unwpp.mx[country_code==country_iso3 & (age_from<=a) & (age_to >= a) & (year - (lookup.yr) < 1) & (year - (lookup.yr) > -5),value]
-			#set mortality to 1 if no data is found
-			if(length(mortality) < 1){
-				mortality <- 1
-			}
-			mx[which(ages==a)] <- mortality
-		}
-		lifetab <- lifeTable(mx=mx,agecohort=agecohort)
-	}
+  #create lifetables
+  if(!unwpp_mortality){
+    #Use WHO mortality estimates
+    mort.all <- unlist(data.mortall[iso3==country_iso3,as.character(ages),with=F],use.names=F)
+    lifetab <- lifeTable(qx=mort.all,agecohort)
+  } else {
+    #Use UNWPP mortality estimates
+    #if year is outside of scope of mortality estimates, use last available data
+    mx <- numeric(length(ages))
+    for(a in ages){
+      if(year_born+a > max(data.mortall.unwpp.mx[country_code==country_iso3,year])){
+        lookup.yr <- max(data.mortall.unwpp.mx[country_code==country_iso3,year])
+      } else if(year_born+a < min(data.mortall.unwpp.mx[country_code==country_iso3,year])){
+        lookup.yr <- min(data.mortall.unwpp.mx[country_code==country_iso3,year])
+      } else {
+        lookup.yr <- year_born+a
+      }
+      mortality <- data.mortall.unwpp.mx[country_code==country_iso3 & (age_from<=a) & (age_to >= a) & (year - (lookup.yr) < 1) & (year - (lookup.yr) > -5),value]
+      #set mortality to 1 if no data is found
+      if(length(mortality) < 1){
+        mortality <- 1
+      }
+      mx[which(ages==a)] <- mortality
+    }
+    lifetab <- lifeTable(mx=mx,agecohort=agecohort)
+  }
 
-	## UPDATE: To be updated -- PSA for cecx_5y_prev
+  ## UPDATE: To be updated -- PSA for cecx_5y_prev
 
-	if(is.list(psadat)){
-		#apply psa multipliers for incidence and mortality
-		if("incidence" %in% names(psadat)){
-			inc <- inc*psadat[["incidence"]]
-		}
-		if("mortality" %in% names(psadat)){
-			mort.cecx <- mort.cecx*psadat[["mortality"]]
-		}
-		if("vaccine_efficacy" %in% names(psadat)){
-			vaceff <- vaceff*psadat[["vaccine_efficacy"]]
-		}
-		if("vaccine_cost" %in% names(psadat)){
-			cost.vac <- cost.vac*psadat[["vaccine_cost"]]
-		}
-		if("cancer_cost" %in% names(psadat)){
-			cost.canc <- cost.canc*psadat[["cancer_cost"]]
-		}
-		if("discounting_cost" %in% names(psadat)){
-			disc.cost <- disc.cost*psadat[["discounting_cost"]]
-		}
-		if("discounting_ben" %in% names(psadat)){
-			disc.ben <- disc.ben*psadat[["discounting_ben"]]
-		}
-	}
+  if(is.list(psadat)){
+    #apply psa multipliers for incidence and mortality
+    if("incidence" %in% names(psadat)){
+      inc <- inc*psadat[["incidence"]]
+    }
+    if("mortality" %in% names(psadat)){
+      mort.cecx <- mort.cecx*psadat[["mortality"]]
+    }
+    if("vaccine_efficacy" %in% names(psadat)){
+      vaceff <- vaceff*psadat[["vaccine_efficacy"]]
+    }
+    if("vaccine_cost" %in% names(psadat)){
+      cost.vac <- cost.vac*psadat[["vaccine_cost"]]
+    }
+    if("cancer_cost" %in% names(psadat)){
+      cost.canc <- cost.canc*psadat[["cancer_cost"]]
+    }
+    if("discounting_cost" %in% names(psadat)){
+      disc.cost <- disc.cost*psadat[["discounting_cost"]]
+    }
+    if("discounting_ben" %in% names(psadat)){
+      disc.ben <- disc.ben*psadat[["discounting_ben"]]
+    }
+  }
 
   # calling RunCohort function
-	result_cohort <- RunCohort(
-		lifetab=lifetab, cohort=cohort, incidence=inc, mortality_cecx=mort.cecx, prevalence = cecx_5y_prev, agevac=agevac, coverage=cov, campaigns=campaigns,
-		vaccine_efficacy_nosexdebut=vaceff_beforesexdebut, vaccine_efficacy_sexdebut=vaceff_aftersexdebut,
-		daly.canc.diag=daly.canc.diag, daly.canc.seq=daly.canc.seq, daly.canc.control=daly.canc.control, daly.canc.metastatic=daly.canc.metastatic, daly.canc.terminal=daly.canc.terminal,
-		cost_cancer=cost.canc, disc.cost=disc.cost, disc.ben=disc.ben, discounting, country_iso3=country_iso3, run_country=TRUE
-	)
+  result_cohort <- RunCohort(
+    lifetab=lifetab, cohort=cohort, incidence=inc, mortality_cecx=mort.cecx, prevalence = cecx_5y_prev, agevac=agevac, coverage=cov, campaigns=campaigns,
+    vaccine_efficacy_nosexdebut=vaceff_beforesexdebut, vaccine_efficacy_sexdebut=vaceff_aftersexdebut,
+    daly.canc.diag=daly.canc.diag, daly.canc.seq=daly.canc.seq, daly.canc.control=daly.canc.control, daly.canc.metastatic=daly.canc.metastatic, daly.canc.terminal=daly.canc.terminal,
+    cost_cancer=cost.canc, disc.cost=disc.cost, disc.ben=disc.ben, discounting, country_iso3=country_iso3, run_country=TRUE
+  )
 
-	if(analyseCosts){
-		gdp_per_capita <- monetary_to_number(data.global[iso3==country_iso3,`GDP per capita (2011 i$) [7]`])
-		return(analyseCosts(result_cohort, cost.vac, gdp_per_capita))
-	}
-	else {
-		return(result_cohort)
-	}
+  if(analyseCosts){
+    gdp_per_capita <- monetary_to_number(data.global[iso3==country_iso3,`GDP per capita (2011 i$) [7]`])
+    return(analyseCosts(result_cohort, cost.vac, gdp_per_capita))
+  }
+  else {
+    return(result_cohort)
+  }
 }
 
 #' Retrieve ISO3-code of country
@@ -1061,27 +1106,27 @@ RunCountry <- function (country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexde
 #' getISO3("Afghanistan")
 #' getISO3("Congo",name=TRUE)
 getISO3 <- function (countryname, name=FALSE) {
-	countryname <- data.table(country=countryname)
-	if(name){
-		country_iso3 <- dtColMatch (countryname,c("country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
-		name <- data.countryname[iso3==country_iso3, name1]
-		name_alt <- unique(unlist(data.countryname[iso3==country_iso3, c("name2","name3","name4"),with=FALSE],use.names=FALSE))
-		name_alt <- name_alt[!(name_alt %in% c(""," "))]
-		if(length(name_alt)>0){
-			name <- paste0(
-				name," (",
-				paste0(name_alt,collapse="; "),
-				")"
-			)
-		}
-		return(
-			paste0(name,": ",country_iso3)
-		)
-	} else {
-		return(
-			dtColMatch(countryname,c("country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
-		)
-	}
+  countryname <- data.table(country=countryname)
+  if(name){
+    country_iso3 <- dtColMatch (countryname,c("country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
+    name <- data.countryname[iso3==country_iso3, name1]
+    name_alt <- unique(unlist(data.countryname[iso3==country_iso3, c("name2","name3","name4"),with=FALSE],use.names=FALSE))
+    name_alt <- name_alt[!(name_alt %in% c(""," "))]
+    if(length(name_alt)>0){
+      name <- paste0(
+        name," (",
+        paste0(name_alt,collapse="; "),
+        ")"
+      )
+    }
+    return(
+      paste0(name,": ",country_iso3)
+    )
+  } else {
+    return(
+      dtColMatch(countryname,c("country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
+    )
+  }
 }
 
 
@@ -1098,81 +1143,81 @@ getISO3 <- function (countryname, name=FALSE) {
 #'
 #' @examples analyseCosts(RunCountry("AFG"), 100, 561)
 analyseCosts <- function (results, vaccine_cost, gdp_per_capita) {
-	#check if required variables are present
-	if(
-		sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
-	){
-		stop("Not all values have the required length")
-	}
-	results[,"vaccinated"] <- results[,vaccinated]*results[,cohort_size]
-	results[,"immunized"] <- results[,immunized]*results[,cohort_size]
-	results[,"inc.cecx"] <- results[,inc.cecx]*results[,cohort_size]
-	results[,"mort.cecx"] <- results[,mort.cecx]*results[,cohort_size]
-	results[,"lifey"] <- results[,lifey]*results[,cohort_size]
-	results[,"disability"] <- results[,disability]*results[,cohort_size]
-	results[,"cost.cecx"] <- results[,cost.cecx]*results[,cohort_size]
+  #check if required variables are present
+  if(
+    sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
+  ){
+    stop("Not all values have the required length")
+  }
+  results[,"vaccinated"] <- results[,vaccinated]*results[,cohort_size]
+  results[,"immunized"] <- results[,immunized]*results[,cohort_size]
+  results[,"inc.cecx"] <- results[,inc.cecx]*results[,cohort_size]
+  results[,"mort.cecx"] <- results[,mort.cecx]*results[,cohort_size]
+  results[,"lifey"] <- results[,lifey]*results[,cohort_size]
+  results[,"disability"] <- results[,disability]*results[,cohort_size]
+  results[,"cost.cecx"] <- results[,cost.cecx]*results[,cohort_size]
 
-	costvariables <- c("Cohort size", "Vac cohort size","Vaccine cost","Costs saved","Net cost",
-		"CeCx prevented","Deaths prevented","Life years saved","Nonfatal DALYs prevented",
-		"Cost/death prevented","Cost/life year saved","Cost/DALY prevented",
-		"GDP/capita","CE at 1xGDP/capita?","CE at 3xGDP/capita?","Cut-off price"
-	)
-	costeffect <- data.table(
-		variable=costvariables
-	)
-	types <- unique(results[,type])
-	for(d in types){
-		costeffect[,d] <- numeric(length(costvariables))
-	}
+  costvariables <- c("Cohort size", "Vac cohort size","Vaccine cost","Costs saved","Net cost",
+                     "CeCx prevented","Deaths prevented","Life years saved","Nonfatal DALYs prevented",
+                     "Cost/death prevented","Cost/life year saved","Cost/DALY prevented",
+                     "GDP/capita","CE at 1xGDP/capita?","CE at 3xGDP/capita?","Cut-off price"
+  )
+  costeffect <- data.table(
+    variable=costvariables
+  )
+  types <- unique(results[,type])
+  for(d in types){
+    costeffect[,d] <- numeric(length(costvariables))
+  }
 
-	#get agevac
-	vaccinated <- 0
-	a <- -1
-	while(vaccinated==0){
-	  a <- a+1
-	  vaccinated <- results[scenario=="post-vaccination" & type=="undiscounted" & age==a,vaccinated]
-	}
-	agevac <- a
+  #get agevac
+  vaccinated <- 0
+  a <- -1
+  while(vaccinated==0){
+    a <- a+1
+    vaccinated <- results[scenario=="post-vaccination" & type=="undiscounted" & age==a,vaccinated]
+  }
+  agevac <- a
 
-	cohort_size <- 0
-	a <- -1
-	while(cohort_size==0){
-	  a <- a+1
-	  cohort_size <- results[scenario=="post-vaccination" & type=="undiscounted" & age==a,cohort_size]
-	}
-	agecohort <- a
+  cohort_size <- 0
+  a <- -1
+  while(cohort_size==0){
+    a <- a+1
+    cohort_size <- results[scenario=="post-vaccination" & type=="undiscounted" & age==a,cohort_size]
+  }
+  agecohort <- a
 
-	aggregated <- dtAggregate(results,"age",id.vars=c("scenario","type"))
-	difference <- aggregated[scenario=="pre-vaccination"]
-	difference[,"scenario"] <- "difference"
-	difference[,"cohort_size"] <- abs(aggregated[scenario=="pre-vaccination",cohort_size] - aggregated[scenario=="post-vaccination",cohort_size])
-	difference[,"vaccinated"] <- abs(aggregated[scenario=="pre-vaccination",vaccinated] - aggregated[scenario=="post-vaccination",vaccinated])
-	difference[,"immunized"] <- abs(aggregated[scenario=="pre-vaccination",immunized] - aggregated[scenario=="post-vaccination",immunized])
-	difference[,"inc.cecx"] <- aggregated[scenario=="pre-vaccination",inc.cecx] - aggregated[scenario=="post-vaccination",inc.cecx]
-	difference[,"mort.cecx"] <- aggregated[scenario=="pre-vaccination",mort.cecx] - aggregated[scenario=="post-vaccination",mort.cecx]
-	difference[,"lifey"] <- aggregated[scenario=="pre-vaccination",lifey] - aggregated[scenario=="post-vaccination",lifey]
-	difference[,"disability"] <- aggregated[scenario=="pre-vaccination",disability] - aggregated[scenario=="post-vaccination",disability]
-	difference[,"cost.cecx"] <- aggregated[scenario=="pre-vaccination",cost.cecx] - aggregated[scenario=="post-vaccination",cost.cecx]
-	for(d in types){
-		costeffect[variable=="Cohort size",d] <- cohort_size
-		costeffect[variable=="Vac cohort size",d] <- results[age==agevac & scenario=="post-vaccination" & type==d, vaccinated]
-		costeffect[variable=="Vaccine cost",d] <- unlist(costeffect[variable=="Vac cohort size",d,with=FALSE],use.names=FALSE)*vaccine_cost
-		costeffect[variable=="Costs saved",d] <- difference[type==d,cost.cecx]
-		costeffect[variable=="Net cost",d] <- unlist(costeffect[variable=="Vaccine cost",d,with=FALSE],use.names=FALSE) - unlist(costeffect[variable=="Costs saved",d,with=FALSE],use.names=FALSE)
-		costeffect[variable=="CeCx prevented",d] <- difference[type==d,inc.cecx]
-		costeffect[variable=="Deaths prevented",d] <- difference[type==d,mort.cecx]
-		costeffect[variable=="Life years saved",d] <- difference[type==d,lifey]
-		costeffect[variable=="Nonfatal DALYs prevented",d] <- difference[type==d,disability]
-		costeffect[variable=="Cost/death prevented",d] <- unlist(costeffect[variable=="Net cost",d,with=FALSE],use.names=FALSE)/unlist(costeffect[variable=="Deaths prevented",d,with=FALSE],use.names=FALSE)
-		costeffect[variable=="Cost/life year saved",d] <- unlist(costeffect[variable=="Net cost",d,with=FALSE],use.names=FALSE)/unlist(costeffect[variable=="Life years saved",d,with=FALSE],use.names=FALSE)
-		costeffect[variable=="Cost/DALY prevented",d] <- unlist(costeffect[variable=="Net cost",d,with=FALSE],use.names=FALSE)/(unlist(costeffect[variable=="Life years saved",d,with=FALSE],use.names=FALSE) + unlist(costeffect[variable=="Nonfatal DALYs prevented",d,with=FALSE],use.names=FALSE))
-		costeffect[variable=="GDP/capita",d] <- gdp_per_capita
-		costeffect[variable=="CE at 1xGDP/capita?",d] <- as.numeric(unlist(costeffect[variable=="Cost/DALY prevented",d,with=FALSE],use.names=FALSE) < gdp_per_capita)
-		costeffect[variable=="CE at 3xGDP/capita?",d] <- as.numeric(unlist(costeffect[variable=="Cost/DALY prevented",d,with=FALSE],use.names=FALSE) < gdp_per_capita*3)
-		costeffect[variable=="Cut-off price",d] <- (unlist(costeffect[variable=="Costs saved",d,with=FALSE],use.names=FALSE) + (unlist(costeffect[variable=="Life years saved",d,with=FALSE],use.names=FALSE) + unlist(costeffect[variable=="Nonfatal DALYs prevented",d,with=FALSE],use.names=FALSE))*gdp_per_capita)/unlist(costeffect[variable=="Vac cohort size",d,with=FALSE],use.names=FALSE)
-		costeffect[,d] <- round(unlist(costeffect[,d,with=FALSE],use.names=FALSE),2)
-	}
-	return(costeffect)
+  aggregated <- dtAggregate(results,"age",id.vars=c("scenario","type"))
+  difference <- aggregated[scenario=="pre-vaccination"]
+  difference[,"scenario"] <- "difference"
+  difference[,"cohort_size"] <- abs(aggregated[scenario=="pre-vaccination",cohort_size] - aggregated[scenario=="post-vaccination",cohort_size])
+  difference[,"vaccinated"] <- abs(aggregated[scenario=="pre-vaccination",vaccinated] - aggregated[scenario=="post-vaccination",vaccinated])
+  difference[,"immunized"] <- abs(aggregated[scenario=="pre-vaccination",immunized] - aggregated[scenario=="post-vaccination",immunized])
+  difference[,"inc.cecx"] <- aggregated[scenario=="pre-vaccination",inc.cecx] - aggregated[scenario=="post-vaccination",inc.cecx]
+  difference[,"mort.cecx"] <- aggregated[scenario=="pre-vaccination",mort.cecx] - aggregated[scenario=="post-vaccination",mort.cecx]
+  difference[,"lifey"] <- aggregated[scenario=="pre-vaccination",lifey] - aggregated[scenario=="post-vaccination",lifey]
+  difference[,"disability"] <- aggregated[scenario=="pre-vaccination",disability] - aggregated[scenario=="post-vaccination",disability]
+  difference[,"cost.cecx"] <- aggregated[scenario=="pre-vaccination",cost.cecx] - aggregated[scenario=="post-vaccination",cost.cecx]
+  for(d in types){
+    costeffect[variable=="Cohort size",d] <- cohort_size
+    costeffect[variable=="Vac cohort size",d] <- results[age==agevac & scenario=="post-vaccination" & type==d, vaccinated]
+    costeffect[variable=="Vaccine cost",d] <- unlist(costeffect[variable=="Vac cohort size",d,with=FALSE],use.names=FALSE)*vaccine_cost
+    costeffect[variable=="Costs saved",d] <- difference[type==d,cost.cecx]
+    costeffect[variable=="Net cost",d] <- unlist(costeffect[variable=="Vaccine cost",d,with=FALSE],use.names=FALSE) - unlist(costeffect[variable=="Costs saved",d,with=FALSE],use.names=FALSE)
+    costeffect[variable=="CeCx prevented",d] <- difference[type==d,inc.cecx]
+    costeffect[variable=="Deaths prevented",d] <- difference[type==d,mort.cecx]
+    costeffect[variable=="Life years saved",d] <- difference[type==d,lifey]
+    costeffect[variable=="Nonfatal DALYs prevented",d] <- difference[type==d,disability]
+    costeffect[variable=="Cost/death prevented",d] <- unlist(costeffect[variable=="Net cost",d,with=FALSE],use.names=FALSE)/unlist(costeffect[variable=="Deaths prevented",d,with=FALSE],use.names=FALSE)
+    costeffect[variable=="Cost/life year saved",d] <- unlist(costeffect[variable=="Net cost",d,with=FALSE],use.names=FALSE)/unlist(costeffect[variable=="Life years saved",d,with=FALSE],use.names=FALSE)
+    costeffect[variable=="Cost/DALY prevented",d] <- unlist(costeffect[variable=="Net cost",d,with=FALSE],use.names=FALSE)/(unlist(costeffect[variable=="Life years saved",d,with=FALSE],use.names=FALSE) + unlist(costeffect[variable=="Nonfatal DALYs prevented",d,with=FALSE],use.names=FALSE))
+    costeffect[variable=="GDP/capita",d] <- gdp_per_capita
+    costeffect[variable=="CE at 1xGDP/capita?",d] <- as.numeric(unlist(costeffect[variable=="Cost/DALY prevented",d,with=FALSE],use.names=FALSE) < gdp_per_capita)
+    costeffect[variable=="CE at 3xGDP/capita?",d] <- as.numeric(unlist(costeffect[variable=="Cost/DALY prevented",d,with=FALSE],use.names=FALSE) < gdp_per_capita*3)
+    costeffect[variable=="Cut-off price",d] <- (unlist(costeffect[variable=="Costs saved",d,with=FALSE],use.names=FALSE) + (unlist(costeffect[variable=="Life years saved",d,with=FALSE],use.names=FALSE) + unlist(costeffect[variable=="Nonfatal DALYs prevented",d,with=FALSE],use.names=FALSE))*gdp_per_capita)/unlist(costeffect[variable=="Vac cohort size",d,with=FALSE],use.names=FALSE)
+    costeffect[,d] <- round(unlist(costeffect[,d,with=FALSE],use.names=FALSE),2)
+  }
+  return(costeffect)
 }
 
 #' Checks whether the size of a variable is larger than 0
@@ -1196,20 +1241,20 @@ analyseCosts <- function (results, vaccine_cost, gdp_per_capita) {
 #' B <- c(1,2,3)
 #' sapply(c("A","B"),function(x){checkSize(get(x))})
 checkSize <- function (v) {
-	if(is.vector(v)){
-		size <- length(v)
-	} else if(
-		is.data.frame(v) | is.data.table(v)
-	){
-		size <- nrow(v)
-	} else {
-		size <- 0
-	}
-	if(size > 0){
-		return(TRUE)
-	} else {
-		return(FALSE)
-	}
+  if(is.vector(v)){
+    size <- length(v)
+  } else if(
+    is.data.frame(v) | is.data.table(v)
+  ){
+    size <- nrow(v)
+  } else {
+    size <- 0
+  }
+  if(size > 0){
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
 }
 
 
@@ -1228,41 +1273,41 @@ checkSize <- function (v) {
 #' qx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F], use.names=F)
 #' lifeTable(qx, 9)
 lifeTable <- function (qx=NULL, mx=NULL, agecohort=0) {
-	if(is.null(qx) & is.null(mx)){
-		stop("Provide qx or mx values")
-	} else if(is.null(qx)){
-		#convert central mortality rate to qx
-		qx <- 2*mx/(2+mx)
-	}
-	ages <- c(0:(length(qx)-1))
-	lifetab <- data.table(
-		age=ages,
-		qx=qx,
-		px=1-qx,
-		lx=rep(0,length(ages)),
-		lx.adj=rep(0,length(ages)),
-		llx=rep(0,length(ages)),
-		ttx=rep(0,length(ages)),
-		ex=rep(0,length(ages))
-	)
-	#proportion of people that have survived up until this year
-	lifetab[age==0,"lx"] <- 1
-	lifetab[age>0,"lx"] <- sapply(ages[-which(ages==0)],function(a){prod(lifetab[age<a,px])})
-	#((proportion of people that has survived up until this year) + (proportion of people that will survive this year))/2
-	lifetab[age<max(ages),"llx"] <- sapply(ages[-which(ages==max(ages))],function(a){mean(lifetab[age %in% c(a,a+1),lx])})
-	lifetab[age==max(ages),"llx"] <- lifetab[age==max(ages),lx]/2
-	#ttx is summed proportion that survives - llx (years of life left)
-	lifetab[age==0,"ttx"] <- sum(lifetab[,llx])
-	lifetab[age>0,"ttx"] <- sapply(ages[which(ages>0)],function(a){lifetab[age==0,ttx]-sum(lifetab[age<a,llx])})
-	#if any ttx is extremely small (as a result of very small fractions and floating-point errors) set to zero
-	lifetab[ttx < 1e-13,"ttx"] <- 0
-	#ttx/lx=(years of life left)
-	lifetab[,"ex"] <- lifetab[,ttx]/lifetab[,lx]
-	lifetab[age==max(ages),"ex"] <- 0
-	#Now create a new lx which starts at age agecohort for use in calculating impact of vaccinating people at age agecohort
-	lifetab[age >= agecohort,"lx.adj"] <- lifetab[age >= agecohort,lx]/lifetab[age==agecohort,lx]
-	lifetab[age < agecohort,"lx.adj"] <- 0
-	return(lifetab)
+  if(is.null(qx) & is.null(mx)){
+    stop("Provide qx or mx values")
+  } else if(is.null(qx)){
+    #convert central mortality rate to qx
+    qx <- 2*mx/(2+mx)
+  }
+  ages <- c(0:(length(qx)-1))
+  lifetab <- data.table(
+    age=ages,
+    qx=qx,
+    px=1-qx,
+    lx=rep(0,length(ages)),
+    lx.adj=rep(0,length(ages)),
+    llx=rep(0,length(ages)),
+    ttx=rep(0,length(ages)),
+    ex=rep(0,length(ages))
+  )
+  #proportion of people that have survived up until this year
+  lifetab[age==0,"lx"] <- 1
+  lifetab[age>0,"lx"] <- sapply(ages[-which(ages==0)],function(a){prod(lifetab[age<a,px])})
+  #((proportion of people that has survived up until this year) + (proportion of people that will survive this year))/2
+  lifetab[age<max(ages),"llx"] <- sapply(ages[-which(ages==max(ages))],function(a){mean(lifetab[age %in% c(a,a+1),lx])})
+  lifetab[age==max(ages),"llx"] <- lifetab[age==max(ages),lx]/2
+  #ttx is summed proportion that survives - llx (years of life left)
+  lifetab[age==0,"ttx"] <- sum(lifetab[,llx])
+  lifetab[age>0,"ttx"] <- sapply(ages[which(ages>0)],function(a){lifetab[age==0,ttx]-sum(lifetab[age<a,llx])})
+  #if any ttx is extremely small (as a result of very small fractions and floating-point errors) set to zero
+  lifetab[ttx < 1e-13,"ttx"] <- 0
+  #ttx/lx=(years of life left)
+  lifetab[,"ex"] <- lifetab[,ttx]/lifetab[,lx]
+  lifetab[age==max(ages),"ex"] <- 0
+  #Now create a new lx which starts at age agecohort for use in calculating impact of vaccinating people at age agecohort
+  lifetab[age >= agecohort,"lx.adj"] <- lifetab[age >= agecohort,lx]/lifetab[age==agecohort,lx]
+  lifetab[age < agecohort,"lx.adj"] <- 0
+  return(lifetab)
 }
 
 
@@ -1289,31 +1334,31 @@ lifeTable <- function (qx=NULL, mx=NULL, agecohort=0) {
 #' ageCoverage(ages, routine_coverage, vaccine_efficacy, -1, lifetab, cohort, agevac)
 ageCoverage <- function (ages, routine_coverage, vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
                          campaigns, lifetab, cohort, agevac, country_iso3 = NULL) {
-	coverage <- data.table(
-		age=ages,
-		coverage=rep(0,length(ages))
-	)
-	coverage[age >= agevac,"coverage"] <- routine_coverage
-	coverage[,"effective_coverage"] <- coverage[,coverage]*vaccine_efficacy_nosexdebut*(1-propSexDebut(agevac, country_iso3)) + coverage[,coverage]*vaccine_efficacy_sexdebut*(propSexDebut(agevac, country_iso3))
-	if(is.list(campaigns)){
-		for(y in 1:length(campaigns)){
-			campaign_age <- campaigns[[y]][["ages"]]
-			campaign_coverage <- campaigns[[y]][["coverage"]]
-			#if activity type is campaign, coverage proportion still needs to be calculated
-			#if(campaigns[[y]][["type"]] == "campaign"){
-			#	campaign_coverage <- campaign_coverage/(lifetab[age==campaign_age,"lx.adj"]*cohort)
-			#}
-			if(campaign_coverage > 1){
-				campaign_coverage <- 1
-			}
-			#coverage increases for all subsequent age-strata
-			init_cov <- coverage[age >= campaign_age, coverage]
-			coverage[age >= campaign_age,"coverage"] <- init_cov + (1-init_cov)*campaign_coverage
-			#vaccine not efficacious for girls that have sexually debuted
-			coverage[age >= campaign_age,"effective_coverage"] <- coverage[age >= campaign_age,effective_coverage] + (1-init_cov)*campaign_coverage*(1-propSexDebut(campaign_age, country_iso3))*vaccine_efficacy_nosexdebut + (1-init_cov)*campaign_coverage*(propSexDebut(campaign_age, country_iso3))*vaccine_efficacy_sexdebut
-		}
-	}
-	return(coverage)
+  coverage <- data.table(
+    age=ages,
+    coverage=rep(0,length(ages))
+  )
+  coverage[age >= agevac,"coverage"] <- routine_coverage
+  coverage[,"effective_coverage"] <- coverage[,coverage]*vaccine_efficacy_nosexdebut*(1-propSexDebut(agevac, country_iso3)) + coverage[,coverage]*vaccine_efficacy_sexdebut*(propSexDebut(agevac, country_iso3))
+  if(is.list(campaigns)){
+    for(y in 1:length(campaigns)){
+      campaign_age <- campaigns[[y]][["ages"]]
+      campaign_coverage <- campaigns[[y]][["coverage"]]
+      #if activity type is campaign, coverage proportion still needs to be calculated
+      #if(campaigns[[y]][["type"]] == "campaign"){
+      #	campaign_coverage <- campaign_coverage/(lifetab[age==campaign_age,"lx.adj"]*cohort)
+      #}
+      if(campaign_coverage > 1){
+        campaign_coverage <- 1
+      }
+      #coverage increases for all subsequent age-strata
+      init_cov <- coverage[age >= campaign_age, coverage]
+      coverage[age >= campaign_age,"coverage"] <- init_cov + (1-init_cov)*campaign_coverage
+      #vaccine not efficacious for girls that have sexually debuted
+      coverage[age >= campaign_age,"effective_coverage"] <- coverage[age >= campaign_age,effective_coverage] + (1-init_cov)*campaign_coverage*(1-propSexDebut(campaign_age, country_iso3))*vaccine_efficacy_nosexdebut + (1-init_cov)*campaign_coverage*(propSexDebut(campaign_age, country_iso3))*vaccine_efficacy_sexdebut
+    }
+  }
+  return(coverage)
 }
 
 
@@ -1332,34 +1377,34 @@ ageCoverage <- function (ages, routine_coverage, vaccine_efficacy_nosexdebut, va
 #'
 #' @export
 propSexDebut <- function (age, country_iso3) {
-	if(age < 12){
-		prop_sexdebut <- 0
-	} else {
-		#calculate proportion of girls that have sexually debuted at age a + 1
-		if( nrow(data.sexual_debut[iso3 == country_iso3]) != 1 || is.na(data.sexual_debut[iso3 == country_iso3, a]) || is.na(data.sexual_debut[iso3 == country_iso3, b]) || is.na(data.sexual_debut[iso3 == country_iso3, cluster.id]) ){
-			#cannot estimate data.sexual_debut, use prop_sexdebut of 0
-			prop_sexdebut <- 0
-		} else if( !is.na(data.sexual_debut[iso3 == country_iso3, a]) & !is.na(data.sexual_debut[iso3 == country_iso3, b]) ){
-			#estimate proportion sexual debut with country specific parameters
-			prop_sexdebut <- pgamma(
-				#prop will be 0 for ages lower than 12
-				(age + 1 - 12),
-				shape=data.sexual_debut [iso3 == country_iso3, a],
-				scale=data.sexual_debut [iso3 == country_iso3, b]
-			)
-		} else {
-			#estimate proportion sexual debut at 1+age-of-vaccination, based on parameters of country with highest proportion of girls sexually debuting at age 15
-			cluster_id <- data.sexual_debut[iso3 == country_iso3, cluster.id]
-			cluster_max <- data.sexual_debut[cluster.id == cluster_id & X15 == data.sexual_debut[cluster.id == cluster_id, max(X15)], iso3]
-			prop_sexdebut <- pgamma(
-				#prop will be 0 for ages lower than 12
-				(age + 1 - 12),
-				shape=data.sexual_debut [iso3 == cluster_max, a],
-				scale=data.sexual_debut [iso3 == cluster_max, b]
-			)
-		}
-	}
-	return(prop_sexdebut)
+  if(age < 12){
+    prop_sexdebut <- 0
+  } else {
+    #calculate proportion of girls that have sexually debuted at age a + 1
+    if( nrow(data.sexual_debut[iso3 == country_iso3]) != 1 || is.na(data.sexual_debut[iso3 == country_iso3, a]) || is.na(data.sexual_debut[iso3 == country_iso3, b]) || is.na(data.sexual_debut[iso3 == country_iso3, cluster.id]) ){
+      #cannot estimate data.sexual_debut, use prop_sexdebut of 0
+      prop_sexdebut <- 0
+    } else if( !is.na(data.sexual_debut[iso3 == country_iso3, a]) & !is.na(data.sexual_debut[iso3 == country_iso3, b]) ){
+      #estimate proportion sexual debut with country specific parameters
+      prop_sexdebut <- pgamma(
+        #prop will be 0 for ages lower than 12
+        (age + 1 - 12),
+        shape=data.sexual_debut [iso3 == country_iso3, a],
+        scale=data.sexual_debut [iso3 == country_iso3, b]
+      )
+    } else {
+      #estimate proportion sexual debut at 1+age-of-vaccination, based on parameters of country with highest proportion of girls sexually debuting at age 15
+      cluster_id <- data.sexual_debut[iso3 == country_iso3, cluster.id]
+      cluster_max <- data.sexual_debut[cluster.id == cluster_id & X15 == data.sexual_debut[cluster.id == cluster_id, max(X15)], iso3]
+      prop_sexdebut <- pgamma(
+        #prop will be 0 for ages lower than 12
+        (age + 1 - 12),
+        shape=data.sexual_debut [iso3 == cluster_max, a],
+        scale=data.sexual_debut [iso3 == cluster_max, b]
+      )
+    }
+  }
+  return(prop_sexdebut)
 }
 
 # Extend data.table library
@@ -1382,20 +1427,20 @@ propSexDebut <- function (age, country_iso3) {
 #' @examples
 #' dtColMatch(data.global,c("Country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
 dtColMatch <- function (input, input_match_on, reference, reference_match_on, reference_return) {
-	rows <- rep(NA,nrow(input))
-	for(imatch in input_match_on){
-		for(rmatch in reference_match_on){
-			rows[is.na(rows)] <- pmatch(
-				tolower(
-					unlist(input[which(is.na(rows)),imatch,with=F],use.names=F)
-				),
-				tolower(
-					unlist(reference[,rmatch,with=F],use.names=F)
-				)
-			)
-		}
-	}
-	return(unlist(data.countryname[rows,reference_return,with=F],use.names=F))
+  rows <- rep(NA,nrow(input))
+  for(imatch in input_match_on){
+    for(rmatch in reference_match_on){
+      rows[is.na(rows)] <- pmatch(
+        tolower(
+          unlist(input[which(is.na(rows)),imatch,with=F],use.names=F)
+        ),
+        tolower(
+          unlist(reference[,rmatch,with=F],use.names=F)
+        )
+      )
+    }
+  }
+  return(unlist(data.countryname[rows,reference_return,with=F],use.names=F))
 }
 
 
@@ -1431,11 +1476,11 @@ dtAggregate <- function (DT, aggr_on, measure.vars=c(), id.vars=c(), func="sum",
           ),
           sum(
             get(measure.vars),
-			na.rm=na.rm
+            na.rm=na.rm
           )
         ),
         by=eval(id.vars)
-      ],
+        ],
       DT
     ))
   }
@@ -1486,52 +1531,52 @@ dtAggregate <- function (DT, aggr_on, measure.vars=c(), id.vars=c(), func="sum",
 #' #Note that values using German or Dutch notation (i.e. using a comma to separate decimals and a dot to seperate thousands) are converted as well
 #' monetary_to_number("$2.200,20")
 monetary_to_number <- function (x) {
-	if(!is.character(x)){
-		return(x)
-	} else {
-		#remove any valuta_signs
-		valuta <- c("$","B#","B%","b,")
-		for(v in valuta){
-			x <- gsub(paste0("\\",v),"",x)
-		}
-		#check what the decimalsign is
-		dot <- sum(strsplit(x,"")[[1]]==".")
-		comma <- sum(strsplit(x,"")[[1]]==",")
-		if(dot>1 & comma>1){
-			stop("Value has multiple comma's and dots")
-		} else if(comma>1 & dot<=1){
-			#assume that comma is used to separate thousands (i.e. English notation)
-			x <- gsub(",","",x,fixed=T)
-		} else if(dot>1 & comma<=1){
-			#assume that dot is used to separate thousands (i.e. Dutch or German notation)
-			x <- gsub(".","",x,fixed=T)
-			x <- gsub(",",".",x,fixed=T)
-		} else if(comma==1 & dot ==1){
-		  #check whether comma or dot comes first
-		  chars <- strsplit(x,"")[[1]]
-		  i <- 0
-		  while(i < length(chars)){
-		    i <- i+1
-		    if(chars[i] %in% c(".",",")){
-		      thousand_sep <- chars[i]
-		      i <- length(chars)
-		    }
-		  }
-		  if(thousand_sep == ","){
-		    #comma is used to separate thousands
-		    x <- gsub(",","",x,fixed=T)
-		  } else {
-		    #dot is used to separate thousands
-		    x <- gsub(".","",x,fixed=T)
-		    x <- gsub(",",".",x,fixed=T)
-		  }
-		} else {
-		  #assume that comma is used to separate thousands (i.e. English notation)
-			x <- gsub(",","",x,fixed=T)
-		}
-		#fix to keep decimalvalues with big numbers
-		x <- as.numeric(x)
+  if(!is.character(x)){
+    return(x)
+  } else {
+    #remove any valuta_signs
+    valuta <- c("$","B#","B%","b,")
+    for(v in valuta){
+      x <- gsub(paste0("\\",v),"",x)
+    }
+    #check what the decimalsign is
+    dot <- sum(strsplit(x,"")[[1]]==".")
+    comma <- sum(strsplit(x,"")[[1]]==",")
+    if(dot>1 & comma>1){
+      stop("Value has multiple comma's and dots")
+    } else if(comma>1 & dot<=1){
+      #assume that comma is used to separate thousands (i.e. English notation)
+      x <- gsub(",","",x,fixed=T)
+    } else if(dot>1 & comma<=1){
+      #assume that dot is used to separate thousands (i.e. Dutch or German notation)
+      x <- gsub(".","",x,fixed=T)
+      x <- gsub(",",".",x,fixed=T)
+    } else if(comma==1 & dot ==1){
+      #check whether comma or dot comes first
+      chars <- strsplit(x,"")[[1]]
+      i <- 0
+      while(i < length(chars)){
+        i <- i+1
+        if(chars[i] %in% c(".",",")){
+          thousand_sep <- chars[i]
+          i <- length(chars)
+        }
+      }
+      if(thousand_sep == ","){
+        #comma is used to separate thousands
+        x <- gsub(",","",x,fixed=T)
+      } else {
+        #dot is used to separate thousands
+        x <- gsub(".","",x,fixed=T)
+        x <- gsub(",",".",x,fixed=T)
+      }
+    } else {
+      #assume that comma is used to separate thousands (i.e. English notation)
+      x <- gsub(",","",x,fixed=T)
+    }
+    #fix to keep decimalvalues with big numbers
+    x <- as.numeric(x)
 
-		return(x)
-	}
+    return(x)
+  }
 }
