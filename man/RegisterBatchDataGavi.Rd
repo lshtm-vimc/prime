@@ -9,33 +9,42 @@ RegisterBatchDataGavi(gavi_coverage, gavi_template, use_campaigns,
   psa = 0)
 }
 \arguments{
-\item{gavi_coverage}{data table with coverage estimates as downloaded from VIMC montagu}
+\item{gavi_coverage}{data table with coverage estimates as downloaded from
+VIMC montagu}
 
-\item{gavi_template}{data table with reporting template as downloaded from VIMC montagu}
+\item{gavi_template}{data table with reporting template as downloaded from
+VIMC montagu}
 
-\item{use_campaigns}{logical, whether campaigns as stated in coverage files should be modelled}
+\item{use_campaigns}{logical, whether campaigns as stated in coverage files
+should be modelled}
 
-\item{use_routine}{logical, whether routine vaccination as stated in coverage file should be modelled}
+\item{use_routine}{logical, whether routine vaccination as stated in coverage
+file should be modelled}
 
-\item{restrict_to_coverage_data}{logical, whether the first birth-cohort should be the first cohort that is mentioned in the coverage data.
-If TRUE, restrict to coverage data.
-If FALSE, restrict to cohorts provided in gavi_template.}
+\item{restrict_to_coverage_data}{logical, whether the first birth-cohort
+should be the first cohort that is mentioned in the coverage data.
+  If TRUE, restrict to coverage data.
+  If FALSE, restrict to cohorts provided in gavi_template.}
 
-\item{force}{logical, whether .data.batch should be overwritten if it already exists}
+\item{force}{logical, whether .data.batch should be overwritten if it already
+exists}
 
-\item{psa}{integer, indicating how many runs for probabilistic sensitivity analysis (PSA). 0 to run no PSA.}
+\item{psa}{integer, indicating how many runs for probabilistic sensitivity
+analysis (PSA). 0 to run no PSA.}
 }
 \value{
 None
 }
 \description{
-Creates .data.batch which is used when running/looping over multiple birth cohorts ( runCohort() ) at once.
-    Similar to RegisterBatchData, but for when we make runs for Gavi.
+Creates .data.batch which is used when running/looping over multiple birth
+  cohorts ( runCohort() ) at once. Similar to RegisterBatchData, but for when
+  we make runs for Gavi.
 }
 \details{
-.data.batch is based on the data.table (DT) coverage_data, which is a DT with columns country_code (ISO3),
-    year (of vaccination), age_first (age at vaccination), age_last (age at vaccination),
-    coverage (in proportion, for all the age groups specified).
+.data.batch is based on the data.table (DT) coverage_data, which is a DT with
+  columns country_code (ISO3), year (of vaccination),
+  age_first (age at vaccination), age_last (age at vaccination),
+  coverage (in proportion, for all the age groups specified).
 }
 \examples{
 #

@@ -7,24 +7,30 @@
 RegisterBatchData(coverage_data, reporting_years = -1, force = FALSE)
 }
 \arguments{
-\item{coverage_data}{data table with columns country_code, year (of vaccination), age_first, age_last, coverage}
+\item{coverage_data}{Data table with columns country_code, year (of vaccination),
+age_first, age_last, coverage.}
 
-\item{reporting_years}{numeric_vector, years that should be reported (parameter: not required)}
+\item{reporting_years}{Numeric_vector, years that should be reported
+(parameter: not required)}
 
-\item{force}{logical, whether .data.batch should be overwritten if it already exists (parameter: not required)}
+\item{force}{Logical, whether .data.batch should be overwritten if it already
+exists (parameter: not required)}
 }
 \value{
 None
 }
 \description{
-Creates .data.batch which is used when running/looping over multiple birth cohorts ( runCohort() ) at once.
+Creates .data.batch which is used when running/looping over multiple birth
+  cohorts ( runCohort() ) at once.
 }
 \details{
-.data.batch is based on the data.table (DT) coverage_data, which is a DT with columns country_code (ISO3),
-    year (of vaccination), age_first (age at vaccination), age_last (age at vaccination),
-    coverage (in proportion, for all the agegroups specified).
+.data.batch is based on the data.table (DT) coverage_data, which is a DT with
+  columns country_code (ISO3), year (of vaccination),
+  age_first (age at vaccination), age_last (age at vaccination),
+  coverage (in proportion, for all the agegroups specified).
 
-If you only want to run 1 age in this country/coverage combination, age_first==age_last
+If you only want to run 1 age in this country/coverage combination,
+  age_first==age_last
 }
 \examples{
 #

@@ -326,3 +326,21 @@
 #'   \item{80+}{80+ years}
 #' }
 "data.valid"
+
+
+#' Disability weights and duration of cervical cancer stages
+#'
+#' A dataset containing disability weights and duration of different phases of cervical cancer.
+#'
+#' @format A data table with 13 observations of 8 variables.
+#' \describe{
+#'   \item{Source}{Source of disability weights - IHME / WHO}
+#'   \item{Sequela}{Sequelae / stage / phase of cervical cancer}
+#'   \item{Duration}{Duration of cervical cancer phase}
+#'   \item{WHO_MortalityStratum}{WHO moratlity stratum -- applicable only for long term sequelae from WHO source}
+#'   \item{Mid}{Disability weight (mid)}
+#'   \item{Low}{Disability weight (low)}
+#'   \item{High}{Disability weight (high)}
+#'   \item{Description}{Description of cervical cancer phase}
+#' }
+"data.disability_weights"
