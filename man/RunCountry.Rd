@@ -12,7 +12,7 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
   daly.canc.terminal = 0.54, sens = -1, unwpp_mortality = FALSE,
   year_born = -1, year_vac = -1, campaigns = -1,
   analyseCosts = FALSE, discounting = TRUE, run_batch = FALSE,
-  psadat = -1)
+  psadat = -1, disability.weights = "gbd_2016")
 }
 \arguments{
 \item{country_iso3}{Character string (required): ISO3 code of the country}
@@ -31,7 +31,7 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
 
 \item{canc.cost}{Character (optional): Is cost of cancer adjusted ("adj") or not ("unadj")}
 
-\item{canc.inc}{Integer (optional): Reference year for cancer incidence rates (2018 or 2012 or 2008)}
+\item{canc.inc}{Integer (optional): Reference year for cancer incidence rates (Globocan: 2018 or 2012)}
 
 \item{daly.canc.diag}{Number (optional): Daly weight for cancer diagnosis}
 
@@ -54,6 +54,8 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
 \item{analyseCosts}{Logical (optional): If FALSE, returns result from RunCohort() function. If TRUE, runs analyseCosts() with country-specific results}
 
 \item{discounting}{Logical (optional): If TRUE, runs analysis undiscounted and discounted. If FALSE, only uses undiscounted}
+
+\item{disability.weights}{character, disability weights for cervical cancer from GBD 2016 or GBD 2001}
 
 \item{vaceff}{Number (optional): Proportion indicating vaccine-efficacy}
 }
