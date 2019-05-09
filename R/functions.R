@@ -740,7 +740,8 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
                        vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
                        daly.canc.diag, daly.canc.seq, daly.canc.control, daly.canc.metastatic, daly.canc.terminal,
                        cost_cancer, disc.cost=0.03, disc.ben=0.03, discounting=TRUE,
-                       country_iso3=NULL, run_country=FALSE) {
+                       country_iso3=NULL, run_country=FALSE,
+                       disability.weights = "gbd_2016") {
   #check if required variables are present
   if(
     sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
@@ -751,9 +752,39 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
   ages <- lifetab [,age]
   lexp <- lifetab [,ex]
 
-  #calculate weights for DALYs (This calculation of daly.canc.nonfatal and daly.canc.fatal is redundant for 2018)
-  daly.canc.nonfatal <- daly.canc.diag + daly.canc.seq * 4
-  daly.canc.fatal <- daly.canc.diag + daly.canc.terminal
+  ##############################################################################
+  # Calculate weights for DALYs. This calculation of daly.canc.nonfatal and
+  # daly.canc.fatal is specific for GBD 2001 disability weights.
+  # daly.canc.nonfatal <- daly.canc.diag + daly.canc.seq * 4
+  # daly.canc.fatal <- daly.canc.diag + daly.canc.terminal
+  #
+  ##############################################################################
+  #
+  # Calculate yld using GBD 2001 disability weights
+  if (disability.weights == "gbd_2001") {
+
+    # diagnosis, therapy and control over 1 year
+    diag <- data.disability_weights [Source==disability.weights & Sequela=="diagnosis", Mid]
+
+    # metastatic stage for 6 months and terminal stage for 6 months (for a total of 1 year)
+    # note: disability weights for metastatic and terminals stages are equal
+    terminal <- data.disability_weights [Source==disability.weights & Sequela=="terminal", Mid]
+
+    # long term sequela (for 4 years)
+    # note: duration of long-term sequela is same irrespective of WHO mortality startum (A/B/C/D/C)
+    control <- daly.canc.seq * data.disability_weights [Source==disability.weights &
+                                                          Sequela == "control" &
+                                                          WHO_MortalityStratum=="E",
+                                                        Duration]
+
+    # yld associated with a non fatal case & a fatal case
+    daly.canc.nonfatal <- diag + control
+    daly.canc.fatal    <- diag + terminal
+
+    # combine yld contribution from non-fatal and fatal cases
+    yld <- ((incidence - mortality_cecx) * daly.canc.nonfatal) + (mortality_cecx * daly.canc.fatal)
+  }
+  ##############################################################################
 
   #discounting
   if(discounting){
@@ -787,12 +818,42 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
   #expected number of cases, deaths, dalys, and costs (static)
   coverage <- ageCoverage(ages,coverage,vaccine_efficacy_nosexdebut,vaccine_efficacy_sexdebut,campaigns,lifetab,cohort,agevac,country_iso3=country_iso3)
 
+  ##############################################################################
   # diability weights for different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal)
-  dw = list (diag = daly.canc.diag, control = daly.canc.control, metastatic = daly.canc.metastatic, terminal = daly.canc.terminal)
-
+  # dw = list (diag = daly.canc.diag, control = daly.canc.control, metastatic = daly.canc.metastatic, terminal = daly.canc.terminal)
+  #
   # duration of different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
-  cecx_duration = list (diag = 4.8/12, metastatic = 9.21/12, terminal = 1/12)
+  # cecx_duration = list (diag = 4.8/12, metastatic = 9.21/12, terminal = 1/12)
   # duration of controlled phases is based on remainder of time after attributing to other phases
+  #
+  ##############################################################################
+  #
+  # calculate yld using GBD 2016 disability weights
+  if (disability.weights == "gbd_2016") {
+
+    # disability weights for different phases of cervical cancer
+    # (diagnosis & therapy, controlled, metastatic, terminal)
+    dw = list (diag       = data.disability_weights [Source==disability.weights & Sequela=="diagnosis",  Mid],
+               control    = data.disability_weights [Source==disability.weights & Sequela=="control",    Mid],
+               metastatic = data.disability_weights [Source==disability.weights & Sequela=="metastatic", Mid],
+               terminal   = data.disability_weights [Source==disability.weights & Sequela=="terminal",   Mid])
+
+    # duration of different phases of cervical cancer
+    # (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
+    cecx_duration = list (diag       = data.disability_weights [Source==disability.weights & Sequela=="diagnosis",  Duration],
+                          metastatic = data.disability_weights [Source==disability.weights & Sequela=="metastatic", Duration],
+                          terminal   = data.disability_weights [Source==disability.weights & Sequela=="terminal",   Duration])
+    # duration of controlled phases is based on remainder of time after attributing to other phases
+
+    # combine yld contribution from (incidence, prevalence and mortality) cases
+    yld <-
+      (incidence  * dw$diag * cecx_duration$diag) +
+      (prevalence * dw$control) +
+      (mortality_cecx * (dw$metastatic * cecx_duration$metastatic + dw$terminal * cecx_duration$terminal) )
+  }
+  ##############################################################################
+
+
 
   # In out.pre data table, 'lifey' refers to YLL and 'disability' refers to YLD
   # YLL - Years of Life Lost due to premature mortality
@@ -808,7 +869,8 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
     lifey       = mortality_cecx*lexp,
     # disability  = (incidence - mortality_cecx)*daly.canc.nonfatal + mortality_cecx*daly.canc.fatal,
     # disability  = (incidence  * daly.canc.diag * 4.8/12) + (prevalence * daly.canc.control) + (mortality_cecx * (daly.canc.metastatic * 9.21/12 + daly.canc.terminal * 1/12) ),
-    disability  = (incidence  * dw$diag * cecx_duration$diag) + (prevalence * dw$control) + (mortality_cecx * (dw$metastatic * cecx_duration$metastatic + dw$terminal * cecx_duration$terminal) ),
+    # disability  = (incidence  * dw$diag * cecx_duration$diag) + (prevalence * dw$control) + (mortality_cecx * (dw$metastatic * cecx_duration$metastatic + dw$terminal * cecx_duration$terminal) ),
+    disability  = yld,
     cost.cecx   = incidence*cost_cancer
   )
 
@@ -1003,14 +1065,21 @@ RunCountry <- function (country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexde
   mort.cecx    [which (is.na (mort.cecx)    )] <- 0
   cecx_5y_prev [which (is.na (cecx_5y_prev) )] <- 0
 
-  daly.canc.seq <- switch(
-    data.global[iso3==country_iso3,`WHO Mortality Stratum`],
-    "A"=0.04,
-    "B"=0.11,
-    "C"=0.13,
-    "D"=0.17,
-    "E"=0.17
-  )
+  ##############################################################################
+  # daly.canc.seq <- switch(
+  #   data.global[iso3==country_iso3,`WHO Mortality Stratum`],
+  #   "A"=0.04,
+  #   "B"=0.11,
+  #   "C"=0.13,
+  #   "D"=0.17,
+  #   "E"=0.17
+  # )
+  ##############################################################################
+  # disability weight for long term sequela based on WHO mortality stratum
+  # this is specific for gbd_2001
+  stratum <- data.global [iso3==country_iso3, `WHO Mortality Stratum`]
+  daly.canc.seq <- data.disability_weights [Source=="gbd_2001" & WHO_MortalityStratum==stratum, Mid]
+  ##############################################################################
 
   #Calculate total and vaccinated cohort size
   #If UN population projections unavailable, cohort size = 1 otherwise cohort size = number of 10-14y/5
@@ -1089,7 +1158,8 @@ RunCountry <- function (country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexde
     lifetab=lifetab, cohort=cohort, incidence=inc, mortality_cecx=mort.cecx, prevalence = cecx_5y_prev, agevac=agevac, coverage=cov, campaigns=campaigns,
     vaccine_efficacy_nosexdebut=vaceff_beforesexdebut, vaccine_efficacy_sexdebut=vaceff_aftersexdebut,
     daly.canc.diag=daly.canc.diag, daly.canc.seq=daly.canc.seq, daly.canc.control=daly.canc.control, daly.canc.metastatic=daly.canc.metastatic, daly.canc.terminal=daly.canc.terminal,
-    cost_cancer=cost.canc, disc.cost=disc.cost, disc.ben=disc.ben, discounting, country_iso3=country_iso3, run_country=TRUE
+    cost_cancer=cost.canc, disc.cost=disc.cost, disc.ben=disc.ben, discounting, country_iso3=country_iso3, run_country=TRUE,
+    disability.weights = disability.weights
   )
 
   if(analyseCosts){

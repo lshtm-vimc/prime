@@ -9,7 +9,8 @@ RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
   vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq,
   daly.canc.control, daly.canc.metastatic, daly.canc.terminal, cost_cancer,
   disc.cost = 0.03, disc.ben = 0.03, discounting = TRUE,
-  country_iso3 = NULL, run_country = FALSE)
+  country_iso3 = NULL, run_country = FALSE,
+  disability.weights = "gbd_2016")
 }
 \arguments{
 \item{lifetab}{Data.table: The life-table for this cohort. Can be created using the lifeTable() function.}
