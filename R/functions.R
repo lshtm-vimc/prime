@@ -542,6 +542,7 @@ BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1,
       agevac=agevac,
       agecohort=agecohort,
       cohort=cohort,
+      canc.inc=canc.inc,
       daly.canc.diag=daly.canc.diag,
       daly.canc.control=daly.canc.control,
       daly.canc.metastatic=daly.canc.metastatic,
@@ -1045,15 +1046,39 @@ RunCountry <- function (country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexde
 
   # age-dependent parameters
   if (canc.inc == "2018") {
-    inc          <- unlist (data.incidence           [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
-    mort.cecx    <- unlist (data.mortcecx            [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
-    cecx_5y_prev <- unlist (data.cecx_5y_prevalence  [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
+    inc <- unlist (data.incidence [iso3==country_iso3,
+                                   as.character(ages),
+                                   with=F],
+                   use.names=F) * p1618
+
+    mort.cecx <- unlist (data.mortcecx [iso3==country_iso3,
+                                        as.character(ages),
+                                        with=F],
+                         use.names=F) * p1618
+
+    cecx_5y_prev <- unlist (data.cecx_5y_prevalence [iso3==country_iso3,
+                                                     as.character(ages),
+                                                     with=F],
+                            use.names=F) * p1618
   }
   else if (canc.inc == "2012") {
-    inc          <- unlist (data.incidence2012       [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
-    mort.cecx    <- unlist (data.mortcecx2012        [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
-    cecx_5y_prev <- unlist (data.cecx_5y_prevalence  [iso3==country_iso3, as.character(ages), with=F], use.names=F) * p1618
-    cecx_5y_prev <- cecx_5y_prev * 0  # 5-year cervical cancer prevalence data for 2012 is not available
+    inc <- unlist (data.incidence2012 [iso3==country_iso3,
+                                       as.character(ages),
+                                       with=F],
+                   use.names=F) * p1618
+
+    mort.cecx    <- unlist (data.mortcecx2012 [iso3==country_iso3,
+                                               as.character(ages),
+                                               with=F],
+                            use.names=F) * p1618
+
+    cecx_5y_prev <- unlist (data.cecx_5y_prevalence [iso3==country_iso3,
+                                                     as.character(ages),
+                                                     with=F],
+                            use.names=F) * p1618
+
+    # 5-year cervical cancer prevalence data for 2012 is not available
+    cecx_5y_prev <- cecx_5y_prev * 0
   }
   else if (canc.inc == "2008") {
     #inc=as.numeric(data.incidence08[c,2:(maxage+2)])*p1618
