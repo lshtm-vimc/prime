@@ -12,7 +12,7 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
   daly.canc.terminal = 0.54, sens = -1, unwpp_mortality = FALSE,
   year_born = -1, year_vac = -1, campaigns = -1,
   analyseCosts = FALSE, discounting = TRUE, run_batch = FALSE,
-  psadat = -1, disability.weights = "gbd_2016")
+  psadat = -1, disability.weights = "gbd_2017")
 }
 \arguments{
 \item{country_iso3}{Character string (required): ISO3 code of the country}
@@ -55,7 +55,7 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
 
 \item{discounting}{Logical (optional): If TRUE, runs analysis undiscounted and discounted. If FALSE, only uses undiscounted}
 
-\item{disability.weights}{character, disability weights for cervical cancer from GBD 2016 or GBD 2001}
+\item{disability.weights}{character, disability weights for cervical cancer from GBD 2017 or GBD 2001}
 
 \item{vaceff}{Number (optional): Proportion indicating vaccine-efficacy}
 }
