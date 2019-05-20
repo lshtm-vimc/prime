@@ -12,7 +12,8 @@
 #' @export
 #'
 #' @examples #
-writelog <- function (logname, x) {
+writelog <- function (logname,
+                      x) {
 
   # wait until log file is yours
   Sys.sleep (0.02)
@@ -55,7 +56,10 @@ writelog <- function (logname, x) {
 #' @export
 #'
 #' @examples #
-RegisterBatchData <- function (coverage_data, reporting_years=-1, force=FALSE) {
+RegisterBatchData <- function (coverage_data,
+                               reporting_years = -1,
+                               force           = FALSE) {
+
   if(exists(".data.batch") & !force){
     stop("'.data.batch' already exists.")
   }
@@ -178,11 +182,13 @@ RegisterBatchData <- function (coverage_data, reporting_years=-1, force=FALSE) {
 #' @export
 #'
 #' @examples #
-RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns,
+RegisterBatchDataGavi <- function (gavi_coverage,
+                                   gavi_template,
+                                   use_campaigns,
                                    use_routine,
-                                   restrict_to_coverage_data=FALSE,
-                                   force=FALSE,
-                                   psa=0) {
+                                   restrict_to_coverage_data = FALSE,
+                                   force                     = FALSE,
+                                   psa                       = 0) {
 
   if(exists(".data.batch") & !force){
     stop("'.data.batch' already exists.")
@@ -390,7 +396,7 @@ RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns,
 #' @param daly.canc.control Number: daly-weight for controlled phase of cervical cancer
 #' @param daly.canc.metastatic Number: daly-weight for metastatic phase of cervical cancer
 #' @param daly.canc.terminal disability weight of terminal phase of cervical cancer
-#' @param sens ignore, doesn’t do anything anymore
+#' @param sens ignore, does not do anything anymore
 #' @param unwpp_mortality logical, whether to create lifetables based on UNWPP mx estimates or WHO data
 #' @param year_born ignore
 #' @param year_vac ignore
@@ -409,14 +415,29 @@ RegisterBatchDataGavi <- function (gavi_coverage, gavi_template, use_campaigns,
 #' @export
 #'
 #' @examples #
-BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1,
-                      canc.inc="2018", daly.canc.diag=0.288, daly.canc.control=0.049,
-                      daly.canc.metastatic=0.451, daly.canc.terminal=0.54,
-                      sens=-1, unwpp_mortality=TRUE, year_born=-1, year_vac=-1, runs=1,
-                      vaccine_efficacy_beforesexdebut=1, vaccine_efficacy_aftersexdebut=0,
-                      log=-1, by_calendaryear = FALSE, use_proportions = TRUE,
-                      analyseCosts = FALSE, psa=0, psa_vals=".data.batch.psa",
-                      disability.weights = "gbd_2017") {
+BatchRun <- function (countries                       = -1,
+                      coverage                        = -1,
+                      agevac                          = -1,
+                      agecohort                       = -1,
+                      canc.inc                        = "2018",
+                      daly.canc.diag                  = 0.288,
+                      daly.canc.control               = 0.049,
+                      daly.canc.metastatic            = 0.451,
+                      daly.canc.terminal              = 0.54,
+                      sens                            = -1,
+                      unwpp_mortality                 = TRUE,
+                      year_born                       = -1,
+                      year_vac                        = -1,
+                      runs                            = 1,
+                      vaccine_efficacy_beforesexdebut = 1,
+                      vaccine_efficacy_aftersexdebut  = 0,
+                      log                             = -1,
+                      by_calendaryear                 = FALSE,
+                      use_proportions                 = TRUE,
+                      analyseCosts                    = FALSE,
+                      psa                             = 0,
+                      psa_vals                        = ".data.batch.psa",
+                      disability.weights              = "gbd_2017") {
 
   ages <- as.numeric(colnames(data.incidence)[!grepl("\\D",colnames(data.incidence))])
   ages <- ages[!is.na(ages)]
@@ -451,7 +472,7 @@ BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1,
     c=1:length(countries),
     .packages=c("data.table","prime"),
     #.errorhandling="pass",
-    .export=c(".data.batch","data.pop","writelog")
+    .export=c(".data.batch","data.pop", "writelog")
   ) %:% foreach(
     y=1:length(years)
   ) %:% foreach(
@@ -594,6 +615,7 @@ BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1,
   return(combine)
 }
 
+
 #' Formatting output for VIMC Montagu
 #'
 #' \code{OutputGavi} takes result of BatchRun and outputs it in format to be uploaded to VIMC Montagu.
@@ -607,7 +629,11 @@ BatchRun <- function (countries=-1, coverage=-1, agevac=-1, agecohort=-1,
 #' @export
 #'
 #' @examples #
-OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_template=-1) {
+OutputGavi <- function (DT,
+                        age_stratified = TRUE,
+                        calendar_year  = FALSE,
+                        gavi_template  = -1) {
+
   #check if data by calendar_year
   if("year" %in% colnames(DT)){
     is_by_calendar_year <- TRUE
@@ -734,14 +760,30 @@ OutputGavi <- function (DT, age_stratified=TRUE, calendar_year=FALSE, gavi_templ
 #'  country_iso3="AFG", run_country=FALSE)
 #'
 #' @export
-#' @import data.table foreach
+#' @import data.table
 #' @import foreach
 #'
-RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns,
-                       vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
-                       daly.canc.diag, daly.canc.seq, daly.canc.control, daly.canc.metastatic, daly.canc.terminal,
-                       cost_cancer, disc.cost=0.03, disc.ben=0.03, discounting=TRUE,
-                       country_iso3=NULL, run_country=FALSE,
+RunCohort <- function (lifetab,
+                       cohort,
+                       incidence,
+                       mortality_cecx,
+                       prevalence,
+                       agevac,
+                       coverage,
+                       campaigns,
+                       vaccine_efficacy_nosexdebut,
+                       vaccine_efficacy_sexdebut,
+                       daly.canc.diag,
+                       daly.canc.seq,
+                       daly.canc.control,
+                       daly.canc.metastatic,
+                       daly.canc.terminal,
+                       cost_cancer,
+                       disc.cost          = 0.03,
+                       disc.ben           = 0.03,
+                       discounting        = TRUE,
+                       country_iso3       = NULL,
+                       run_country        = FALSE,
                        disability.weights = "gbd_2017") {
   #check if required variables are present
   if(
@@ -784,7 +826,42 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 
     # combine yld contribution from non-fatal and fatal cases
     yld <- ((incidence - mortality_cecx) * daly.canc.nonfatal) + (mortality_cecx * daly.canc.fatal)
+
+  } else if (disability.weights == "gbd_2017") {
+
+    # calculate yld using GBD 2017 disability weights
+    ##########################################################################
+    # diability weights for different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal)
+    # dw = list (diag = daly.canc.diag, control = daly.canc.control, metastatic = daly.canc.metastatic, terminal = daly.canc.terminal)
+    #
+    # duration of different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
+    # cecx_duration = list (diag = 4.8/12, metastatic = 9.21/12, terminal = 1/12)
+    # duration of controlled phases is based on remainder of time after attributing to other phases
+    #
+    ##########################################################################
+
+    # disability weights for different phases of cervical cancer
+    # (diagnosis & therapy, controlled, metastatic, terminal)
+    dw = list (diag       = data.disability_weights [Source==disability.weights & Sequela=="diagnosis",  Mid],
+               control    = data.disability_weights [Source==disability.weights & Sequela=="control",    Mid],
+               metastatic = data.disability_weights [Source==disability.weights & Sequela=="metastatic", Mid],
+               terminal   = data.disability_weights [Source==disability.weights & Sequela=="terminal",   Mid])
+
+    # duration of different phases of cervical cancer
+    # (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
+    cecx_duration = list (diag       = data.disability_weights [Source==disability.weights & Sequela=="diagnosis",  Duration],
+                          metastatic = data.disability_weights [Source==disability.weights & Sequela=="metastatic", Duration],
+                          terminal   = data.disability_weights [Source==disability.weights & Sequela=="terminal",   Duration])
+    # duration of controlled phases is based on remainder of time after attributing to other phases
+
+    # combine yld contribution from (incidence, prevalence and mortality) cases
+    yld <-
+      (incidence  * dw$diag * cecx_duration$diag) +
+      (prevalence * dw$control) +
+      (mortality_cecx * (dw$metastatic * cecx_duration$metastatic + dw$terminal * cecx_duration$terminal) )
   }
+
+
   ##############################################################################
 
   #discounting
@@ -818,43 +895,6 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 
   #expected number of cases, deaths, dalys, and costs (static)
   coverage <- ageCoverage(ages,coverage,vaccine_efficacy_nosexdebut,vaccine_efficacy_sexdebut,campaigns,lifetab,cohort,agevac,country_iso3=country_iso3)
-
-  ##############################################################################
-  # diability weights for different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal)
-  # dw = list (diag = daly.canc.diag, control = daly.canc.control, metastatic = daly.canc.metastatic, terminal = daly.canc.terminal)
-  #
-  # duration of different phases of cervical cancer (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
-  # cecx_duration = list (diag = 4.8/12, metastatic = 9.21/12, terminal = 1/12)
-  # duration of controlled phases is based on remainder of time after attributing to other phases
-  #
-  ##############################################################################
-  #
-  # calculate yld using GBD 2017 disability weights
-  if (disability.weights == "gbd_2017") {
-
-    # disability weights for different phases of cervical cancer
-    # (diagnosis & therapy, controlled, metastatic, terminal)
-    dw = list (diag       = data.disability_weights [Source==disability.weights & Sequela=="diagnosis",  Mid],
-               control    = data.disability_weights [Source==disability.weights & Sequela=="control",    Mid],
-               metastatic = data.disability_weights [Source==disability.weights & Sequela=="metastatic", Mid],
-               terminal   = data.disability_weights [Source==disability.weights & Sequela=="terminal",   Mid])
-
-    # duration of different phases of cervical cancer
-    # (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
-    cecx_duration = list (diag       = data.disability_weights [Source==disability.weights & Sequela=="diagnosis",  Duration],
-                          metastatic = data.disability_weights [Source==disability.weights & Sequela=="metastatic", Duration],
-                          terminal   = data.disability_weights [Source==disability.weights & Sequela=="terminal",   Duration])
-    # duration of controlled phases is based on remainder of time after attributing to other phases
-
-    # combine yld contribution from (incidence, prevalence and mortality) cases
-    yld <-
-      (incidence  * dw$diag * cecx_duration$diag) +
-      (prevalence * dw$control) +
-      (mortality_cecx * (dw$metastatic * cecx_duration$metastatic + dw$terminal * cecx_duration$terminal) )
-  }
-  ##############################################################################
-
-
 
   # In out.pre data table, 'lifey' refers to YLL and 'disability' refers to YLD
   # YLL - Years of Life Lost due to premature mortality
@@ -972,12 +1012,32 @@ RunCohort <- function (lifetab, cohort, incidence, mortality_cecx, prevalence, a
 #' @examples RunCountry("AFG")
 #' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88)
 #' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88, analyseCosts=TRUE)
-RunCountry <- function (country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexdebut=0,
-                        disc.cost=0.03, disc.ben=0.03, cov=1, agevac=10, agecohort=10,	cohort=-1, canc.cost="unadj",
-                        canc.inc="2018", daly.canc.diag=0.288, daly.canc.control=0.049, daly.canc.metastatic=0.451, daly.canc.terminal=0.54,
-                        sens=-1, unwpp_mortality=FALSE, year_born=-1, year_vac=-1, campaigns=-1,
-                        analyseCosts=FALSE, discounting=TRUE, run_batch=FALSE, psadat = -1,
-                        disability.weights = "gbd_2017") {
+RunCountry <- function (country_iso3,
+                        vaceff_beforesexdebut = 1,
+                        vaceff_aftersexdebut  = 0,
+                        disc.cost             = 0.03,
+                        disc.ben              = 0.03,
+                        cov                   = 1,
+                        agevac                = 10,
+                        agecohort             = 10,
+                        cohort                = -1,
+                        canc.cost             = "unadj",
+                        canc.inc              = "2018",
+                        daly.canc.diag        = 0.288,
+                        daly.canc.control     = 0.049,
+                        daly.canc.metastatic  = 0.451,
+                        daly.canc.terminal    = 0.54,
+                        sens                  = -1,
+                        unwpp_mortality       = TRUE,
+                        year_born             = -1,
+                        year_vac              = -1,
+                        campaigns             = -1,
+                        analyseCosts          = FALSE,
+                        discounting           = TRUE,
+                        run_batch             = FALSE,
+                        psadat                = -1,
+                        disability.weights    = "gbd_2017") {
+
   ##check if all required data is present in the global environment
   #if(sum(!(c("data.incidence", "data.global", "data.costcecx", "data.popproj", "data.mortcecx", "data.mortall", "data.mortall.unwpp") %in% ls(name=.GlobalEnv, all.names=T))) > 0){
   #	stop("Not all required datafiles seem to be present in your environment. Please load all datafiles required.")
@@ -1207,7 +1267,9 @@ RunCountry <- function (country_iso3, vaceff_beforesexdebut=1, vaceff_aftersexde
 #' @examples
 #' getISO3("Afghanistan")
 #' getISO3("Congo",name=TRUE)
-getISO3 <- function (countryname, name=FALSE) {
+getISO3 <- function (countryname,
+                     name = FALSE) {
+
   countryname <- data.table(country=countryname)
   if(name){
     country_iso3 <- dtColMatch (countryname,c("country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
@@ -1244,7 +1306,10 @@ getISO3 <- function (countryname, name=FALSE) {
 #' @export
 #'
 #' @examples analyseCosts(RunCountry("AFG"), 100, 561)
-analyseCosts <- function (results, vaccine_cost, gdp_per_capita) {
+analyseCosts <- function (results,
+                          vaccine_cost,
+                          gdp_per_capita) {
+
   #check if required variables are present
   if(
     sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
@@ -1322,6 +1387,7 @@ analyseCosts <- function (results, vaccine_cost, gdp_per_capita) {
   return(costeffect)
 }
 
+
 #' Checks whether the size of a variable is larger than 0
 #'
 #' Used to determine that all required variables are passed to a function
@@ -1374,7 +1440,10 @@ checkSize <- function (v) {
 #'
 #' qx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F], use.names=F)
 #' lifeTable(qx, 9)
-lifeTable <- function (qx=NULL, mx=NULL, agecohort=0) {
+lifeTable <- function (qx        = NULL,
+                       mx        = NULL,
+                       agecohort = 0) {
+
   if(is.null(qx) & is.null(mx)){
     stop("Provide qx or mx values")
   } else if(is.null(qx)){
@@ -1434,8 +1503,16 @@ lifeTable <- function (qx=NULL, mx=NULL, agecohort=0) {
 #' cohort <- unlist(data.popproj[iso3=="AFG", "2020"], use.names=F)
 #' agevac <- 9
 #' ageCoverage(ages, routine_coverage, vaccine_efficacy, -1, lifetab, cohort, agevac)
-ageCoverage <- function (ages, routine_coverage, vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
-                         campaigns, lifetab, cohort, agevac, country_iso3 = NULL) {
+ageCoverage <- function (ages,
+                         routine_coverage,
+                         vaccine_efficacy_nosexdebut,
+                         vaccine_efficacy_sexdebut,
+                         campaigns,
+                         lifetab,
+                         cohort,
+                         agevac,
+                         country_iso3 = NULL) {
+
   coverage <- data.table(
     age=ages,
     coverage=rep(0,length(ages))
@@ -1478,7 +1555,9 @@ ageCoverage <- function (ages, routine_coverage, vaccine_efficacy_nosexdebut, va
 #' propSexDebut (30, "ETH")
 #'
 #' @export
-propSexDebut <- function (age, country_iso3) {
+propSexDebut <- function (age,
+                          country_iso3) {
+
   if(age < 12){
     prop_sexdebut <- 0
   } else {
@@ -1528,7 +1607,12 @@ propSexDebut <- function (age, country_iso3) {
 #'
 #' @examples
 #' dtColMatch(data.global,c("Country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
-dtColMatch <- function (input, input_match_on, reference, reference_match_on, reference_return) {
+dtColMatch <- function (input,
+                        input_match_on,
+                        reference,
+                        reference_match_on,
+                        reference_return) {
+
   rows <- rep(NA,nrow(input))
   for(imatch in input_match_on){
     for(rmatch in reference_match_on){
@@ -1562,10 +1646,18 @@ dtColMatch <- function (input, input_match_on, reference, reference_match_on, re
 #' @export
 #'
 #' @examples dtAggregate(data.popproj,"iso3",id.vars="")
-dtAggregate <- function (DT, aggr_on, measure.vars=c(), id.vars=c(), func="sum", na.rm=TRUE) {
+dtAggregate <- function (DT,
+                         aggr_on,
+                         measure.vars = c(),
+                         id.vars      = c(),
+                         func         = "sum",
+                         na.rm        = TRUE) {
 
   #private function
-  dtAggregateSingle <- function (DT, aggr_on, measure.vars, id.vars,func="sum") {
+  dtAggregateSingle <- function (DT,
+                                 aggr_on,
+                                 measure.vars,
+                                 id.vars,func="sum") {
     return(switch(
       func,
       "sum"= DT[
@@ -1618,6 +1710,7 @@ dtAggregate <- function (DT, aggr_on, measure.vars=c(), id.vars=c(), func="sum",
   }
   return(dt_main)
 }
+
 
 #' Convert monetary character-strings to numeric values
 #'

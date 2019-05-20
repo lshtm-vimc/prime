@@ -34,7 +34,7 @@ BatchRun(countries = -1, coverage = -1, agevac = -1,
 
 \item{daly.canc.terminal}{disability weight of terminal phase of cervical cancer}
 
-\item{sens}{ignore, doesn’t do anything anymore}
+\item{sens}{ignore, does not do anything anymore}
 
 \item{unwpp_mortality}{logical, whether to create lifetables based on UNWPP mx estimates or WHO data}
 

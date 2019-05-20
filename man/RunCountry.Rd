@@ -9,7 +9,7 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
   cov = 1, agevac = 10, agecohort = 10, cohort = -1,
   canc.cost = "unadj", canc.inc = "2018", daly.canc.diag = 0.288,
   daly.canc.control = 0.049, daly.canc.metastatic = 0.451,
-  daly.canc.terminal = 0.54, sens = -1, unwpp_mortality = FALSE,
+  daly.canc.terminal = 0.54, sens = -1, unwpp_mortality = TRUE,
   year_born = -1, year_vac = -1, campaigns = -1,
   analyseCosts = FALSE, discounting = TRUE, run_batch = FALSE,
   psadat = -1, disability.weights = "gbd_2017")
