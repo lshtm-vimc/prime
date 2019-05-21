@@ -141,7 +141,7 @@ RegisterBatchData <- function (coverage_data,
   }
 
   colnames(coverage_data)[which(colnames(coverage_data)=="age_first")] <- "agevac"
-  coverage_data[,"activity_type"] <- NA
+  coverage_data[,"activity_type"] <- "routine"
   coverage_data[,"target"] <- NA
   coverage_data <- coverage_data[,c("country_code", "birthcohort", "coverage",
                                     "agevac", "activity_type", "target")]
@@ -471,7 +471,7 @@ BatchRun <- function (countries                       = -1,
   combine <- foreach(
     c=1:length(countries),
     .packages=c("data.table","prime"),
-    #.errorhandling="pass",
+    .errorhandling="pass",
     .export=c(".data.batch","data.pop", "writelog")
   ) %:% foreach(
     y=1:length(years)
