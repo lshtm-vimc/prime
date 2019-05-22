@@ -471,7 +471,7 @@ BatchRun <- function (countries                       = -1,
   combine <- foreach(
     c=1:length(countries),
     .packages=c("data.table","prime"),
-    .errorhandling="pass",
+    # .errorhandling="pass",
     .export=c(".data.batch","data.pop", "writelog")
   ) %:% foreach(
     y=1:length(years)
