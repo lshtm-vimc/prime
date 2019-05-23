@@ -469,7 +469,7 @@ BatchRun <- function (countries                       = -1,
   init_agevac <- agevac
   init_agecohort <- agecohort
   combine <- foreach(
-    c=1:length(countries),
+    cn = 1:length(countries),
     .packages=c("data.table","prime"),
     # .errorhandling="pass",
     .export=c(".data.batch","data.pop", "writelog")
@@ -479,7 +479,7 @@ BatchRun <- function (countries                       = -1,
     r=1:runs
   ) %dopar% {
     #) %do% {
-    .t_data.batch <- .data.batch[country_code==countries[c] & birthcohort==years[y]]
+    .t_data.batch <- .data.batch[country_code==countries[cn] & birthcohort==years[y]]
     if(init_coverage==-1){
       coverage <- .t_data.batch[1, coverage]
     } else {
@@ -498,13 +498,13 @@ BatchRun <- function (countries                       = -1,
     } else {
       agecohort <- init_agecohort
     }
-    cohort <- data.pop[country_code==countries[c] & year==(years[y]+agecohort) & age_from==agecohort,value]
+    cohort <- data.pop[country_code==countries[cn] & year==(years[y]+agecohort) & age_from==agecohort,value]
     if(is.character(log)){
       writelog(
         log,
         paste0(
           "country: '",
-          countries[c],
+          countries[cn],
           "'; birthcohort: '",
           years[y],
           "'; run: '",
@@ -546,8 +546,8 @@ BatchRun <- function (countries                       = -1,
 
     if(dopsa){
       cpsadat <- list(
-        incidence = psadat[country == countries[c] & run_id == r, incidence],
-        mortality = psadat[country == countries[c] & run_id == r, mortality]
+        incidence = psadat[country == countries[cn] & run_id == r, incidence],
+        mortality = psadat[country == countries[cn] & run_id == r, mortality]
       )
     } else {
       cpsadat <- list(
@@ -556,7 +556,7 @@ BatchRun <- function (countries                       = -1,
       )
     }
     data <- RunCountry(
-      country_iso3=countries[c],
+      country_iso3=countries[cn],
       vaceff_beforesexdebut=vaccine_efficacy_beforesexdebut,
       vaceff_aftersexdebut=vaccine_efficacy_aftersexdebut,
       cov=coverage,
@@ -577,13 +577,15 @@ BatchRun <- function (countries                       = -1,
       psadat = cpsadat,
       disability.weights = disability.weights
     )
-    data[,"country"] <- countries[c]
+    data[,"country"] <- countries[cn]
     data[,"birthcohort"] <- years[y]
     if(dopsa){
       data[,"run_id"] <- r
     }
     return(data)
-  }
+
+  }  # end of foreach
+
   for(l in 1:length(combine)){
     for(i in 1:length(combine[[l]])){
       combine[[l]][[i]] <- rbindlist(combine[[l]][[i]])
