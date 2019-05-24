@@ -1010,6 +1010,7 @@ RunCohort <- function (lifetab,
 #'
 #' @return data.table with country-specific results of HPV vaccination. Returns cost-analysis if analyseCosts=TRUE
 #' @export
+#' @importFrom wbstats wb
 #'
 #' @examples RunCountry("AFG")
 #' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88)
@@ -1250,7 +1251,15 @@ RunCountry <- function (country_iso3,
   )
 
   if(analyseCosts){
-    gdp_per_capita <- monetary_to_number(data.global[iso3==country_iso3,`GDP per capita (2011 i$) [7]`])
+    # gdp_per_capita <- monetary_to_number(data.global[iso3==country_iso3,`GDP per capita (2011 i$) [7]`])
+
+    # GDP per capita, PPP (current international $) - 2017
+    # https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD
+    gdp_per_capita <- wb (country   = country_iso3,
+                          indicator = "NY.GDP.PCAP.PP.CD",
+                          startdate = 2017,
+                          enddate   = 2017)$value
+
     return(analyseCosts(result_cohort, cost.vac, gdp_per_capita))
   }
   else {
