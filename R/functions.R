@@ -12,25 +12,30 @@
 #' @export
 #'
 #' @examples #
+#'
 writelog <- function (logname,
                       x) {
 
   # wait until log file is yours
   Sys.sleep (0.02)
 
-  while ((file.exists(paste0(logname,"_locked"))))
-  {Sys.sleep(0.02)}
+  while (file.exists (paste0 (logname, "_locked") ) ) {
+    Sys.sleep (0.02)
+  }
 
   # lock log file
-  file.create (paste0(logname,"_locked"))
+  file.create (paste0 (logname,"_locked"))
 
   # write to log file
-  write ( paste0 (format(Sys.time(), "%Y/%m/%d %H:%M:%S"), " ", x),
-          file=logname, append=TRUE )
+  write ( paste0 (format (Sys.time(), "%Y/%m/%d %H:%M:%S"), " ", x),
+          file   = logname,
+          append = TRUE )
 
   # unlock log file
   file.remove (paste0 (logname,"_locked") )
-}
+
+} # end of function -- writelog
+
 
 #' Creates .data.batch for running multiple birth cohorts
 #'
@@ -1727,62 +1732,94 @@ dtAggregate <- function (DT,
 #'
 #' @param x Character string to convert
 #'
-#' @return Returns number with value, stripped from any currency symbols and thousand-seperators (i.e. "B#2,010.50" becomes 2010.5)
+#' @return Returns number with value, stripped from any currency symbols and
+#'   thousand-seperators (i.e. "B#2,010.50" becomes 2010.5)
 #' @export
 #'
 #' @examples
 #'
-#' monetary_to_number("$2,200.20")
+#' monetary_to_number ("$2,200.20")
 #'
-#' #Note that values using German or Dutch notation (i.e. using a comma to separate decimals and a dot to seperate thousands) are converted as well
-#' monetary_to_number("$2.200,20")
+#' # Note that values using German or Dutch notation (i.e. using a comma to
+#'   separate decimals and a dot to seperate thousands) are converted as well.
+#'   monetary_to_number ("$2.200,20")
+#'
 monetary_to_number <- function (x) {
-  if(!is.character(x)){
-    return(x)
+
+  if (!is.character (x)) {
+
+    # return value since incoming value is not a character-string
+    return (x)
+
   } else {
-    #remove any valuta_signs
-    valuta <- c("$","B#","B%","b,")
-    for(v in valuta){
-      x <- gsub(paste0("\\",v),"",x)
+
+    # remove any valuta_signs
+    valuta <- c ("$", "B#", "B%", "b,")
+
+    for (v in valuta) {
+      x <- gsub (paste0 ("\\",v), "", x)
     }
-    #check what the decimalsign is
-    dot <- sum(strsplit(x,"")[[1]]==".")
-    comma <- sum(strsplit(x,"")[[1]]==",")
-    if(dot>1 & comma>1){
-      stop("Value has multiple comma's and dots")
-    } else if(comma>1 & dot<=1){
-      #assume that comma is used to separate thousands (i.e. English notation)
-      x <- gsub(",","",x,fixed=T)
-    } else if(dot>1 & comma<=1){
-      #assume that dot is used to separate thousands (i.e. Dutch or German notation)
-      x <- gsub(".","",x,fixed=T)
-      x <- gsub(",",".",x,fixed=T)
-    } else if(comma==1 & dot ==1){
-      #check whether comma or dot comes first
-      chars <- strsplit(x,"")[[1]]
-      i <- 0
-      while(i < length(chars)){
+
+    # check what the decimal sign is
+    dot   <- sum (strsplit (x,"")[[1]] == ".")
+    comma <- sum (strsplit (x,"")[[1]] == ",")
+
+    if (dot>1 & comma>1) {
+      stop ("Value has multiple comma's and dots")
+
+    } else if (comma>1 & dot<=1) {
+
+      # assume that comma is used to separate thousands
+      # (i.e. English notation)
+      x <- gsub (",", "", x, fixed=T)
+
+    } else if (dot>1 & comma<=1) {
+
+      # assume that dot is used to separate thousands
+      # (i.e. Dutch or German notation)
+      x <- gsub (".", "",  x, fixed=T)
+      x <- gsub (",", ".", x, fixed=T)
+
+    } else if (comma==1 & dot==1) {
+
+      # check whether comma or dot comes first
+      chars <- strsplit (x, "")[[1]]
+      i     <- 0
+
+      while (i < length (chars)) {
+
         i <- i+1
-        if(chars[i] %in% c(".",",")){
-          thousand_sep <- chars[i]
-          i <- length(chars)
+        if (chars[i] %in% c (".", ",")) {
+
+          thousand_sep <- chars [i]
+          i            <- length (chars)
         }
       }
-      if(thousand_sep == ","){
-        #comma is used to separate thousands
-        x <- gsub(",","",x,fixed=T)
-      } else {
-        #dot is used to separate thousands
-        x <- gsub(".","",x,fixed=T)
-        x <- gsub(",",".",x,fixed=T)
-      }
-    } else {
-      #assume that comma is used to separate thousands (i.e. English notation)
-      x <- gsub(",","",x,fixed=T)
-    }
-    #fix to keep decimalvalues with big numbers
-    x <- as.numeric(x)
 
+      if (thousand_sep == ",") {
+
+        # comma is used to separate thousands
+        x <- gsub (",", "", x, fixed=T)
+
+      } else {
+
+        # dot is used to separate thousands
+        x <- gsub (".", "",  x, fixed=T)
+        x <- gsub (",", ".", x, fixed=T)
+      }
+
+    } else {
+
+      # assume that comma is used to separate thousands
+      # (i.e. English notation)
+      x <- gsub (",", "", x, fixed=T)
+    }
+
+    # fix to keep decimalvalues with big numbers
+    x <- as.numeric (x)
+
+    # return monetary value in numeric format
     return(x)
   }
-}
+
+} # end of function -- monetary_to_number

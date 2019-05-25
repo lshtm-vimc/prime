@@ -19,4 +19,5 @@ Appends message of simulation run (\code{x}) to log file (\code{logname}).
 }
 \examples{
 #
+
 }

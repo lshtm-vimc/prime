@@ -10,15 +10,18 @@ monetary_to_number(x)
 \item{x}{Character string to convert}
 }
 \value{
-Returns number with value, stripped from any currency symbols and thousand-seperators (i.e. "B#2,010.50" becomes 2010.5)
+Returns number with value, stripped from any currency symbols and
+  thousand-seperators (i.e. "B#2,010.50" becomes 2010.5)
 }
 \description{
 Convert monetary character-strings to numeric values
 }
 \examples{
 
-monetary_to_number("$2,200.20")
+monetary_to_number ("$2,200.20")
 
-#Note that values using German or Dutch notation (i.e. using a comma to separate decimals and a dot to seperate thousands) are converted as well
-monetary_to_number("$2.200,20")
+# Note that values using German or Dutch notation (i.e. using a comma to
+  separate decimals and a dot to seperate thousands) are converted as well.
+  monetary_to_number ("$2.200,20")
+
 }
