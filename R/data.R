@@ -61,12 +61,19 @@
 #'
 #' A dataset containing the cost of cervical cancer treatment.
 #'
-#' @format A data table with 194 observations of 4 variables.
+#' @format A data table with 194 observations of 7 variables.
 #' \describe{
 #'   \item{country}{Country name}
-#'   \item{cancer_cost}{cost per cancer episode, in $US}
-#'   \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in international/PPP $}
+#'   \item{cancer_cost}{cost per cancer episode, in 2017 US$}
+#'   \item{cancer_cost_adj}{cost per cancer episode --
+#'         adjusted, in 2017 international/PPP $}
 #'   \item{iso3}{ISO3 country code}
+#'   \item{cancer_cost_2011}{cost per cancer episode, in 2011 US$}
+#'   \item{cancer_cost_adj_2011}{cost per cancer episode --
+#'        adjusted, in 2011 international/PPP $}
+#'   \item{inflation_factor}{Inflation factor from 2011 to 2017 estimated from
+#'         Inflation, GDP deflator (annual \%) --
+#'         https://data.worldbank.org/indicator/NY.GDP.DEFL.KD.ZG}
 #' }
 "data.costcecx"
 

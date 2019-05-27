@@ -7,12 +7,12 @@
 RunCountry(country_iso3, vaceff_beforesexdebut = 1,
   vaceff_aftersexdebut = 0, disc.cost = 0.03, disc.ben = 0.03,
   cov = 1, agevac = 10, agecohort = 10, cohort = -1,
-  canc.cost = "unadj", canc.inc = "2018", daly.canc.diag = 0.288,
+  canc.inc = "2018", daly.canc.diag = 0.288,
   daly.canc.control = 0.049, daly.canc.metastatic = 0.451,
   daly.canc.terminal = 0.54, sens = -1, unwpp_mortality = TRUE,
   year_born = -1, year_vac = -1, campaigns = -1,
-  analyseCosts = FALSE, discounting = TRUE, run_batch = FALSE,
-  psadat = -1, disability.weights = "gbd_2017",
+  analyseCosts = FALSE, canc.cost = "unadj", discounting = FALSE,
+  run_batch = FALSE, psadat = -1, disability.weights = "gbd_2017",
   wb.indicator = "NY.GDP.PCAP.PP.CD", wb.year = 2017)
 }
 \arguments{
@@ -29,8 +29,6 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
 \item{agecohort}{Integer (optional): Reference age for cohort-size (only used when 'cohort' is not provided)}
 
 \item{cohort}{Integer (optional): Cohort-size. -1 if unknown}
-
-\item{canc.cost}{Character (optional): Is cost of cancer adjusted ("adj") or not ("unadj")}
 
 \item{canc.inc}{Integer (optional): Reference year for cancer incidence rates (Globocan: 2018 or 2012)}
 
@@ -53,6 +51,9 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
 \item{campaigns}{List (optional): Multi-Age-Cohort campaigns (needs to be changed)}
 
 \item{analyseCosts}{Logical (optional): If FALSE, returns result from RunCohort() function. If TRUE, runs analyseCosts() with country-specific results}
+
+\item{canc.cost}{Character (optional): Is cost of cancer adjusted
+("adj" for International $) or not ("unadj" for US$)}
 
 \item{discounting}{Logical (optional): If TRUE, runs analysis undiscounted and discounted. If FALSE, only uses undiscounted}
 

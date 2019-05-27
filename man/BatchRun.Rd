@@ -12,9 +12,9 @@ BatchRun(countries = -1, coverage = -1, agevac = -1,
   vaccine_efficacy_beforesexdebut = 1,
   vaccine_efficacy_aftersexdebut = 0, log = -1,
   by_calendaryear = FALSE, use_proportions = TRUE,
-  analyseCosts = FALSE, psa = 0, psa_vals = ".data.batch.psa",
-  disability.weights = "gbd_2017", wb.indicator = "NY.GDP.PCAP.PP.CD",
-  wb.year = 2017)
+  analyseCosts = FALSE, canc.cost = "unadj", psa = 0,
+  psa_vals = ".data.batch.psa", disability.weights = "gbd_2017",
+  wb.indicator = "NY.GDP.PCAP.PP.CD", wb.year = 2017)
 }
 \arguments{
 \item{countries}{ignore, read from .data.batch}
@@ -56,6 +56,9 @@ BatchRun(countries = -1, coverage = -1, agevac = -1,
 \item{use_proportions}{logical, output data as rates per capita or in totals}
 
 \item{analyseCosts}{logical, directly run cost-effectiveness analysis on output or not}
+
+\item{canc.cost}{Character (optional): Is cost of cancer adjusted
+("adj" for International $) or not ("unadj" for US$)}
 
 \item{psa}{integer, number of runs for probabilistic sensitivity analysis (PSA)}
 
