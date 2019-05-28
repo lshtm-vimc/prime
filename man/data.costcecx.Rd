@@ -8,12 +8,14 @@
 \describe{
   \item{country}{Country name}
   \item{cancer_cost}{cost per cancer episode, in 2017 US$}
-  \item{cancer_cost_adj}{cost per cancer episode --
-        adjusted, in 2017 international/PPP $}
+  \item{cancer_cost_adj}{cost per cancer episode -- adjusted, in 2017 US$ --
+        “adjusted” cancer costs are based on a GDP/capita based adjustment
+        within the region}
   \item{iso3}{ISO3 country code}
   \item{cancer_cost_2011}{cost per cancer episode, in 2011 US$}
   \item{cancer_cost_adj_2011}{cost per cancer episode --
-       adjusted, in 2011 international/PPP $}
+        adjusted, in 2011 US$ -- “adjusted” cancer costs are based on a
+        GDP/capita based adjustment within the region}
   \item{inflation_factor}{Inflation factor from 2011 to 2017 estimated from
         Inflation, GDP deflator (annual \%) --
         https://data.worldbank.org/indicator/NY.GDP.DEFL.KD.ZG}
