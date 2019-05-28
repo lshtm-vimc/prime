@@ -9,7 +9,9 @@ getISO3(countryname, name = FALSE)
 \arguments{
 \item{countryname}{Character string (required): Full name of the country}
 
-\item{name}{Logical (optional): If TRUE, returns full name and alternative names of returned country (may be useful to double-check that it is the correct country)}
+\item{name}{Logical (optional): If TRUE, returns full name and alternative
+names of returned country (may be useful to double-check that it is
+the correct country)}
 }
 \value{
 Character string with ISO3 code. Will also return full name if name=TRUE.

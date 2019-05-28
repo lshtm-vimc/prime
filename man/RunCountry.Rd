@@ -18,31 +18,40 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
 \arguments{
 \item{country_iso3}{Character string (required): ISO3 code of the country}
 
-\item{disc.cost}{Number (optional): Discounting for costs (only if discounting=TRUE)}
+\item{disc.cost}{Number (optional): Discounting for costs
+(only if discounting=TRUE)}
 
-\item{disc.ben}{Number (optional): Discounting for ... (only if discounting=TRUE)}
+\item{disc.ben}{Number (optional): Discounting for ...
+(only if discounting=TRUE)}
 
 \item{cov}{Number (optional): Proportion with routine coverage}
 
 \item{agevac}{Integer (optional): Target age for HPV vaccination}
 
-\item{agecohort}{Integer (optional): Reference age for cohort-size (only used when 'cohort' is not provided)}
+\item{agecohort}{Integer (optional): Reference age for cohort-size
+(only used when 'cohort' is not provided)}
 
 \item{cohort}{Integer (optional): Cohort-size. -1 if unknown}
 
-\item{canc.inc}{Integer (optional): Reference year for cancer incidence rates (Globocan: 2018 or 2012)}
+\item{canc.inc}{Integer (optional): Reference year for cancer incidence rates
+(Globocan: 2018 or 2012)}
 
 \item{daly.canc.diag}{Number (optional): Daly weight for cancer diagnosis}
 
-\item{daly.canc.control}{Number: daly-weight for controlled phase of cervical cancer}
+\item{daly.canc.control}{Number: daly-weight for controlled phase of
+cervical cancer}
 
-\item{daly.canc.metastatic}{Number: daly-weight for metastatic phase of cervical cancer}
+\item{daly.canc.metastatic}{Number: daly-weight for metastatic phase of
+cervical cancer}
 
 \item{daly.canc.terminal}{Number (optional): Daly weight for cancer death}
 
-\item{sens}{Numeric-vector (optional): Specific values to be used in a PSA. -1 if PSA's are not used}
+\item{sens}{Numeric-vector (optional): Specific values to be used in a PSA.
+-1 if PSA's are not used}
 
-\item{unwpp_mortality}{Logical (optional): If TRUE, uses year-specific UNWPP mortality estimates to construct life-tables. If FALSE, use WHO based mortality estimates}
+\item{unwpp_mortality}{Logical (optional): If TRUE, uses year-specific UNWPP
+mortality estimates to construct life-tables.
+If FALSE, use WHO based mortality estimates.}
 
 \item{year_born}{Integer (optional): Year in which cohort is born}
 
@@ -50,16 +59,21 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
 
 \item{campaigns}{List (optional): Multi-Age-Cohort campaigns (needs to be changed)}
 
-\item{analyseCosts}{Logical (optional): If FALSE, returns result from RunCohort() function. If TRUE, runs analyseCosts() with country-specific results}
+\item{analyseCosts}{Logical (optional): If FALSE, returns result from
+RunCohort() function.
+If TRUE, runs analyseCosts() with country-specific results.}
 
 \item{canc.cost}{Character (optional): Is cost of cancer adjusted
 ("adj" for International $) or not ("unadj" for US$)}
 
-\item{discounting}{Logical (optional): If TRUE, runs analysis undiscounted and discounted. If FALSE, only uses undiscounted}
+\item{discounting}{Logical (optional): If TRUE, runs analysis undiscounted
+and discounted. If FALSE, only uses undiscounted}
 
-\item{disability.weights}{character, disability weights for cervical cancer from GBD 2017 or GBD 2001}
+\item{disability.weights}{character, disability weights for cervical cancer
+from GBD 2017 or GBD 2001}
 
-\item{wb.indicator}{character, World Bank indicator for GDP/GNI per capita in I$/US$ and current/constant data}
+\item{wb.indicator}{character, World Bank indicator for GDP/GNI per capita
+in I$/US$ and current/constant data}
 
 \item{wb.year}{numeric, year of the World Bank indicator value}
 

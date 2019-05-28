@@ -11,9 +11,11 @@ ageCoverage(ages, routine_coverage, vaccine_efficacy_nosexdebut,
 \arguments{
 \item{ages}{Numeric vector (required): ages in model}
 
-\item{routine_coverage}{Number (required): proportion of population that receives routine vaccination}
+\item{routine_coverage}{Number (required): proportion of population that
+receives routine vaccination}
 
-\item{campaigns}{List or number (required): if a list, applies MAC vaccination (needs to change)}
+\item{campaigns}{List or number (required): if a list, applies MAC
+vaccination (needs to change)}
 
 \item{lifetab}{Data.table (required): lifetable generated with lifeTable()}
 
@@ -21,7 +23,8 @@ ageCoverage(ages, routine_coverage, vaccine_efficacy_nosexdebut,
 
 \item{agevac}{Number (required): target age for vaccination}
 
-\item{vaccine_efficacy}{Number (required): proportion indicating vaccine-efficacy}
+\item{vaccine_efficacy}{Number (required): proportion indicating
+vaccine-efficacy}
 }
 \value{
 Data.table with coverage and effective coverage by age. Used in RunCohort()

@@ -13,15 +13,19 @@ RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
   disability.weights = "gbd_2017")
 }
 \arguments{
-\item{lifetab}{Data.table: The life-table for this cohort. Can be created using the lifeTable() function.}
+\item{lifetab}{Data.table: The life-table for this cohort. Can be created
+using the lifeTable() function.}
 
-\item{cohort}{Number: The cohort-size of this birth-cohort at the time where the lifetable starts.}
+\item{cohort}{Number: The cohort-size of this birth-cohort at the time where
+the lifetable starts.}
 
 \item{incidence}{Numeric vector: Age-specific CeCx(16/18) incidence-rates.}
 
 \item{mortality_cecx}{Numeric vector: Age-specific CeCx(16/18) mortality-rates.}
 
-\item{prevalence}{Numeric vector: Age-specific CeCx(16/18) prevalence rates (5-year prevalence) -- referring to people who are alive within 5 years of diagnosis.}
+\item{prevalence}{Numeric vector: Age-specific CeCx(16/18) prevalence rates
+(5-year prevalence) -- referring to people who are alive within
+5 years of diagnosis.}
 
 \item{agevac}{Number: Age at which the cohort is vaccinated.}
 
@@ -29,17 +33,21 @@ RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
 
 \item{campaigns}{List or number: MAC cohort-vaccinations (needs to be changed).}
 
-\item{vaccine_efficacy_nosexdebut}{Number: proportion indicating vaccine-efficacy before sexual debut.}
+\item{vaccine_efficacy_nosexdebut}{Number: proportion indicating
+vaccine-efficacy before sexual debut.}
 
-\item{vaccine_efficacy_sexdebut}{Number: proportion indicating vaccine-efficacy after sexual debut.}
+\item{vaccine_efficacy_sexdebut}{Number: proportion indicating
+vaccine-efficacy after sexual debut.}
 
 \item{daly.canc.diag}{Number: daly-weight for cancer diagnosis.}
 
 \item{daly.canc.seq}{Number: daly-weight for cancer treatment.}
 
-\item{daly.canc.control}{Number: daly-weight for controlled phase of cervical cancer}
+\item{daly.canc.control}{Number: daly-weight for controlled phase of
+cervical cancer}
 
-\item{daly.canc.metastatic}{Number: daly-weight for metastatic phase of cervical cancer}
+\item{daly.canc.metastatic}{Number: daly-weight for metastatic phase of
+cervical cancer}
 
 \item{daly.canc.terminal}{Number: daly-weight for death from cancer.}
 

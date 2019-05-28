@@ -10,13 +10,16 @@ dtColMatch(input, input_match_on, reference, reference_match_on,
 \arguments{
 \item{input}{Data.table (required): input-table to match}
 
-\item{input_match_on}{Character vector (required): column-names in input-table to match}
+\item{input_match_on}{Character vector (required): column-names in
+input-table to match}
 
 \item{reference}{Data.table (required): reference-table to match}
 
-\item{reference_match_on}{Character vector (required): column-names in reference-table to match}
+\item{reference_match_on}{Character vector (required): column-names in
+reference-table to match}
 
-\item{reference_return}{Character string (required): column-name in reference-table that is returned (where values match)}
+\item{reference_return}{Character string (required): column-name in
+reference-table that is returned (where values match)}
 }
 \value{
 Character vector with values from reference_return column in reference_match_on data.table where values match

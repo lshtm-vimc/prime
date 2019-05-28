@@ -7,8 +7,8 @@
 RegisterBatchData(coverage_data, reporting_years = -1, force = FALSE)
 }
 \arguments{
-\item{coverage_data}{Data table with columns country_code, year (of vaccination),
-age_first, age_last, coverage.}
+\item{coverage_data}{Data table with columns country_code,
+year (of vaccination), age_first, age_last, coverage.}
 
 \item{reporting_years}{Numeric_vector, years that should be reported
 (parameter: not required)}

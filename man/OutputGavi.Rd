@@ -12,7 +12,8 @@ OutputGavi(DT, age_stratified = TRUE, calendar_year = FALSE,
 
 \item{age_stratified}{logical, whether output should be stratified by age}
 
-\item{calendar_year}{logical, whether output should be given by calendar year of event OR by year of birth of cohort}
+\item{calendar_year}{logical, whether output should be given by calendar year
+of event OR by year of birth of cohort}
 
 \item{gavi_template}{data table with template file downloaded from montagu}
 }

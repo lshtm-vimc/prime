@@ -10,17 +10,22 @@ dtAggregate(DT, aggr_on, measure.vars = c(), id.vars = c(),
 \arguments{
 \item{DT}{Data-table (required)}
 
-\item{aggr_on}{Character string (required): column-name that will be used to collapse on (i.e. combine all age-strata)}
+\item{aggr_on}{Character string (required): column-name that will be used to
+collapse on (i.e. combine all age-strata)}
 
-\item{measure.vars}{Character string (optional): column-names that will be collapsed (function will be applied to all these columns)}
+\item{measure.vars}{Character string (optional): column-names that will be
+collapsed (function will be applied to all these columns)}
 
-\item{id.vars}{Character string (optional): column-names that will remain stratified
+\item{id.vars}{Character string (optional): column-names that will remain
+       stratified
 
 N.b. if measure.vars is not provided, all columns that are not in id.vars and aggr_on will be assumed to be assumed}
 
-\item{func}{Character string (optional): function that will be applied to data (if optional, values will be summed)}
+\item{func}{Character string (optional): function that will be applied to
+data (if optional, values will be summed)}
 
-\item{na.rm}{Logical (optional): if TRUE, removes NA from measure.vars columns before applying function (or passes na.rm=TRUE to function)}
+\item{na.rm}{Logical (optional): if TRUE, removes NA from measure.vars
+columns before applying function (or passes na.rm=TRUE to function)}
 }
 \value{
 Returns collapsed data.table
