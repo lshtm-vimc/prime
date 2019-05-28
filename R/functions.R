@@ -1005,16 +1005,28 @@ RunCohort <- function (lifetab,
 
     # disability weights for different phases of cervical cancer
     # (diagnosis & therapy, controlled, metastatic, terminal)
-    dw = list (diag       = data.disability_weights [Source == disability.weights & Sequela == "diagnosis",  Mid],
-               control    = data.disability_weights [Source == disability.weights & Sequela == "control",    Mid],
-               metastatic = data.disability_weights [Source == disability.weights & Sequela == "metastatic", Mid],
+    dw = list (diag       = data.disability_weights [Source == disability.weights &
+                                                       Sequela == "diagnosis",
+                                                     Mid],
+               control    = data.disability_weights [Source == disability.weights &
+                                                       Sequela == "control",
+                                                     Mid],
+               metastatic = data.disability_weights [Source == disability.weights &
+                                                       Sequela == "metastatic",
+                                                     Mid],
                terminal   = data.disability_weights [Source == disability.weights & Sequela == "terminal",   Mid])
 
     # duration of different phases of cervical cancer
     # (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
-    cecx_duration = list (diag       = data.disability_weights [Source==disability.weights & Sequela=="diagnosis",  Duration],
-                          metastatic = data.disability_weights [Source==disability.weights & Sequela=="metastatic", Duration],
-                          terminal   = data.disability_weights [Source==disability.weights & Sequela=="terminal",   Duration])
+    cecx_duration = list (diag       = data.disability_weights [Source == disability.weights &
+                                                                  Sequela=="diagnosis",
+                                                                Duration],
+                          metastatic = data.disability_weights [Source == disability.weights &
+                                                                  Sequela=="metastatic",
+                                                                Duration],
+                          terminal   = data.disability_weights [Source == disability.weights &
+                                                                  Sequela=="terminal",
+                                                                Duration])
     # duration of controlled phases is based on remainder of time after attributing to other phases
 
     # combine yld contribution from (incidence, prevalence and mortality) cases
@@ -1030,16 +1042,23 @@ RunCohort <- function (lifetab,
 
   #discounting
   if (discounting) {
-    daly.canc.nonfatal.disc <- daly.canc.diag + daly.canc.seq * ( 1/(1+disc.ben) + 1/(1+disc.ben)^2 + 1/(1+disc.ben)^3 + 1/(1+disc.ben)^4 )
+    daly.canc.nonfatal.disc <- daly.canc.diag +
+      daly.canc.seq * ( 1/(1+disc.ben) +
+                          1/(1+disc.ben)^2 +
+                          1/(1+disc.ben)^3 +
+                          1/(1+disc.ben)^4 )
+
     daly.canc.fatal.disc <- daly.canc.diag + daly.canc.terminal * 1/(1+disc.ben)
-    disc.cost.yr <- rep(0,length(ages))
-    disc.ben.yr <- rep(0,length(ages))
-    disc.cost.yr[1:(which(ages==agevac))] <- 1
-    disc.ben.yr[1:(which(ages==agevac))] <- 1
+
+    disc.cost.yr <- rep(0, length(ages))
+    disc.ben.yr  <- rep(0, length(ages))
+
+    disc.cost.yr [1:(which(ages == agevac))] <- 1
+    disc.ben.yr  [1:(which(ages == agevac))] <- 1
 
     for (a in ages[which(ages >= agevac)]) {
-      disc.cost.yr[which(ages==a)] <- 1/(1+disc.cost)^((a-1)-agevac)
-      disc.ben.yr[which(ages==a)] <- 1/(1+disc.ben)^((a-1)-agevac)
+      disc.cost.yr [which(ages == a)] <- 1/(1+disc.cost)^((a-1)-agevac)
+      disc.ben.yr  [which(ages ==a )] <- 1/(1+disc.ben)^((a-1)-agevac)
     }
     lexp.disc <- rep(0,length(ages))
 
@@ -1102,22 +1121,27 @@ RunCohort <- function (lifetab,
     out.pre.disc [,"inc.cecx"]   <- out.pre.disc[,inc.cecx]*disc.ben.yr
     out.pre.disc [,"mort.cecx"]  <- out.pre.disc[,mort.cecx]*disc.ben.yr
     out.pre.disc [,"lifey"]      <- out.pre[,mort.cecx]*lexp.disc*disc.ben.yr
+
     out.pre.disc [,"disability"] <- (
-      (out.pre[,inc.cecx] - out.pre[,mort.cecx])*daly.canc.nonfatal.disc +out.pre[,mort.cecx]*daly.canc.fatal.disc
-    )*disc.ben.yr
-    out.pre.disc [,"cost.cecx"]  <- out.pre[,cost.cecx]*disc.cost.yr
+      (out.pre[, inc.cecx] -
+         out.pre [, mort.cecx]) * daly.canc.nonfatal.disc +
+         out.pre [, mort.cecx]  * daly.canc.fatal.disc
+    ) * disc.ben.yr
 
-    out.post.disc                  <- out.pre.disc
-    out.post.disc                  <- out.pre.disc*(1-coverage[,effective_coverage])
-    out.post.disc [,"age"]         <- ages
-    out.post.disc [,"cohort_size"] <- cohort*lifetab[,lx.adj]
-    out.post.disc [,"vaccinated"]  <- coverage[,coverage]
-    out.post.disc [,"immunized"]   <- coverage[,effective_coverage]
+    out.pre.disc [, "cost.cecx"]  <- out.pre [, cost.cecx] * disc.cost.yr
 
-    out.pre.disc  [,"scenario"] <- "pre-vaccination"
-    out.pre.disc  [,"type"]     <- "discounted"
-    out.post.disc [,"scenario"] <- "post-vaccination"
-    out.post.disc [,"type"]     <- "discounted"
+    out.post.disc                   <- out.pre.disc
+    out.post.disc                   <- out.pre.disc * (1-coverage[, effective_coverage])
+
+    out.post.disc [, "age"]         <- ages
+    out.post.disc [, "cohort_size"] <- cohort * lifetab[, lx.adj]
+    out.post.disc [, "vaccinated"]  <- coverage [, coverage]
+    out.post.disc [, "immunized"]   <- coverage [, effective_coverage]
+
+    out.pre.disc  [, "scenario"]    <- "pre-vaccination"
+    out.pre.disc  [, "type"]        <- "discounted"
+    out.post.disc [, "scenario"]    <- "post-vaccination"
+    out.post.disc [, "type"]        <- "discounted"
   }
 
   out.pre  [,"scenario"] <- "pre-vaccination"
@@ -1394,7 +1418,10 @@ RunCountry <- function (country_iso3,
   # If UN population projections unavailable, cohort size = 1 otherwise
   # cohort size = number of 10-14y/5
   if (cohort==-1) {
-    cohort <- unlist(data.popproj[iso3==country_iso3,as.character(year_born+agecohort),with=F],use.names=F)/5
+    cohort <- unlist (data.popproj [iso3 == country_iso3,
+                                    as.character(year_born + agecohort),
+                                    with=F],
+                      use.names=F)/5
 
     if (length(cohort)==0) {
       cohort <- 1
@@ -1962,10 +1989,12 @@ lifeTable <- function (qx        = NULL,
 #' ages <- c(0:100)
 #' routine_coverage <- 0.75
 #' vaccine_efficacy <- 0.8
-#' lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F], use.names=F), 9)
+#' lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG", as.character(0:100),
+#'   with=F], use.names=F), 9)
 #' cohort <- unlist(data.popproj[iso3=="AFG", "2020"], use.names=F)
 #' agevac <- 9
-#' ageCoverage(ages, routine_coverage, vaccine_efficacy, -1, lifetab, cohort, agevac)
+#' ageCoverage (ages, routine_coverage, vaccine_efficacy, -1,
+#'   lifetab, cohort, agevac)
 ageCoverage <- function (ages,
                          routine_coverage,
                          vaccine_efficacy_nosexdebut,
@@ -2003,7 +2032,8 @@ ageCoverage <- function (ages,
 
       #coverage increases for all subsequent age-strata
       init_cov <- coverage[age >= campaign_age, coverage]
-      coverage[age >= campaign_age,"coverage"] <- init_cov + (1-init_cov)*campaign_coverage
+      coverage[age >= campaign_age,"coverage"] <- init_cov +
+        (1-init_cov) * campaign_coverage
 
       #vaccine not efficacious for girls that have sexually debuted
       coverage [age >= campaign_age, "effective_coverage"] <-

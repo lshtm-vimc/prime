@@ -70,11 +70,15 @@ Runs PRIME for one birth-cohort. Usually called by another function such as
   RunCountry().
 }
 \examples{
-lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F], use.names=F), 9)
+lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG",
+  as.character(0:100), with=F], use.names=F), 9)
 cohort <- unlist(data.popproj[iso3=="AFG", "2020"], use.names=F)
-incidence <- unlist(data.incidence[iso3=="AFG",as.character(0:100),with=F],use.names=F)
-mortality_cecx <- unlist(data.mortall[iso3=="AFG",as.character(0:100),with=F],use.names=F)
-prevalence <- unlist(data.cecx_5y_prevalence[iso3=="AFG",as.character(0:100),with=F],use.names=F)
+incidence <- unlist(data.incidence[iso3=="AFG", as.character(0:100), with=F],
+  use.names=F)
+mortality_cecx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F],
+  use.names=F)
+prevalence <- unlist(data.cecx_5y_prevalence[iso3=="AFG",
+  as.character(0:100), with=F], use.names=F)
 agevac <- 9
 coverage <- 0.8
 campaigns <- -1

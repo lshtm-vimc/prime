@@ -21,7 +21,8 @@ of event OR by year of birth of cohort}
 #
 }
 \description{
-\code{OutputGavi} takes result of BatchRun and outputs it in format to be uploaded to VIMC Montagu.
+\code{OutputGavi} takes result of BatchRun and outputs it in format to be
+  uploaded to VIMC Montagu.
 }
 \examples{
 #

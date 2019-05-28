@@ -19,7 +19,8 @@ collapsed (function will be applied to all these columns)}
 \item{id.vars}{Character string (optional): column-names that will remain
        stratified
 
-N.b. if measure.vars is not provided, all columns that are not in id.vars and aggr_on will be assumed to be assumed}
+N.b. if measure.vars is not provided, all columns that are not in id.vars
+  and aggr_on will be assumed to be assumed}
 
 \item{func}{Character string (optional): function that will be applied to
 data (if optional, values will be summed)}
@@ -34,5 +35,5 @@ Returns collapsed data.table
 Collapse data-tables
 }
 \examples{
-dtAggregate(data.popproj,"iso3",id.vars="")
+dtAggregate (data.popproj, "iso3", id.vars="")
 }
