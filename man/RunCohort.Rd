@@ -8,7 +8,7 @@ RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
   coverage, campaigns, vaccine_efficacy_nosexdebut,
   vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq,
   daly.canc.control, daly.canc.metastatic, daly.canc.terminal, cost_cancer,
-  disc.cost = 0.03, disc.ben = 0.03, discounting = FALSE,
+  discounting = FALSE, disc.cost = 0.03, disc.ben = 0.03,
   country_iso3 = NULL, run_country = FALSE,
   disability.weights = "gbd_2017")
 }
@@ -53,11 +53,14 @@ cervical cancer}
 
 \item{cost_cancer}{Number: total per capita cost of cancer.}
 
-\item{disc.cost}{Number (optional): discounting for cancer cost.}
+\item{discounting}{Logical (optional): If TRUE, run cost-effectiveness analysis
+undiscounted and discounted. If FALSE, only uses undiscounted}
 
-\item{disc.ben}{Number (optional): discounting for...}
+\item{disc.cost}{Number (optional): Discounting for health costs
+(only if discounting=TRUE)}
 
-\item{discounting}{Logical: should discounting be applied?}
+\item{disc.ben}{Number (optional): Discounting for health outcomes
+(only if discounting=TRUE)}
 }
 \value{
 Returns a data.table with size of the birth-cohort and age-specific

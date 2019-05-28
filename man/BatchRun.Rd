@@ -12,7 +12,8 @@ BatchRun(countries = -1, coverage = -1, agevac = -1,
   vaccine_efficacy_beforesexdebut = 1,
   vaccine_efficacy_aftersexdebut = 0, log = -1,
   by_calendaryear = FALSE, use_proportions = TRUE,
-  analyseCosts = FALSE, canc.cost = "unadj", psa = 0,
+  analyseCosts = FALSE, canc.cost = "unadj", discounting = FALSE,
+  disc.cost = 0.03, disc.ben = 0.03, psa = 0,
   psa_vals = ".data.batch.psa", disability.weights = "gbd_2017",
   wb.indicator = "NY.GDP.PCAP.PP.CD", wb.year = 2017)
 }
@@ -70,6 +71,15 @@ on output or not}
 
 \item{canc.cost}{Character (optional): Is cost of cancer adjusted
 ("adj" for International $) or not ("unadj" for US$)}
+
+\item{discounting}{Logical (optional): If TRUE, run cost-effectiveness analysis
+undiscounted and discounted. If FALSE, only uses undiscounted}
+
+\item{disc.cost}{Number (optional): Discounting for health costs
+(only if discounting=TRUE)}
+
+\item{disc.ben}{Number (optional): Discounting for health outcomes
+(only if discounting=TRUE)}
 
 \item{psa}{integer, number of runs for probabilistic sensitivity analysis (PSA)}
 

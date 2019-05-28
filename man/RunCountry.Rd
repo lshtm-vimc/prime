@@ -5,24 +5,18 @@
 \title{Run PRIME for a specific country}
 \usage{
 RunCountry(country_iso3, vaceff_beforesexdebut = 1,
-  vaceff_aftersexdebut = 0, disc.cost = 0.03, disc.ben = 0.03,
-  cov = 1, agevac = 10, agecohort = 10, cohort = -1,
-  canc.inc = "2018", daly.canc.diag = 0.288,
+  vaceff_aftersexdebut = 0, cov = 1, agevac = 10, agecohort = 10,
+  cohort = -1, canc.inc = "2018", daly.canc.diag = 0.288,
   daly.canc.control = 0.049, daly.canc.metastatic = 0.451,
   daly.canc.terminal = 0.54, sens = -1, unwpp_mortality = TRUE,
   year_born = -1, year_vac = -1, campaigns = -1,
   analyseCosts = FALSE, canc.cost = "unadj", discounting = FALSE,
-  run_batch = FALSE, psadat = -1, disability.weights = "gbd_2017",
+  disc.cost = 0.03, disc.ben = 0.03, run_batch = FALSE,
+  psadat = -1, disability.weights = "gbd_2017",
   wb.indicator = "NY.GDP.PCAP.PP.CD", wb.year = 2017)
 }
 \arguments{
 \item{country_iso3}{Character string (required): ISO3 code of the country}
-
-\item{disc.cost}{Number (optional): Discounting for costs
-(only if discounting=TRUE)}
-
-\item{disc.ben}{Number (optional): Discounting for ...
-(only if discounting=TRUE)}
 
 \item{cov}{Number (optional): Proportion with routine coverage}
 
@@ -67,8 +61,14 @@ If TRUE, runs analyseCosts() with country-specific results.}
 \item{canc.cost}{Character (optional): Is cost of cancer adjusted
 ("adj" for International $) or not ("unadj" for US$)}
 
-\item{discounting}{Logical (optional): If TRUE, runs analysis undiscounted
-and discounted. If FALSE, only uses undiscounted}
+\item{discounting}{Logical (optional): If TRUE, run cost-effectiveness analysis
+undiscounted and discounted. If FALSE, only uses undiscounted}
+
+\item{disc.cost}{Number (optional): Discounting for health costs
+(only if discounting=TRUE)}
+
+\item{disc.ben}{Number (optional): Discounting for health outcomes
+(only if discounting=TRUE)}
 
 \item{disability.weights}{character, disability weights for cervical cancer
 from GBD 2017 or GBD 2001}
