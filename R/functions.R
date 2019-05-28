@@ -261,14 +261,16 @@ RegisterBatchDataGavi <- function (gavi_coverage,
   reporting_years <- sort(as.numeric(unique(gavi_template$year)))
 
   # get years for which there is demographic data
-  demographic_years <- sort(as.numeric(unique(data.pop[country_code %in% unique(coverage_data[,country_code]),year])))
+  demographic_years <- sort(as.numeric(unique(data.pop[country_code %in% unique(coverage_data[, country_code]), year])))
 
   # get birthcohorts for which we have coverage data
   coverage_years <- sort(as.numeric(unique(coverage_data$birthcohort)))
 
   # get min and max birthcohorts that should be modelled, following template
-  min_year <- min(reporting_years) - max(gavi_template[year==min(reporting_years),age])
-  max_year <- max(reporting_years) - min(gavi_template[year==max(reporting_years),age])
+  min_year <- min(reporting_years) -
+    max(gavi_template[year==min(reporting_years),age])
+  max_year <- max(reporting_years) -
+    min(gavi_template[year==max(reporting_years),age])
 
   # restrict to years for which we have demographic data, or to years for which
   # we have coverage data
@@ -509,7 +511,7 @@ BatchRun <- function (countries                       = -1,
   if(psa>1){
     psadat <- get(".data.batch.psa")
     if(length(unique(psadat[,run_id])) != psa){
-      stop("Number of specified PSA does not correspond to number of run ids in PSA file")
+      stop ("Number of specified PSA does not correspond to number of run ids in PSA file")
     } else {
       runs <- psa
       dopsa <- TRUE
@@ -535,7 +537,8 @@ BatchRun <- function (countries                       = -1,
     r=1:runs
   ) %dopar% {
     #) %do% {
-    .t_data.batch <- .data.batch[country_code==countries[cn] & birthcohort==years[y]]
+    .t_data.batch <- .data.batch [country_code == countries[cn] &
+                                    birthcohort == years[y]]
     if(init_coverage==-1){
       coverage <- .t_data.batch[1, coverage]
     } else {
@@ -554,7 +557,12 @@ BatchRun <- function (countries                       = -1,
     } else {
       agecohort <- init_agecohort
     }
-    cohort <- data.pop[country_code==countries[cn] & year==(years[y]+agecohort) & age_from==agecohort,value]
+
+    cohort <- data.pop [country_code == countries[cn] &
+                          year       == (years[y] + agecohort) &
+                          age_from   == agecohort,
+                        value]
+
     if(is.character(log)){
       writelog(
         log,
@@ -685,7 +693,8 @@ BatchRun <- function (countries                       = -1,
 
 #' Formatting output for VIMC Montagu
 #'
-#' \code{OutputGavi} takes result of BatchRun and outputs it in format to be uploaded to VIMC Montagu.
+#' \code{OutputGavi} takes result of BatchRun and outputs it in format to be
+#'   uploaded to VIMC Montagu.
 #'
 #' @param DT data table with results
 #' @param age_stratified logical, whether output should be stratified by age
@@ -712,9 +721,10 @@ OutputGavi <- function (DT,
 
   #check if values are proportions
   if (!("cases" %in% colnames(DT))) {
-    DT[,"inc.cecx"] <- DT[,cohort_size]*DT[,inc.cecx]
-    DT[,"mort.cecx"] <- DT[,cohort_size]*DT[,mort.cecx]
-    DT[,"disability"] <- DT[,cohort_size]*DT[,disability] + DT[,cohort_size]*DT[,lifey]
+    DT [, "inc.cecx"]   <- DT [, cohort_size] * DT [, inc.cecx]
+    DT [, "mort.cecx"]  <- DT [, cohort_size] * DT [, mort.cecx]
+    DT [, "disability"] <- DT [, cohort_size] * DT [, disability] +
+      DT [, cohort_size] * DT[, lifey]
 
     if ("run_id" %in% colnames(DT)) {
       DT <- DT[, c("scenario",
@@ -790,9 +800,11 @@ OutputGavi <- function (DT,
       DT <- DT[year!=y | (year==y & age %in% gavi_template[year==y,age])]
     }
     for (c in unique(DT[,country])) {
-      DT[country == c, "country_name"] <- unique(gavi_template[country==c, country_name])
+      DT [country == c, "country_name"] <- unique (gavi_template[country == c,
+                                                                 country_name])
     }
     DT[,"disease"] <- unique(gavi_template[,"disease"])
+
     #revert back to impact year
     if (!is_by_calendar_year) {
       DT[,"year"] <- DT[,year] - DT[,age]
@@ -813,12 +825,19 @@ OutputGavi <- function (DT,
 
   if ("run_id" %in% colnames(DT)) {
     if (!age_stratified) {
-      DT <- dtAggregate(DT, "age", c("cohort_size","cases","deaths","dalys","run_id"))
+      DT <- dtAggregate (DT, "age", c("cohort_size",
+                                      "cases",
+                                      "deaths",
+                                      "dalys",
+                                      "run_id"))
     }
     setorder (DT, scenario, run_id, country, year, age)
   } else {
     if (!age_stratified) {
-      DT <- dtAggregate(DT, "age", c("cohort_size","cases","deaths","dalys"))
+      DT <- dtAggregate(DT, "age", c("cohort_size",
+                                     "cases",
+                                     "deaths",
+                                     "dalys"))
     }
     setorder(DT, scenario, country, year, age)
   }
@@ -830,7 +849,8 @@ OutputGavi <- function (DT,
 
 #' Run PRIME for a single birth-cohort
 #'
-#' Runs PRIME for one birth-cohort. Usually called by another function such as RunCountry().
+#' Runs PRIME for one birth-cohort. Usually called by another function such as
+#'   RunCountry().
 #'
 #' @param lifetab Data.table: The life-table for this cohort. Can be created
 #'        using the lifeTable() function.
@@ -860,16 +880,21 @@ OutputGavi <- function (DT,
 #' @param disc.ben Number (optional): discounting for...
 #' @param discounting Logical: should discounting be applied?
 #'
-#' @return Returns a data.table with size of the birth-cohort and age-specific incidence-rates,
-#'     mortality-rates, years-of-life-lost, years-of-healthy-life-lost, and cancer-costs before and after vaccination.
-#'     Also displays whether discounting has been used ("type" column).
+#' @return Returns a data.table with size of the birth-cohort and age-specific
+#'   incidence-rates, mortality-rates, years-of-life-lost, years-of-healthy-life-lost,
+#'   and cancer-costs before and after vaccination.
+#'   Also displays whether discounting has been used ("type" column).
 #'
 #' @examples
-#' lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F], use.names=F), 9)
+#' lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG",
+#'   as.character(0:100), with=F], use.names=F), 9)
 #' cohort <- unlist(data.popproj[iso3=="AFG", "2020"], use.names=F)
-#' incidence <- unlist(data.incidence[iso3=="AFG",as.character(0:100),with=F],use.names=F)
-#' mortality_cecx <- unlist(data.mortall[iso3=="AFG",as.character(0:100),with=F],use.names=F)
-#' prevalence <- unlist(data.cecx_5y_prevalence[iso3=="AFG",as.character(0:100),with=F],use.names=F)
+#' incidence <- unlist(data.incidence[iso3=="AFG", as.character(0:100), with=F],
+#'   use.names=F)
+#' mortality_cecx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F],
+#'   use.names=F)
+#' prevalence <- unlist(data.cecx_5y_prevalence[iso3=="AFG",
+#'   as.character(0:100), with=F], use.names=F)
 #' agevac <- 9
 #' coverage <- 0.8
 #' campaigns <- -1
@@ -882,10 +907,11 @@ OutputGavi <- function (DT,
 #' daly.canc.terminal <- 0.1
 #' cost_cancer <- 100
 #'
-#' RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns,
-#'  vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq, daly.canc.control,
-#'  daly.canc.metastatic, daly.canc.terminal, cost_cancer, disc.cost=0.03, disc.ben=0.03, discounting=FALSE,
-#'  country_iso3="AFG", run_country=FALSE)
+#' RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
+#'   coverage, campaigns, vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
+#'   daly.canc.diag, daly.canc.seq, daly.canc.control, daly.canc.metastatic,
+#'   daly.canc.terminal, cost_cancer, disc.cost=0.03, disc.ben=0.03,
+#'   discounting=FALSE, country_iso3="AFG", run_country=FALSE)
 #'
 #' @export
 #' @import data.table
@@ -913,10 +939,9 @@ RunCohort <- function (lifetab,
                        country_iso3       = NULL,
                        run_country        = FALSE,
                        disability.weights = "gbd_2017") {
+
   #check if required variables are present
-  if(
-    sum(!sapply(ls(),function(x){checkSize(get(x))}))>0
-  ){
+  if (sum (!sapply (ls(), function(x) {checkSize(get(x))} ) ) > 0) {
     stop("Not all values have the required length")
   }
 
@@ -935,17 +960,21 @@ RunCohort <- function (lifetab,
   if (disability.weights == "gbd_2001") {
 
     # diagnosis, therapy and control over 1 year
-    diag <- data.disability_weights [Source==disability.weights & Sequela=="diagnosis", Mid]
+    diag <- data.disability_weights [Source == disability.weights &
+                                       Sequela == "diagnosis",
+                                     Mid]
 
     # metastatic stage for 6 months and terminal stage for 6 months (for a total of 1 year)
     # note: disability weights for metastatic and terminals stages are equal
-    terminal <- data.disability_weights [Source==disability.weights & Sequela=="terminal", Mid]
+    terminal <- data.disability_weights [Source == disability.weights &
+                                           Sequela == "terminal",
+                                         Mid]
 
     # long term sequela (for 4 years)
     # note: duration of long-term sequela is same irrespective of WHO mortality startum (A/B/C/D/C)
-    control <- daly.canc.seq * data.disability_weights [Source==disability.weights &
+    control <- daly.canc.seq * data.disability_weights [Source == disability.weights &
                                                           Sequela == "control" &
-                                                          WHO_MortalityStratum=="E",
+                                                          WHO_MortalityStratum == "E",
                                                         Duration]
 
     # yld associated with a non fatal case & a fatal case
@@ -953,7 +982,8 @@ RunCohort <- function (lifetab,
     daly.canc.fatal    <- diag + terminal
 
     # combine yld contribution from non-fatal and fatal cases
-    yld <- ((incidence - mortality_cecx) * daly.canc.nonfatal) + (mortality_cecx * daly.canc.fatal)
+    yld <- ((incidence - mortality_cecx) * daly.canc.nonfatal) +
+      (mortality_cecx * daly.canc.fatal)
 
   } else if (disability.weights == "gbd_2017") {
 
@@ -975,10 +1005,10 @@ RunCohort <- function (lifetab,
 
     # disability weights for different phases of cervical cancer
     # (diagnosis & therapy, controlled, metastatic, terminal)
-    dw = list (diag       = data.disability_weights [Source==disability.weights & Sequela=="diagnosis",  Mid],
-               control    = data.disability_weights [Source==disability.weights & Sequela=="control",    Mid],
-               metastatic = data.disability_weights [Source==disability.weights & Sequela=="metastatic", Mid],
-               terminal   = data.disability_weights [Source==disability.weights & Sequela=="terminal",   Mid])
+    dw = list (diag       = data.disability_weights [Source == disability.weights & Sequela == "diagnosis",  Mid],
+               control    = data.disability_weights [Source == disability.weights & Sequela == "control",    Mid],
+               metastatic = data.disability_weights [Source == disability.weights & Sequela == "metastatic", Mid],
+               terminal   = data.disability_weights [Source == disability.weights & Sequela == "terminal",   Mid])
 
     # duration of different phases of cervical cancer
     # (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
@@ -1136,7 +1166,8 @@ RunCohort <- function (lifetab,
 #' Run PRIME for a specific country
 #'
 #' Runs RunCohort() using country-specific estimates.
-#' If year_born and year_vac are not provided, assumes vaccination occurs in the current year.
+#' If year_born and year_vac are not provided, assumes vaccination occurs in
+#'   the current year.
 #'
 #' @param country_iso3 Character string (required): ISO3 code of the country
 #' @param vaceff Number (optional): Proportion indicating vaccine-efficacy
@@ -1164,7 +1195,8 @@ RunCohort <- function (lifetab,
 #'        If FALSE, use WHO based mortality estimates.
 #' @param year_born Integer (optional): Year in which cohort is born
 #' @param year_vac Integer (optional): Year in which cohort is vaccinated
-#' @param campaigns List (optional): Multi-Age-Cohort campaigns (needs to be changed)
+#' @param campaigns List (optional): Multi-Age-Cohort campaigns
+#'        (needs to be changed)
 #' @param analyseCosts Logical (optional): If FALSE, returns result from
 #'        RunCohort() function.
 #'        If TRUE, runs analyseCosts() with country-specific results.
@@ -1178,13 +1210,15 @@ RunCohort <- function (lifetab,
 #'        in I$/US$ and current/constant data
 #' @param wb.year numeric, year of the World Bank indicator value
 #'
-#' @return data.table with country-specific results of HPV vaccination. Returns cost-analysis if analyseCosts=TRUE
+#' @return data.table with country-specific results of HPV vaccination.
+#'         Returns cost-analysis if analyseCosts=TRUE
 #' @export
 #' @importFrom wbstats wb
 #'
 #' @examples RunCountry("AFG")
 #' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88)
-#' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88, analyseCosts=TRUE)
+#' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88,
+#'           analyseCosts=TRUE)
 RunCountry <- function (country_iso3,
                         vaceff_beforesexdebut = 1,
                         vaceff_aftersexdebut  = 0,
@@ -1213,19 +1247,21 @@ RunCountry <- function (country_iso3,
                         wb.indicator          = "NY.GDP.PCAP.PP.CD",
                         wb.year               = 2017) {
 
-  ##check if all required data is present in the global environment
-  #if(sum(!(c("data.incidence", "data.global", "data.costcecx", "data.popproj", "data.mortcecx", "data.mortall", "data.mortall.unwpp") %in% ls(name=.GlobalEnv, all.names=T))) > 0){
+  ## check if all required data is present in the global environment
+  # if(sum(!(c("data.incidence", "data.global", "data.costcecx", "data.popproj", "data.mortcecx", "data.mortall", "data.mortall.unwpp") %in% ls(name=.GlobalEnv, all.names=T))) > 0){
   #	stop("Not all required datafiles seem to be present in your environment. Please load all datafiles required.")
-  #}
+  # }
 
-  #check if required variables are present (sanity check, sees if any variables passed to function have a length of 0)
+  # check if required variables are present (sanity check, sees if any variables
+  # passed to function have a length of 0)
   if (sum (!sapply (ls(), function(x) {checkSize(get(x))} )) > 0) {
     stop ("Not all values have the required length")
   }
 
-  #retrieve year of birthcohort
+  # retrieve year of birthcohort
   if (year_vac!=-1 & year_born!=-1 ) {
-    #check if year of vaccination corresponds with age of vaccination for this birth-cohort
+    # check if year of vaccination corresponds with age of vaccination
+    # for this birth-cohort
     if (year_vac-agevac != year_born) {
       stop (
         paste0 ("Year of vaccination (",
@@ -1250,10 +1286,11 @@ RunCountry <- function (country_iso3,
     year_born <- year_vac-agevac
   }
 
-  ages <- as.numeric(colnames(data.incidence)[!grepl("\\D",colnames(data.incidence))])
+  ages <- as.numeric (colnames (data.incidence) [!grepl ("\\D",
+                                                    colnames (data.incidence))])
   ages <- ages[!is.na(ages)]
 
-  #If no data available, use other country as proxy
+  # If no data available, use other country as proxy
   if ( country_iso3 %in% c("XK","MHL","TUV","PSE") ) {
     proxy <- TRUE
     country_iso3 <- switch (
@@ -1268,8 +1305,8 @@ RunCountry <- function (country_iso3,
     proxy <- FALSE
   }
 
-  #get country specific variables
-  #cost per FVG
+  # et country specific variables
+  # cost per FVG
   cost.vac <- monetary_to_number (
     data.global [iso3==country_iso3,
                  `Vaccine price [4]`]
@@ -1278,7 +1315,7 @@ RunCountry <- function (country_iso3,
                  `Vaccine delivery/ operational/ admin costs [5]`]
   )
 
-  #cost per cancer episode
+  # cost per cancer episode
   if (canc.cost == "unadj") {
     # cost.canc <- monetary_to_number(data.costcecx[iso3==country_iso3, cancer_cost])
     cost.canc <- data.costcecx [iso3==country_iso3, cancer_cost]
@@ -1349,11 +1386,13 @@ RunCountry <- function (country_iso3,
   # disability weight for long term sequela based on WHO mortality stratum
   # this is specific for gbd_2001
   stratum       <- data.global [iso3==country_iso3, `WHO Mortality Stratum`]
-  daly.canc.seq <- data.disability_weights [Source=="gbd_2001" & WHO_MortalityStratum==stratum, Mid]
+  daly.canc.seq <- data.disability_weights [Source=="gbd_2001" &
+                                              WHO_MortalityStratum==stratum, Mid]
   ##############################################################################
 
-  #Calculate total and vaccinated cohort size
-  #If UN population projections unavailable, cohort size = 1 otherwise cohort size = number of 10-14y/5
+  # Calculate total and vaccinated cohort size
+  # If UN population projections unavailable, cohort size = 1 otherwise
+  # cohort size = number of 10-14y/5
   if (cohort==-1) {
     cohort <- unlist(data.popproj[iso3==country_iso3,as.character(year_born+agecohort),with=F],use.names=F)/5
 
@@ -1371,9 +1410,9 @@ RunCountry <- function (country_iso3,
     }
   }
 
-  #create lifetables
+  # create lifetables
   if (!unwpp_mortality) {
-    #Use WHO mortality estimates
+    # Use WHO mortality estimates
     mort.all <- unlist (data.mortall[iso3==country_iso3,
                                      as.character(ages),
                                      with=F],
@@ -1381,8 +1420,8 @@ RunCountry <- function (country_iso3,
     lifetab  <- lifeTable (qx=mort.all,agecohort)
   } else {
 
-    #Use UNWPP mortality estimates
-    #if year is outside of scope of mortality estimates, use last available data
+    # Use UNWPP mortality estimates
+    # if year is outside of scope of mortality estimates, use last available data
     mx <- numeric(length(ages))
 
     for (a in ages) {
@@ -1401,7 +1440,7 @@ RunCountry <- function (country_iso3,
                                             (year - (lookup.yr) > -5),
                                           value]
 
-      #set mortality to 1 if no data is found
+      # set mortality to 1 if no data is found
       if (length(mortality) < 1) {
         mortality <- 1
       }
@@ -1496,7 +1535,8 @@ RunCountry <- function (country_iso3,
 #'        names of returned country (may be useful to double-check that it is
 #'        the correct country)
 #'
-#' @return Character string with ISO3 code. Will also return full name if name=TRUE.
+#' @return Character string with ISO3 code. Will also return full name
+#'         if name=TRUE.
 #' @export
 #'
 #' @examples
@@ -1510,7 +1550,7 @@ getISO3 <- function (countryname,
     country_iso3 <- dtColMatch (countryname,
                                 c("country"),
                                 data.countryname,
-                                c("name1","name2","name3","name4"),
+                                c("name1", "name2", "name3", "name4"),
                                 "iso3")
 
     name     <- data.countryname [iso3==country_iso3, name1]
@@ -1536,7 +1576,7 @@ getISO3 <- function (countryname,
     return (dtColMatch (countryname,
                         c("country"),
                         data.countryname,
-                        c("name1","name2","name3","name4"),
+                        c("name1", "name2", "name3", "name4"),
                         "iso3")
             )
   }
@@ -1599,7 +1639,7 @@ analyseCosts <- function (results,
     costeffect [,d] <- numeric(length(costvariables))
   }
 
-  #get agevac
+  # get agevac
   vaccinated <- 0
   a          <- -1
 
@@ -1804,6 +1844,7 @@ analyseCosts <- function (results,
 #' B <- c(1,2,3)
 #' sapply(c("A","B"),function(x){checkSize(get(x))})
 checkSize <- function (v) {
+
   if (is.vector(v)) {
     size <- length(v)
   } else if (is.data.frame(v) | is.data.table(v)) {
@@ -1840,9 +1881,9 @@ lifeTable <- function (qx        = NULL,
                        agecohort = 0) {
 
   if (is.null(qx) & is.null(mx)) {
-    stop("Provide qx or mx values")
+    stop ("Provide qx or mx values")
   } else if (is.null(qx)) {
-    #convert central mortality rate to qx
+    # convert central mortality rate to qx
     qx <- 2*mx/(2+mx)
   }
 
@@ -1941,24 +1982,40 @@ ageCoverage <- function (ages,
   )
 
   coverage[age >= agevac,"coverage"] <- routine_coverage
-  coverage[,"effective_coverage"] <- coverage[,coverage]*vaccine_efficacy_nosexdebut*(1-propSexDebut(agevac, country_iso3)) + coverage[,coverage]*vaccine_efficacy_sexdebut*(propSexDebut(agevac, country_iso3))
+  coverage[,"effective_coverage"] <-
+    (coverage [, coverage] * vaccine_efficacy_nosexdebut *
+       (1 - propSexDebut (agevac, country_iso3))) +
+    (coverage [, coverage] * vaccine_efficacy_sexdebut *
+       (propSexDebut(agevac, country_iso3)))
 
-  if(is.list(campaigns)){
-    for(y in 1:length(campaigns)){
-      campaign_age <- campaigns[[y]][["ages"]]
+  if (is.list(campaigns)) {
+    for (y in 1:length(campaigns)) {
+      campaign_age      <- campaigns[[y]][["ages"]]
       campaign_coverage <- campaigns[[y]][["coverage"]]
       #if activity type is campaign, coverage proportion still needs to be calculated
       #if(campaigns[[y]][["type"]] == "campaign"){
       #	campaign_coverage <- campaign_coverage/(lifetab[age==campaign_age,"lx.adj"]*cohort)
       #}
-      if(campaign_coverage > 1){
+
+      if (campaign_coverage > 1) {
         campaign_coverage <- 1
       }
+
       #coverage increases for all subsequent age-strata
       init_cov <- coverage[age >= campaign_age, coverage]
       coverage[age >= campaign_age,"coverage"] <- init_cov + (1-init_cov)*campaign_coverage
+
       #vaccine not efficacious for girls that have sexually debuted
-      coverage[age >= campaign_age,"effective_coverage"] <- coverage[age >= campaign_age,effective_coverage] + (1-init_cov)*campaign_coverage*(1-propSexDebut(campaign_age, country_iso3))*vaccine_efficacy_nosexdebut + (1-init_cov)*campaign_coverage*(propSexDebut(campaign_age, country_iso3))*vaccine_efficacy_sexdebut
+      coverage [age >= campaign_age, "effective_coverage"] <-
+        (coverage [age >= campaign_age, effective_coverage]) +
+        ((1 - init_cov) *
+           campaign_coverage *
+           (1 - propSexDebut (campaign_age, country_iso3)) *
+           vaccine_efficacy_nosexdebut) +
+        ((1 - init_cov) *
+           campaign_coverage *
+           (propSexDebut (campaign_age, country_iso3)) *
+           vaccine_efficacy_sexdebut)
     }
   }
 
@@ -1969,12 +2026,14 @@ ageCoverage <- function (ages,
 
 #' Proportion of girls sexually debuted
 #'
-#' \code{propSexDebut} returns proportion of girls sexually debuted in country \code{country_iso3} at age \code{age}.
+#' \code{propSexDebut} returns proportion of girls sexually debuted in
+#'   country \code{country_iso3} at age \code{age}.
 #'
 #' @param age age of girls
 #' @param country_iso3 ISO3 country code
 #'
-#' @return Returns proportion of girls in a given country that has sexually debuted at a given age.
+#' @return Returns proportion of girls in a given country that has
+#'   sexually debuted at a given age.
 #'
 #' @examples
 #' propSexDebut (20, "IND")
@@ -1992,11 +2051,13 @@ propSexDebut <- function (age,
         is.na (data.sexual_debut [iso3 == country_iso3, a]) ||
         is.na (data.sexual_debut [iso3 == country_iso3, b]) ||
         is.na (data.sexual_debut [iso3 == country_iso3, cluster.id]) ) {
-      #cannot estimate data.sexual_debut, use prop_sexdebut of 0
+
+      # cannot estimate data.sexual_debut, use prop_sexdebut of 0
       prop_sexdebut <- 0
 
     } else if (!is.na (data.sexual_debut [iso3 == country_iso3, a]) &
                !is.na (data.sexual_debut [iso3 == country_iso3, b]) ) {
+
       # estimate proportion sexual debut with country specific parameters
       prop_sexdebut <- pgamma (
         # prop will be 0 for ages lower than 12
@@ -2005,6 +2066,7 @@ propSexDebut <- function (age,
         scale = data.sexual_debut [iso3 == country_iso3, b]
       )
     } else {
+
       # estimate proportion sexual debut at 1+age-of-vaccination,
       # based on parameters of country with highest proportion of girls
       # sexually debuting at age 15
@@ -2027,13 +2089,13 @@ propSexDebut <- function (age,
 
 } # end of function -- propSexDebut
 
-# Extend data.table library
-# Used to match multiple columns of different data-tables. Return variable of interest.
+
 #' Match two data-tables on multiple columns
 #'
 #' Returns vector with column-of-interest where columns match
 #'
-#' If at least one value in any of the input_match_on columns matches with a value in any of the reference_match_on columns, the two rows will match
+#' If at least one value in any of the input_match_on columns matches with a
+#'   value in any of the reference_match_on columns, the two rows will match
 #'
 #' @param input Data.table (required): input-table to match
 #' @param input_match_on Character vector (required): column-names in
@@ -2044,11 +2106,17 @@ propSexDebut <- function (age,
 #' @param reference_return Character string (required): column-name in
 #'        reference-table that is returned (where values match)
 #'
-#' @return Character vector with values from reference_return column in reference_match_on data.table where values match
+#' @return Character vector with values from reference_return column in
+#'         reference_match_on data.table where values match
 #' @export
 #'
 #' @examples
-#' dtColMatch(data.global,c("Country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
+#' dtColMatch (data.global, c("Country"), data.countryname,
+#'   c("name1", "name2", "name3", "name4"), "iso3")
+#'
+# Extend data.table library
+# Used to match multiple columns of different data-tables.
+# Return variable of interest.
 dtColMatch <- function (input,
                         input_match_on,
                         reference,
@@ -2088,7 +2156,8 @@ dtColMatch <- function (input,
 #' @param id.vars Character string (optional): column-names that will remain
 #'        stratified
 #'
-#' N.b. if measure.vars is not provided, all columns that are not in id.vars and aggr_on will be assumed to be assumed
+#' N.b. if measure.vars is not provided, all columns that are not in id.vars
+#'   and aggr_on will be assumed to be assumed
 #'
 #' @param func Character string (optional): function that will be applied to
 #'        data (if optional, values will be summed)
@@ -2098,7 +2167,7 @@ dtColMatch <- function (input,
 #' @return Returns collapsed data.table
 #' @export
 #'
-#' @examples dtAggregate(data.popproj,"iso3",id.vars="")
+#' @examples dtAggregate (data.popproj, "iso3", id.vars="")
 dtAggregate <- function (DT,
                          aggr_on,
                          measure.vars = c(),

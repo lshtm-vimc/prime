@@ -60,12 +60,14 @@ cervical cancer}
 \item{discounting}{Logical: should discounting be applied?}
 }
 \value{
-Returns a data.table with size of the birth-cohort and age-specific incidence-rates,
-    mortality-rates, years-of-life-lost, years-of-healthy-life-lost, and cancer-costs before and after vaccination.
-    Also displays whether discounting has been used ("type" column).
+Returns a data.table with size of the birth-cohort and age-specific
+  incidence-rates, mortality-rates, years-of-life-lost, years-of-healthy-life-lost,
+  and cancer-costs before and after vaccination.
+  Also displays whether discounting has been used ("type" column).
 }
 \description{
-Runs PRIME for one birth-cohort. Usually called by another function such as RunCountry().
+Runs PRIME for one birth-cohort. Usually called by another function such as
+  RunCountry().
 }
 \examples{
 lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F], use.names=F), 9)
@@ -85,9 +87,10 @@ daly.canc.metastatic <- 0.05
 daly.canc.terminal <- 0.1
 cost_cancer <- 100
 
-RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac, coverage, campaigns,
- vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq, daly.canc.control,
- daly.canc.metastatic, daly.canc.terminal, cost_cancer, disc.cost=0.03, disc.ben=0.03, discounting=FALSE,
- country_iso3="AFG", run_country=FALSE)
+RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
+  coverage, campaigns, vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
+  daly.canc.diag, daly.canc.seq, daly.canc.control, daly.canc.metastatic,
+  daly.canc.terminal, cost_cancer, disc.cost=0.03, disc.ben=0.03,
+  discounting=FALSE, country_iso3="AFG", run_country=FALSE)
 
 }

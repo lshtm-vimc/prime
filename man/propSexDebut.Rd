@@ -12,10 +12,12 @@ propSexDebut(age, country_iso3)
 \item{country_iso3}{ISO3 country code}
 }
 \value{
-Returns proportion of girls in a given country that has sexually debuted at a given age.
+Returns proportion of girls in a given country that has
+  sexually debuted at a given age.
 }
 \description{
-\code{propSexDebut} returns proportion of girls sexually debuted in country \code{country_iso3} at age \code{age}.
+\code{propSexDebut} returns proportion of girls sexually debuted in
+  country \code{country_iso3} at age \code{age}.
 }
 \examples{
 propSexDebut (20, "IND")

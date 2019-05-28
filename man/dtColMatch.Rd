@@ -22,14 +22,18 @@ reference-table to match}
 reference-table that is returned (where values match)}
 }
 \value{
-Character vector with values from reference_return column in reference_match_on data.table where values match
+Character vector with values from reference_return column in
+        reference_match_on data.table where values match
 }
 \description{
 Returns vector with column-of-interest where columns match
 }
 \details{
-If at least one value in any of the input_match_on columns matches with a value in any of the reference_match_on columns, the two rows will match
+If at least one value in any of the input_match_on columns matches with a
+  value in any of the reference_match_on columns, the two rows will match
 }
 \examples{
-dtColMatch(data.global,c("Country"),data.countryname,c("name1","name2","name3","name4"),"iso3")
+dtColMatch (data.global, c("Country"), data.countryname,
+  c("name1", "name2", "name3", "name4"), "iso3")
+
 }

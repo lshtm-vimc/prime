@@ -14,7 +14,8 @@ names of returned country (may be useful to double-check that it is
 the correct country)}
 }
 \value{
-Character string with ISO3 code. Will also return full name if name=TRUE.
+Character string with ISO3 code. Will also return full name
+        if name=TRUE.
 }
 \description{
 Retrieve ISO3-code of country

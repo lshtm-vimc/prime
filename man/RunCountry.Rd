@@ -57,7 +57,8 @@ If FALSE, use WHO based mortality estimates.}
 
 \item{year_vac}{Integer (optional): Year in which cohort is vaccinated}
 
-\item{campaigns}{List (optional): Multi-Age-Cohort campaigns (needs to be changed)}
+\item{campaigns}{List (optional): Multi-Age-Cohort campaigns
+(needs to be changed)}
 
 \item{analyseCosts}{Logical (optional): If FALSE, returns result from
 RunCohort() function.
@@ -80,14 +81,17 @@ in I$/US$ and current/constant data}
 \item{vaceff}{Number (optional): Proportion indicating vaccine-efficacy}
 }
 \value{
-data.table with country-specific results of HPV vaccination. Returns cost-analysis if analyseCosts=TRUE
+data.table with country-specific results of HPV vaccination.
+        Returns cost-analysis if analyseCosts=TRUE
 }
 \description{
 Runs RunCohort() using country-specific estimates.
-If year_born and year_vac are not provided, assumes vaccination occurs in the current year.
+If year_born and year_vac are not provided, assumes vaccination occurs in
+  the current year.
 }
 \examples{
 RunCountry("AFG")
 RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88)
-RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88, analyseCosts=TRUE)
+RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88,
+          analyseCosts=TRUE)
 }
