@@ -2024,7 +2024,7 @@ ageCoverage <- function (ages,
 
   coverage <- data.table (
     age      = ages,
-    coverage = rep (0,length(ages))
+    coverage = rep (0, length(ages))
   )
 
   coverage[age >= agevac,"coverage"] <- routine_coverage
@@ -2038,8 +2038,8 @@ ageCoverage <- function (ages,
     for (y in 1:length(campaigns)) {
       campaign_age      <- campaigns[[y]][["ages"]]
       campaign_coverage <- campaigns[[y]][["coverage"]]
-      #if activity type is campaign, coverage proportion still needs to be calculated
-      #if(campaigns[[y]][["type"]] == "campaign"){
+      # if activity type is campaign, coverage proportion still needs to be calculated
+      # if(campaigns[[y]][["type"]] == "campaign"){
       #	campaign_coverage <- campaign_coverage/(lifetab[age==campaign_age,"lx.adj"]*cohort)
       #}
 
@@ -2047,12 +2047,12 @@ ageCoverage <- function (ages,
         campaign_coverage <- 1
       }
 
-      #coverage increases for all subsequent age-strata
+      # coverage increases for all subsequent age-strata
       init_cov <- coverage[age >= campaign_age, coverage]
-      coverage[age >= campaign_age,"coverage"] <- init_cov +
+      coverage[age >= campaign_age, "coverage"] <- init_cov +
         (1-init_cov) * campaign_coverage
 
-      #vaccine not efficacious for girls that have sexually debuted
+      # vaccine not efficacious for girls that have sexually debuted
       coverage [age >= campaign_age, "effective_coverage"] <-
         (coverage [age >= campaign_age, effective_coverage]) +
         ((1 - init_cov) *
