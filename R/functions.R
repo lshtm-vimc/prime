@@ -959,8 +959,8 @@ RunCohort <- function (lifetab,
     stop("Not all values have the required length")
   }
 
-  ages <- lifetab [,age]
-  lexp <- lifetab [,ex]
+  ages <- lifetab [, age]
+  lexp <- lifetab [, ex]
 
   ##############################################################################
   # Calculate weights for DALYs. This calculation of daly.canc.nonfatal and
@@ -985,11 +985,13 @@ RunCohort <- function (lifetab,
                                          Mid]
 
     # long term sequela (for 4 years)
-    # note: duration of long-term sequela is same irrespective of WHO mortality startum (A/B/C/D/C)
-    control <- daly.canc.seq * data.disability_weights [Source == disability.weights &
-                                                          Sequela == "control" &
-                                                          WHO_MortalityStratum == "E",
-                                                        Duration]
+    # note: duration of long-term sequela is same irrespective of
+    # WHO mortality startum (A/B/C/D/C)
+    control <- daly.canc.seq *
+      data.disability_weights [Source == disability.weights &
+                                 Sequela == "control" &
+                                 WHO_MortalityStratum == "E",
+                               Duration]
 
     # yld associated with a non fatal case & a fatal case
     daly.canc.nonfatal <- diag + control
@@ -998,6 +1000,32 @@ RunCohort <- function (lifetab,
     # combine yld contribution from non-fatal and fatal cases
     yld <- ((incidence - mortality_cecx) * daly.canc.nonfatal) +
       (mortality_cecx * daly.canc.fatal)
+
+    if (discounting) {
+      ############################################################################
+      # estimate yld discounted (taking into account for morbidity in future years)
+      # in gbd 2001, yld is attributed to age of incidence
+      # diagnosis, therapy and control over 1 year + long term sequela for next 4 years
+      daly.canc.nonfatal.disc <- diag +
+        daly.canc.seq * ( 1/(1+disc.ben)   + 1/(1+disc.ben)^2 +
+                          1/(1+disc.ben)^3 + 1/(1+disc.ben)^4 )
+
+      # diagnosis, therapy and control in 1st year followed by
+      # metastatic stage for 6 months and terminal stage for 6 months (in 2nd year)
+      daly.canc.fatal.disc <- diag + terminal * 1/(1+disc.ben)
+
+      yld.disc <- ((incidence - mortality_cecx) * daly.canc.nonfatal.disc) +
+        (mortality_cecx * daly.canc.fatal.disc)
+
+      # daly.canc.nonfatal.disc <- daly.canc.diag +
+      #   daly.canc.seq * ( 1/(1+disc.ben) +
+      #                       1/(1+disc.ben)^2 +
+      #                       1/(1+disc.ben)^3 +
+      #                       1/(1+disc.ben)^4 )
+      #
+      # daly.canc.fatal.disc <- daly.canc.diag + daly.canc.terminal * 1/(1+disc.ben)
+      ############################################################################
+    }
 
   } else if (disability.weights == "gbd_2017") {
 
@@ -1049,6 +1077,14 @@ RunCohort <- function (lifetab,
       (prevalence * dw$control) +
       (mortality_cecx * ( (dw$metastatic * cecx_duration$metastatic) +
                            (dw$terminal * cecx_duration$terminal) ) )
+
+    if (discounting) {
+      # estimate yld discounted (taking into account for morbidity in future years)
+      # in gbd 2017, since yld is attributed to age of prevalence,
+      # yld (discounted) = yld (undiscounted)
+      yld.disc <- yld
+    }
+
   }
 
 
@@ -1056,13 +1092,14 @@ RunCohort <- function (lifetab,
 
   # discounting
   if (discounting) {
-    daly.canc.nonfatal.disc <- daly.canc.diag +
-      daly.canc.seq * ( 1/(1+disc.ben) +
-                          1/(1+disc.ben)^2 +
-                          1/(1+disc.ben)^3 +
-                          1/(1+disc.ben)^4 )
 
-    daly.canc.fatal.disc <- daly.canc.diag + daly.canc.terminal * 1/(1+disc.ben)
+    # daly.canc.nonfatal.disc <- daly.canc.diag +
+    #   daly.canc.seq * ( 1/(1+disc.ben) +
+    #                       1/(1+disc.ben)^2 +
+    #                       1/(1+disc.ben)^3 +
+    #                       1/(1+disc.ben)^4 )
+    #
+    # daly.canc.fatal.disc <- daly.canc.diag + daly.canc.terminal * 1/(1+disc.ben)
 
     disc.cost.yr <- rep(0, length(ages))
     disc.ben.yr  <- rep(0, length(ages))
@@ -1070,29 +1107,42 @@ RunCohort <- function (lifetab,
     disc.cost.yr [1:(which(ages == agevac))] <- 1
     disc.ben.yr  [1:(which(ages == agevac))] <- 1
 
-    for (a in ages[which(ages >= agevac)]) {
-      disc.cost.yr [which(ages == a)] <- 1/(1+disc.cost)^((a-1)-agevac)
-      disc.ben.yr  [which(ages ==a )] <- 1/(1+disc.ben)^((a-1)-agevac)
+    # age of vaccination is base year for discounting of this cohort
+    # estimate cumulative discount rates for each year beyond age of vaccination
+    for (a in ages [which (ages > agevac) ]) {
+      disc.cost.yr [which (ages == a)] <- 1 / (1 + disc.cost)^(a - agevac)
+      disc.ben.yr  [which (ages == a)] <- 1 / (1 + disc.ben)^(a - agevac)
     }
-    lexp.disc <- rep(0,length(ages))
 
-    for (a in ages[-which(ages==max(ages))]) {
-      lexp.disc[which(ages==a)] <- sum(
-        disc.ben.yr[1:floor(
-          lexp[which(ages==a)]
-        )]
-      )+(
-        lexp[which(ages==a)]
-        -floor(
-          lexp[which(ages==a)]
-        )
-      )*disc.ben.yr[floor(
-        lexp[which(ages==a)]
-      )+1]
-    }
+
+    ##############################################################################
+    # estimate remaining life expectancy (discounted)
+    # lexp.disc <- rep(0,length(ages))
+    #
+    # for (a in ages[-which(ages==max(ages))]) {
+    #   lexp.disc [which (ages==a)] <- sum(
+    #     disc.ben.yr [1:floor (
+    #       lexp [which (ages==a)]
+    #     )]
+    #   ) + (
+    #     lexp [which (ages==a)]
+    #     -floor(
+    #       lexp [which (ages==a)]
+    #     )
+    #   ) * disc.ben.yr [floor(
+    #     lexp [which (ages==a)]
+    #   ) + 1]
+    # }
+
+  # YLL discounting based on formula = (1 - exp^( -r * L )) / r
+  # https://www.who.int/quantifying_ehimpacts/publications/en/9241546204chap3.pdf
+
+  lexp.disc <- (1 - exp (-1 * disc.ben * lexp)) / disc.ben
+
   }
+  ##############################################################################
 
-  #expected number of cases, deaths, dalys, and costs (static)
+
   coverage <- ageCoverage (ages,
                            coverage,
                            vaccine_efficacy_nosexdebut,
@@ -1107,6 +1157,7 @@ RunCohort <- function (lifetab,
   # YLL - Years of Life Lost due to premature mortality
   # YLD - Years of Life lost due to Disability
 
+  # expected number of cases, deaths, dalys, and costs (static)
   out.pre <- data.table (
     age         = ages,
     cohort_size = cohort * lifetab[,lx.adj],
@@ -1136,13 +1187,17 @@ RunCohort <- function (lifetab,
     out.pre.disc [, "mort.cecx"]  <- out.pre.disc [, mort.cecx] * disc.ben.yr
     out.pre.disc [, "lifey"]      <- out.pre [,mort.cecx] * lexp.disc * disc.ben.yr
 
-    out.pre.disc [,"disability"] <- (
-      (out.pre[, inc.cecx] -
-         out.pre [, mort.cecx]) * daly.canc.nonfatal.disc +
-         out.pre [, mort.cecx]  * daly.canc.fatal.disc
-    ) * disc.ben.yr
+    ############################################################################
+    # out.pre.disc [, "disability"] <- (
+    #   (out.pre[, inc.cecx] -
+    #      out.pre [, mort.cecx]) * daly.canc.nonfatal.disc +
+    #      out.pre [, mort.cecx]  * daly.canc.fatal.disc
+    # ) * disc.ben.yr
 
-    out.pre.disc [, "cost.cecx"]  <- out.pre [, cost.cecx] * disc.cost.yr
+    out.pre.disc [, "disability"] <- yld.disc * disc.ben.yr
+    ############################################################################
+
+    out.pre.disc [, "cost.cecx"]    <- out.pre [, cost.cecx] * disc.cost.yr
 
     out.post.disc                   <- out.pre.disc
     out.post.disc                   <- out.pre.disc * (1-coverage[, effective_coverage])
@@ -1646,7 +1701,7 @@ analyseCosts <- function (results,
 
   #check if required variables are present
   if (sum (!sapply(ls(), function(x) {checkSize(get(x))})) > 0) {
-    stop("Not all values have the required length")
+    stop ("Not all values have the required length")
   }
 
   results [, "vaccinated"] <- results [, vaccinated] * results [, cohort_size]
@@ -1710,7 +1765,7 @@ analyseCosts <- function (results,
 
   aggregated <- dtAggregate (results,
                              "age",
-                             id.vars = c("scenario","type") )
+                             id.vars = c("scenario", "type") )
 
   difference <- aggregated [scenario == "pre-vaccination"]
 
