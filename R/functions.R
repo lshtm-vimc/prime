@@ -973,6 +973,24 @@ RunCohort <- function (lifetab,
   # Calculate yld using GBD 2001 disability weights
   if (disability.weights == "gbd_2001") {
 
+    ##############################################################################
+    # daly.canc.seq <- switch(
+    #   data.global[iso3==country_iso3,`WHO Mortality Stratum`],
+    #   "A"=0.04,
+    #   "B"=0.11,
+    #   "C"=0.13,
+    #   "D"=0.17,
+    #   "E"=0.17
+    # )
+    ##############################################################################
+    # disability weight for long term sequela based on WHO mortality stratum
+    # this is specific for gbd_2001
+    stratum       <- data.global [iso3==country_iso3, `WHO Mortality Stratum`]
+    daly.canc.seq <- data.disability_weights [Source == "gbd_2001" &
+                                                WHO_MortalityStratum == stratum,
+                                              Mid]
+    ##############################################################################
+
     # diagnosis, therapy and control over 1 year
     diag <- data.disability_weights [Source == disability.weights &
                                        Sequela == "diagnosis",
@@ -1481,9 +1499,9 @@ RunCountry <- function (country_iso3,
   ##############################################################################
   # disability weight for long term sequela based on WHO mortality stratum
   # this is specific for gbd_2001
-  stratum       <- data.global [iso3==country_iso3, `WHO Mortality Stratum`]
-  daly.canc.seq <- data.disability_weights [Source=="gbd_2001" &
-                                              WHO_MortalityStratum==stratum, Mid]
+  # stratum       <- data.global [iso3==country_iso3, `WHO Mortality Stratum`]
+  # daly.canc.seq <- data.disability_weights [Source=="gbd_2001" &
+  #                                             WHO_MortalityStratum==stratum, Mid]
   ##############################################################################
 
   # Calculate total and vaccinated cohort size
@@ -1589,7 +1607,8 @@ RunCountry <- function (country_iso3,
     vaccine_efficacy_nosexdebut = vaceff_beforesexdebut,
     vaccine_efficacy_sexdebut   = vaceff_aftersexdebut,
     daly.canc.diag              = daly.canc.diag,
-    daly.canc.seq               = daly.canc.seq,
+    # daly.canc.seq               = daly.canc.seq,
+    daly.canc.seq               = 0,
     daly.canc.control           = daly.canc.control,
     daly.canc.metastatic        = daly.canc.metastatic,
     daly.canc.terminal          = daly.canc.terminal,
