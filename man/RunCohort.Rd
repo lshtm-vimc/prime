@@ -6,11 +6,9 @@
 \usage{
 RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
   coverage, campaigns, vaccine_efficacy_nosexdebut,
-  vaccine_efficacy_sexdebut, daly.canc.diag, daly.canc.seq,
-  daly.canc.control, daly.canc.metastatic, daly.canc.terminal, cost_cancer,
-  discounting = FALSE, disc.cost = 0.03, disc.ben = 0.03,
-  country_iso3 = NULL, run_country = FALSE,
-  disability.weights = "gbd_2017")
+  vaccine_efficacy_sexdebut, cost_cancer, discounting = FALSE,
+  disc.cost = 0.03, disc.ben = 0.03, country_iso3 = NULL,
+  run_country = FALSE, disability.weights = "gbd_2017")
 }
 \arguments{
 \item{lifetab}{Data.table: The life-table for this cohort. Can be created
@@ -38,18 +36,6 @@ vaccine-efficacy before sexual debut.}
 
 \item{vaccine_efficacy_sexdebut}{Number: proportion indicating
 vaccine-efficacy after sexual debut.}
-
-\item{daly.canc.diag}{Number: daly-weight for cancer diagnosis.}
-
-\item{daly.canc.seq}{Number: daly-weight for cancer treatment.}
-
-\item{daly.canc.control}{Number: daly-weight for controlled phase of
-cervical cancer}
-
-\item{daly.canc.metastatic}{Number: daly-weight for metastatic phase of
-cervical cancer}
-
-\item{daly.canc.terminal}{Number: daly-weight for death from cancer.}
 
 \item{cost_cancer}{Number: total per capita cost of cancer.}
 
@@ -87,17 +73,11 @@ coverage <- 0.8
 campaigns <- -1
 vaccine_efficacy_nosexdebut <- 0.95
 vaccine_efficacy_sexdebut <- 0
-daly.canc.diag <- 0.002
-daly.canc.seq <- 0.002
-daly.canc.control <- 0.05
-daly.canc.metastatic <- 0.05
-daly.canc.terminal <- 0.1
 cost_cancer <- 100
 
 RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
   coverage, campaigns, vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
-  daly.canc.diag, daly.canc.seq, daly.canc.control, daly.canc.metastatic,
-  daly.canc.terminal, cost_cancer, disc.cost=0.03, disc.ben=0.03,
+  cost_cancer, disc.cost=0.03, disc.ben=0.03,
   discounting=FALSE, country_iso3="AFG", run_country=FALSE)
 
 }

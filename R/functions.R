@@ -432,14 +432,6 @@ RegisterBatchDataGavi <- function (gavi_coverage,
 #'        with updated 2018 Globocan data,
 #'        DALY weights from GBD,
 #'        and DALY estimation based on prevalence instead of age of incidence
-#' @param daly.canc.diag disability weight of diagnosis and
-#'        primary therapy phase of cervical cancer
-#' @param daly.canc.control Number: daly-weight for controlled phase of
-#'        cervical cancer
-#' @param daly.canc.metastatic Number: daly-weight for metastatic phase of
-#'        cervical cancer
-#' @param daly.canc.terminal disability weight of terminal phase of
-#'        cervical cancer
 #' @param sens ignore, does not do anything anymore
 #' @param unwpp_mortality logical, whether to create lifetables based on
 #'        UNWPP mx estimates or WHO data
@@ -480,10 +472,6 @@ BatchRun <- function (countries                       = -1,
                       agevac                          = -1,
                       agecohort                       = -1,
                       canc.inc                        = "2018",
-                      daly.canc.diag                  = 0.288,
-                      daly.canc.control               = 0.049,
-                      daly.canc.metastatic            = 0.451,
-                      daly.canc.terminal              = 0.54,
                       sens                            = -1,
                       unwpp_mortality                 = TRUE,
                       year_born                       = -1,
@@ -640,10 +628,6 @@ BatchRun <- function (countries                       = -1,
       agecohort             = agecohort,
       cohort                = cohort,
       canc.inc              = canc.inc,
-      daly.canc.diag        = daly.canc.diag,
-      daly.canc.control     = daly.canc.control,
-      daly.canc.metastatic  = daly.canc.metastatic,
-      daly.canc.terminal    = daly.canc.terminal,
       unwpp_mortality       = unwpp_mortality,
       year_born             = years[y],
       campaigns             = campaigns,
@@ -879,13 +863,6 @@ OutputGavi <- function (DT,
 #'        vaccine-efficacy before sexual debut.
 #' @param vaccine_efficacy_sexdebut Number: proportion indicating
 #'        vaccine-efficacy after sexual debut.
-#' @param daly.canc.diag Number: daly-weight for cancer diagnosis.
-#' @param daly.canc.seq Number: daly-weight for cancer treatment.
-#' @param daly.canc.control Number: daly-weight for controlled phase of
-#'        cervical cancer
-#' @param daly.canc.metastatic Number: daly-weight for metastatic phase of
-#'        cervical cancer
-#' @param daly.canc.terminal Number: daly-weight for death from cancer.
 #' @param cost_cancer Number: total per capita cost of cancer.
 #' @param discounting Logical (optional): If TRUE, run cost-effectiveness analysis
 #'        undiscounted and discounted. If FALSE, only uses undiscounted
@@ -914,17 +891,11 @@ OutputGavi <- function (DT,
 #' campaigns <- -1
 #' vaccine_efficacy_nosexdebut <- 0.95
 #' vaccine_efficacy_sexdebut <- 0
-#' daly.canc.diag <- 0.002
-#' daly.canc.seq <- 0.002
-#' daly.canc.control <- 0.05
-#' daly.canc.metastatic <- 0.05
-#' daly.canc.terminal <- 0.1
 #' cost_cancer <- 100
 #'
 #' RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
 #'   coverage, campaigns, vaccine_efficacy_nosexdebut, vaccine_efficacy_sexdebut,
-#'   daly.canc.diag, daly.canc.seq, daly.canc.control, daly.canc.metastatic,
-#'   daly.canc.terminal, cost_cancer, disc.cost=0.03, disc.ben=0.03,
+#'   cost_cancer, disc.cost=0.03, disc.ben=0.03,
 #'   discounting=FALSE, country_iso3="AFG", run_country=FALSE)
 #'
 #' @export
@@ -941,11 +912,6 @@ RunCohort <- function (lifetab,
                        campaigns,
                        vaccine_efficacy_nosexdebut,
                        vaccine_efficacy_sexdebut,
-                       daly.canc.diag,
-                       daly.canc.seq,
-                       daly.canc.control,
-                       daly.canc.metastatic,
-                       daly.canc.terminal,
                        cost_cancer,
                        discounting        = FALSE,
                        disc.cost          = 0.03,
@@ -1292,12 +1258,6 @@ RunCohort <- function (lifetab,
 #' @param cohort Integer (optional): Cohort-size. -1 if unknown
 #' @param canc.inc Integer (optional): Reference year for cancer incidence rates
 #'        (Globocan: 2018 or 2012)
-#' @param daly.canc.diag Number (optional): Daly weight for cancer diagnosis
-#' @param daly.canc.control Number: daly-weight for controlled phase of
-#'        cervical cancer
-#' @param daly.canc.metastatic Number: daly-weight for metastatic phase of
-#'        cervical cancer
-#' @param daly.canc.terminal Number (optional): Daly weight for cancer death
 #' @param sens Numeric-vector (optional): Specific values to be used in a PSA.
 #'        -1 if PSA's are not used
 #' @param unwpp_mortality Logical (optional): If TRUE, uses year-specific UNWPP
@@ -1341,10 +1301,6 @@ RunCountry <- function (country_iso3,
                         agecohort             = 10,
                         cohort                = -1,
                         canc.inc              = "2018",
-                        daly.canc.diag        = 0.288,
-                        daly.canc.control     = 0.049,
-                        daly.canc.metastatic  = 0.451,
-                        daly.canc.terminal    = 0.54,
                         sens                  = -1,
                         unwpp_mortality       = TRUE,
                         year_born             = -1,
@@ -1606,12 +1562,6 @@ RunCountry <- function (country_iso3,
     campaigns                   = campaigns,
     vaccine_efficacy_nosexdebut = vaceff_beforesexdebut,
     vaccine_efficacy_sexdebut   = vaceff_aftersexdebut,
-    daly.canc.diag              = daly.canc.diag,
-    # daly.canc.seq               = daly.canc.seq,
-    daly.canc.seq               = 0,
-    daly.canc.control           = daly.canc.control,
-    daly.canc.metastatic        = daly.canc.metastatic,
-    daly.canc.terminal          = daly.canc.terminal,
     cost_cancer                 = cost.canc,
     discounting                 = discounting,
     disc.cost                   = disc.cost,

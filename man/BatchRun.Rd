@@ -5,10 +5,8 @@
 \title{Run multiple cohorts in a batch}
 \usage{
 BatchRun(countries = -1, coverage = -1, agevac = -1,
-  agecohort = -1, canc.inc = "2018", daly.canc.diag = 0.288,
-  daly.canc.control = 0.049, daly.canc.metastatic = 0.451,
-  daly.canc.terminal = 0.54, sens = -1, unwpp_mortality = TRUE,
-  year_born = -1, year_vac = -1, runs = 1,
+  agecohort = -1, canc.inc = "2018", sens = -1,
+  unwpp_mortality = TRUE, year_born = -1, year_vac = -1, runs = 1,
   vaccine_efficacy_beforesexdebut = 1,
   vaccine_efficacy_aftersexdebut = 0, log = -1,
   by_calendaryear = FALSE, use_proportions = TRUE,
@@ -31,18 +29,6 @@ BatchRun(countries = -1, coverage = -1, agevac = -1,
 with updated 2018 Globocan data,
 DALY weights from GBD,
 and DALY estimation based on prevalence instead of age of incidence}
-
-\item{daly.canc.diag}{disability weight of diagnosis and
-primary therapy phase of cervical cancer}
-
-\item{daly.canc.control}{Number: daly-weight for controlled phase of
-cervical cancer}
-
-\item{daly.canc.metastatic}{Number: daly-weight for metastatic phase of
-cervical cancer}
-
-\item{daly.canc.terminal}{disability weight of terminal phase of
-cervical cancer}
 
 \item{sens}{ignore, does not do anything anymore}
 
