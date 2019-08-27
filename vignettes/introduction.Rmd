@@ -1,5 +1,5 @@
 ---
-title: "PRIME - Papillomavirus Rapid Interface for Modelling and Economics"
+title: "PRIME - Introduction"
 author: "LSHTM"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette

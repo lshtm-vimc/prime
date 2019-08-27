@@ -1,0 +1,121 @@
+---
+title: "PRIME - Batch Run"
+author: "LSHTM"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PRIME Batch Run}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+# load packages
+library (prime)
+library (data.table)
+```
+
+## Batch run multipe cohorts for multiple countries
+
+This document explains how PRIME can be set up to run multiple cohorts for a batch of countries. This also enables the user to model multi-age-cohort vaccination strategies, where girls of multiple age-groups are vaccinated against HPV upon vaccine introduction.
+
+### Preparing data-file to run a batch of countries
+
+Batch runs are based of a data table, which tells PRIME:
+
+- which countries are modelled
+- in which year vaccination takes place
+- which agegroups are targeted by vaccination
+- the vaccination coverage
+
+The table looks as follows:
+
+```{r, include = FALSE}
+#create_dummy_table
+batch_input <- data.table(
+  country_code = c("MWI", "MWI", "MWI"),
+  year = c(2020, 2021, 2022),
+  age_first = c(9, 9, 9),
+  age_last = c(9, 9, 9),
+  coverage = c(0.6, 0.7, 0.8)
+)
+```
+
+```{r}
+batch_input
+```
+
+This table tells PRIME to model vaccination in Malawi (MWI), in 2020, 2021, and 2022. In all years, girls who are 9 years of age will be vaccinated, with a coverage of 60%, 70%, and 80% respectively.
+
+The table can be extended for as many countries and ages are required. It is then registered using the following command:
+
+```{r}
+RegisterBatchData (batch_input)
+```
+
+If a table is already registered, this can be overwritten by setting force=TRUE
+
+```{r}
+# When overwriting an existing table
+RegisterBatchData (batch_input, force=TRUE)
+```
+
+After registering a table, batch run as follows:
+
+```{r}
+output <- BatchRun ()
+```
+
+The warning is a result of prime using a foreach rather than a for loop, which enables a user to run the model for each country and year in parallel rather than sequentially. This can significantly speed up computations when modelling many years and countries. However, the user will need to set up a parallel backend to enable that functionality (which is not covered in this vignette). It is perfectly fine to run the model sequentially, and a user should not worry about this warning.
+
+The output data looks as follows:
+
+```{r}
+output
+```
+
+Which is similar to the output from the RunCountry() function, with the exception that multiple birth-cohorts are included. The output is standard outputted by country and birth cohort year. If you want to output data by calendar year, you can set the option by_calendaryear to TRUE.
+
+```{r}
+BatchRun (by_calendaryear=TRUE)
+```
+
+If you want to output the actual numbers rather than the proportions, set use_proportions to FALSE.
+
+```{r}
+BatchRun (use_proportions=FALSE)
+```
+
+To run a multi-age cohort vaccination, extend the age-range in the inputdata.
+
+```{r, include = FALSE}
+#create_dummy_table
+batch_input <- data.table(
+  country_code = c("MWI", "MWI", "MWI"),
+  year = c(2020, 2021, 2022),
+  age_first = c(9, 9, 9),
+  age_last = c(14, 9, 9),
+  coverage = c(0.6, 0.7, 0.8)
+)
+```
+
+```{r}
+batch_input
+```
+
+Or, if different coverage levels are used for different ages, use multiple rows:
+
+```{r, include = FALSE}
+#create_dummy_table
+batch_input <- data.table(
+  country_code = c("MWI", "MWI", "MWI"),
+  year = c(2020, 2020, 2021, 2022),
+  age_first = c(9, 10, 9, 9),
+  age_last = c(9, 14, 9, 9),
+  coverage = c(0.6, 0,75, 0.7, 0.8)
+)
+```
+
+```{r}
+batch_input
+```
