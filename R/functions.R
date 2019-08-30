@@ -384,7 +384,7 @@ RegisterBatchDataGavi <- function (gavi_coverage,
         "SSD"="SDN",
         c
       )
-      inc_quality <- data.quality [iso3==tc, Incidence]
+      inc_quality  <- data.quality [iso3==tc, Incidence]
       mort_quality <- data.quality [iso3==tc, Mortality]
       if (inc_quality == 0){
         inc_quality <- c(0.5,1.5)
