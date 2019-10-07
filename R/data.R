@@ -144,20 +144,36 @@
 "data.global"
 
 
-#' Incidence of cervical cancer
+#' Incidence of cervical cancer, by age and country
 #'
 #' A dataset containing the incidence of cervical cancer in 185 countries, as reported by
-#'     IARC's Globocan 2018 database.
+#'     IARC's Globocan 2018 database. Crude rate, cervix uteri, females, by age.
 #'
 #' @format A data table with 185 observations of 103 variables.
 #' \describe{
 #'   \item{Country}{Country name}
-#'   \item{0..100}{Age 0-100}
+#'   \item{0..100}{Age 0-100 -- Crude rate, cervix uteri, females, by age; annual rate per individual}
 #'   \item{iso3}{ISO3 country code}
 #' }
 #' @source \url{https://gco.iarc.fr/today/online-analysis-table}
 "data.incidence"
 
+#' Incidence of cervical cancer with uncertainty intervals, all ages and by country
+#'
+#' A dataset containing the incidence of cervical cancer with uncertainty
+#'     intervals in 185 countries, as reported by IARC's Globocan 2018 database.
+#'     Estimated number of new cases in 2018, cervix uteri, females, all ages.
+#'
+#' @format A data table with 185 observations of 5 variables.
+#' \describe{
+#'   \item{Country}{Country name}
+#'   \item{iso3}{ISO3 country code}
+#'   \item{mid}{Estimated number of new cases in 2018, cervix uteri, females, all ages (mean)}
+#'   \item{low}{Estimated number of new cases in 2018, cervix uteri, females, all ages (lower bound of 95\% uncertainty interval)}
+#'   \item{high}{Estimated number of new cases in 2018, cervix uteri, females, all ages (upper bound of 95\% uncertainty interval)}
+#' }
+#' @source \url{https://gco.iarc.fr/today/online-analysis-table}
+"data.incidence_ui"
 
 #' WHO life table
 #'
@@ -193,7 +209,7 @@
 "data.mortall.unwpp.mx"
 
 
-#' Mortality from cervical cancer
+#' Mortality from cervical cancer, by age and country
 #'
 #' A dataset containing the mortality from cervical cancer in 185 countries, as reported by
 #'     IARC's Globocan 2018 database.
@@ -206,6 +222,24 @@
 #' }
 #' @source \url{https://gco.iarc.fr/today/online-analysis-table}
 "data.mortcecx"
+
+
+#' Mortality from cervical cancer with uncertainty intervals, all ages and by country
+#'
+#' A dataset containing the number of deaths from cervical cancer with uncertainty
+#'     intervals in 185 countries, as reported by IARC's Globocan 2018 database.
+#'     Estimated number of deaths in 2018, cervix uteri, females, all ages.
+#'
+#' @format A data table with 185 observations of 5 variables.
+#' \describe{
+#'   \item{Country}{Country name}
+#'   \item{iso3}{ISO3 country code}
+#'   \item{mid}{Estimated number of deaths in 2018, cervix uteri, females, all ages (mean)}
+#'   \item{low}{Estimated number of deaths in 2018, cervix uteri, females, all ages (lower bound of 95\% uncertainty interval)}
+#'   \item{high}{Estimated number of deaths in 2018, cervix uteri, females, all ages (upper bound of 95\% uncertainty interval)}
+#' }
+#' @source \url{https://gco.iarc.fr/today/online-analysis-table}
+"data.mortcecx_ui"
 
 
 #' UNWPP population estimates

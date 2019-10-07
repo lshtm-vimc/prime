@@ -3,11 +3,11 @@
 \docType{data}
 \name{data.incidence}
 \alias{data.incidence}
-\title{Incidence of cervical cancer}
+\title{Incidence of cervical cancer, by age and country}
 \format{A data table with 185 observations of 103 variables.
 \describe{
   \item{Country}{Country name}
-  \item{0..100}{Age 0-100}
+  \item{0..100}{Age 0-100 -- Crude rate, cervix uteri, females, by age; annual rate per individual}
   \item{iso3}{ISO3 country code}
 }}
 \source{
@@ -18,6 +18,6 @@ data.incidence
 }
 \description{
 A dataset containing the incidence of cervical cancer in 185 countries, as reported by
-    IARC's Globocan 2018 database.
+    IARC's Globocan 2018 database. Crude rate, cervix uteri, females, by age.
 }
 \keyword{datasets}
