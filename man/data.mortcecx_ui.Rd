@@ -8,9 +8,9 @@
 \describe{
   \item{Country}{Country name}
   \item{iso3}{ISO3 country code}
-  \item{mid}{Estimated number of deaths in 2018, cervix uteri, females, all ages (mean)}
-  \item{low}{Estimated number of deaths in 2018, cervix uteri, females, all ages (lower bound of 95\% uncertainty interval)}
-  \item{high}{Estimated number of deaths in 2018, cervix uteri, females, all ages (upper bound of 95\% uncertainty interval)}
+  \item{Mid}{Estimated number of deaths in 2018, cervix uteri, females, all ages (mean)}
+  \item{Low}{Estimated number of deaths in 2018, cervix uteri, females, all ages (lower bound of 95\% uncertainty interval)}
+  \item{High}{Estimated number of deaths in 2018, cervix uteri, females, all ages (upper bound of 95\% uncertainty interval)}
 }}
 \source{
 \url{https://gco.iarc.fr/today/online-analysis-table}

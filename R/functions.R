@@ -1040,7 +1040,9 @@ RunCohort <- function (lifetab,
                metastatic = data.disability_weights [Source == disability.weights &
                                                        Sequela == "metastatic",
                                                      Mid],
-               terminal   = data.disability_weights [Source == disability.weights & Sequela == "terminal",   Mid])
+               terminal   = data.disability_weights [Source == disability.weights &
+                                                       Sequela == "terminal",
+                                                     Mid])
 
     # duration of different phases of cervical cancer
     # (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
