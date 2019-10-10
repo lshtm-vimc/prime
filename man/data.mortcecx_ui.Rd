@@ -11,6 +11,8 @@
   \item{Mid}{Estimated number of deaths in 2018, cervix uteri, females, all ages (mean)}
   \item{Low}{Estimated number of deaths in 2018, cervix uteri, females, all ages (lower bound of 95\% uncertainty interval)}
   \item{High}{Estimated number of deaths in 2018, cervix uteri, females, all ages (upper bound of 95\% uncertainty interval)}
+  \item{Source}{Data source}
+  \item{Year}{Data source (year)}
 }}
 \source{
 \url{https://gco.iarc.fr/today/online-analysis-table}
