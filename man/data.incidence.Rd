@@ -7,8 +7,10 @@
 \format{A data table with 185 observations of 103 variables.
 \describe{
   \item{Country}{Country name}
-  \item{0..100}{Age 0-100 -- Crude rate, cervix uteri, females, by age; annual rate per individual}
   \item{iso3}{ISO3 country code}
+  \item{Source}{Data source}
+  \item{Year}{Data source (year)}
+  \item{0..100}{Age 0-100 -- Crude rate, cervix uteri, females, by age; annual rate per individual}
 }}
 \source{
 \url{https://gco.iarc.fr/today/online-analysis-table}
