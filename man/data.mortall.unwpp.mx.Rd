@@ -22,6 +22,6 @@
 data.mortall.unwpp.mx
 }
 \description{
-A dataset containing the UNWPP life table (World Population Prospects 2017).
+A dataset containing the UNWPP life table (World Population Prospects 2019).
 }
 \keyword{datasets}

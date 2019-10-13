@@ -24,6 +24,6 @@
 data.pop
 }
 \description{
-A dataset containing the UNWPP population estimates -- World Population Prospects 2017.
+A dataset containing the UNWPP population estimates -- World Population Prospects 2019.
 }
 \keyword{datasets}

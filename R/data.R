@@ -202,7 +202,7 @@
 
 #' UNWPP life table
 #'
-#' A dataset containing the UNWPP life table (World Population Prospects 2017).
+#' A dataset containing the UNWPP life table (World Population Prospects 2019).
 #'
 #' @format A data table with 115710 observations of 8 variables.
 #' \describe{
@@ -258,7 +258,7 @@
 
 #' UNWPP population estimates
 #'
-#' A dataset containing the UNWPP population estimates -- World Population Prospects 2017.
+#' A dataset containing the UNWPP population estimates -- World Population Prospects 2019.
 #'
 #' @format A data table with 3306163 observations of 8 variables.
 #' \describe{
