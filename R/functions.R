@@ -297,7 +297,7 @@ RegisterBatchDataGavi <- function (gavi_coverage,
 
   birthcohorts <- year_first:year_last
 
-  #remove birthcohorts which should not be modelled
+  # remove birthcohorts which should not be modelled
   coverage_data <- coverage_data [birthcohort %in% birthcohorts]
 
   # sort by country code
@@ -305,7 +305,7 @@ RegisterBatchDataGavi <- function (gavi_coverage,
 
   for(c in countries) {
 
-    #create template for data not yet in coverage-data
+    # create template for data not yet in coverage-data
     template <- coverage_data [
       country_code  == c &
       activity_type == "routine" &
@@ -313,7 +313,7 @@ RegisterBatchDataGavi <- function (gavi_coverage,
                                              activity_type == "routine",
                                            birthcohort] ) ]
 
-    #select birthcohorts which are not yet in the coverage-data and add to data
+    # select birthcohorts which are not yet in the coverage-data and add to data
     missing_birthcohorts <- birthcohorts[!(birthcohorts %in% coverage_data[country_code == c,birthcohort])]
 
     if (length(missing_birthcohorts) > 0 ) {
@@ -339,9 +339,9 @@ RegisterBatchDataGavi <- function (gavi_coverage,
                                       "target")
                                   ]
 
-  #model countries without coverage data but in template (with coverage-level of 0)
-  countries <- sort (unique(gavi_template[,country]))
-  countries <- countries [!(countries %in% unique(coverage_data[,country_code]))]
+  # model countries without coverage data but in template (with coverage-level of 0)
+  countries <- sort (unique(gavi_template[, country]))
+  countries <- countries [!(countries %in% unique(coverage_data[, country_code]))]
 
   if (length(countries) > 0) {
     for (c in countries) {
@@ -365,6 +365,13 @@ RegisterBatchDataGavi <- function (gavi_coverage,
   # sort by country code
   countries <- sort (unique(.data.batch[,country_code]))
 
+  # ----------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
+  # Note: The following code chunk for PSA is redundant -- grandfathered
+  # from older version. The newer version does not use data.quality to conduct
+  # psa. Instead it uses uncertainty intervals in burden estimates and
+  # disability weights to conduct probabilistic sensitivity analysis.
+  # ----------------------------------------------------------------------------
   # sensitivity analysis
   if (psa > 1) {
     psadat <- data.table(
@@ -374,11 +381,11 @@ RegisterBatchDataGavi <- function (gavi_coverage,
       mortality = numeric(0)
     )
     for (c in countries){
-      #select proxy country if data not available
+      # select proxy country if data not available
       tc <- switch(
         c,
         "XK"="ALB",
-        "MHL"="KIR",
+        # "MHL"="KIR",
         "TUV"="FJI",
         "PSE"="JOR",
         "SSD"="SDN",
@@ -415,6 +422,8 @@ RegisterBatchDataGavi <- function (gavi_coverage,
       .data.batch.psa <<- psadat
     }
   }
+  # ----------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
 
 } # end of function -- RegisterBatchDataGavi
 
@@ -1363,13 +1372,14 @@ RunCountry <- function (country_iso3,
   ages <- ages[!is.na(ages)]
 
   # If no data available, use other country as proxy
-  if ( country_iso3 %in% c("XK","MHL","TUV","PSE") ) {
+  # if ( country_iso3 %in% c("XK","MHL","TUV","PSE") ) {
+  if ( country_iso3 %in% c("XK", "PSE") ) {
     proxy <- TRUE
     country_iso3 <- switch (
       country_iso3,
       "XK" = "ALB",
-      "MHL" = "KIR",
-      "TUV" = "FJI",
+      # "MHL" = "KIR",
+      # "TUV" = "FJI",
       "PSE" = "JOR",
       country_iso3
     )
@@ -1377,7 +1387,7 @@ RunCountry <- function (country_iso3,
     proxy <- FALSE
   }
 
-  # et country specific variables
+  # set country specific variables
   # cost per FVG
   cost.vac <- monetary_to_number (
     data.global [iso3==country_iso3,
@@ -1477,9 +1487,9 @@ RunCountry <- function (country_iso3,
       cohort <- switch (
         country_iso3,
         "ALB" = cohort * 1824000/2774000,
-        "KIR" = cohort * 52634/102351,
-        "FJI" = cohort * 9876/881065,
-        "JOR" = cohort * 4170000/6459000,
+        # "KIR" = cohort * 52634/102351,
+        # "FJI" = cohort * 9876/881065,
+        # "JOR" = cohort * 4170000/6459000,
         cohort
       )
     }
