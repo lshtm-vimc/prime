@@ -384,11 +384,11 @@ RegisterBatchDataVimc <- function (vimc_coverage,
       # select proxy country if data not available
       tc <- switch(
         c,
-        "XK"="ALB",
+        "XK"  = "ALB",  # demography data available for XK but no burden & cost
+        "PSE" = "JOR",  # burden & demography data available for PSE but no cost
         # "MHL"="KIR",
-        "TUV"="FJI",
-        "PSE"="JOR",
-        "SSD"="SDN",
+        # "TUV"="FJI",
+        # "SSD"="SDN",
         c
       )
       inc_quality  <- data.quality [iso3==tc, Incidence]
@@ -1377,10 +1377,10 @@ RunCountry <- function (country_iso3,
     proxy <- TRUE
     country_iso3 <- switch (
       country_iso3,
-      "XK" = "ALB",
+      "XK"  = "ALB",  # demography data available for XK but no burden & cost
+      "PSE" = "JOR",  # burden & demography data available for PSE but no cost
       # "MHL" = "KIR",
       # "TUV" = "FJI",
-      "PSE" = "JOR",
       country_iso3
     )
   } else {
@@ -1489,7 +1489,7 @@ RunCountry <- function (country_iso3,
         "ALB" = cohort * 1824000/2774000,
         # "KIR" = cohort * 52634/102351,
         # "FJI" = cohort * 9876/881065,
-        # "JOR" = cohort * 4170000/6459000,
+        "JOR" = cohort * 4170000/6459000,
         cohort
       )
     }
@@ -1518,10 +1518,10 @@ RunCountry <- function (country_iso3,
         lookup.yr <- year_born + a
       }
 
-      mortality <- data.mortall.unwpp.mx [(country_code==country_iso3) &
-                                            (age_from<=a) &
-                                            (age_to >= a) &
-                                            (year - (lookup.yr) < 1) &
+      mortality <- data.mortall.unwpp.mx [(country_code == country_iso3) &
+                                            (age_from   <= a) &
+                                            (age_to     >= a) &
+                                            (year - (lookup.yr) <  1) &
                                             (year - (lookup.yr) > -5),
                                           value]
 
