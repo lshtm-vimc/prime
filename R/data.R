@@ -123,8 +123,8 @@
 #'   \item{Vaccine efficacy vs vaccine type infection [2]}{Vaccine efficacy}
 #'   \item{Duration of protection [2]}{Duration of vaccine protection}
 #'   \item{Age group [3]}{Age group}
-#'   \item{Vaccine price [4]}{Vaccine price}
-#'   \item{Vaccine delivery/ operational/ admin costs [5]}{Vaccine delivery, operational and administration costs}
+#'   \item{Vaccine price USD [4]}{Vaccine price for 2 doses US$}
+#'   \item{Vaccine delivery/ operational/ admin costs (USD) [5]}{Vaccine delivery, operational and administration costs US$}
 #'   \item{Cancer treatment costs - primary level hospital i$ (per episode, over lifetime) [6]}{Cancer treatment costs - primary level hospital i$ (per episode, over lifetime)}
 #'   \item{Cancer treatment costs  - primary level hospital US$ (per episode, over lifetime) [6]}{Cancer treatment costs  - primary level hospital US$ (per episode, over lifetime)}
 #'   \item{Cancer treatment costs - secondary level hospital i$ (per episode, over lifetime) [6]}{Cancer treatment costs - secondary level hospital i$ (per episode, over lifetime)}

@@ -172,20 +172,20 @@ RegisterBatchData <- function (coverage_data,
 } # end of function -- RegisterBatchData
 
 
-#' Creates .data.batch for running multiple birth cohorts (Gavi runs)
+#' Creates .data.batch for running multiple birth cohorts (VIMC runs)
 #'
 #' Creates .data.batch which is used when running/looping over multiple birth
 #'   cohorts ( runCohort() ) at once. Similar to RegisterBatchData, but for when
-#'   we make runs for Gavi.
+#'   we make runs for VIMC.
 #'
 #' .data.batch is based on the data.table (DT) coverage_data, which is a DT with
 #'   columns country_code (ISO3), year (of vaccination),
 #'   age_first (age at vaccination), age_last (age at vaccination),
 #'   coverage (in proportion, for all the age groups specified).
 #'
-#' @param gavi_coverage data table with coverage estimates as downloaded from
+#' @param vimc_coverage data table with coverage estimates as downloaded from
 #'   VIMC montagu
-#' @param gavi_template data table with reporting template as downloaded from
+#' @param vimc_template data table with reporting template as downloaded from
 #'   VIMC montagu
 #' @param use_campaigns logical, whether campaigns as stated in coverage files
 #'   should be modelled
@@ -194,7 +194,7 @@ RegisterBatchData <- function (coverage_data,
 #' @param restrict_to_coverage_data logical, whether the first birth-cohort
 #'   should be the first cohort that is mentioned in the coverage data.
 #'     If TRUE, restrict to coverage data.
-#'     If FALSE, restrict to cohorts provided in gavi_template.
+#'     If FALSE, restrict to cohorts provided in vimc_template.
 #' @param force logical, whether .data.batch should be overwritten if it already
 #'   exists
 #' @param psa integer, indicating how many runs for probabilistic sensitivity
@@ -204,8 +204,8 @@ RegisterBatchData <- function (coverage_data,
 #' @export
 #'
 #' @examples #
-RegisterBatchDataGavi <- function (gavi_coverage,
-                                   gavi_template,
+RegisterBatchDataVimc <- function (vimc_coverage,
+                                   vimc_template,
                                    use_campaigns,
                                    use_routine,
                                    restrict_to_coverage_data = FALSE,
@@ -217,11 +217,11 @@ RegisterBatchDataGavi <- function (gavi_coverage,
   }
 
   if (use_campaigns) {
-    coverage_data <- gavi_coverage[activity_type=="routine" |
+    coverage_data <- vimc_coverage[activity_type=="routine" |
                                      (activity_type=="campaign" &
                                         coverage > 0)]
   } else {
-    coverage_data <- gavi_coverage[activity_type=="routine"]
+    coverage_data <- vimc_coverage[activity_type=="routine"]
   }
   if (!use_routine) {
     coverage_data[activity_type=="routine" & coverage > 0, "coverage"] <- 0
@@ -229,7 +229,7 @@ RegisterBatchDataGavi <- function (gavi_coverage,
 
   coverage_data [target=="<NA>","target"] <- NA
   class (coverage_data$target) <- "numeric"
-  coverage_data <- coverage_data [country_code %in% unique(gavi_template[,country])]
+  coverage_data <- coverage_data [country_code %in% unique(vimc_template[,country])]
   macs <- coverage_data [age_first != age_last]
   nomacs <- coverage_data [age_first == coverage_data$age_last]
 
@@ -258,7 +258,7 @@ RegisterBatchDataGavi <- function (gavi_coverage,
   setorder(coverage_data, country_code, birthcohort, age_first)
 
   # get years that should be reported in template
-  reporting_years <- sort(as.numeric(unique(gavi_template$year)))
+  reporting_years <- sort(as.numeric(unique(vimc_template$year)))
 
   # get years for which there is demographic data
   demographic_years <- sort(as.numeric(unique(data.pop[country_code %in% unique(coverage_data[, country_code]), year])))
@@ -268,9 +268,9 @@ RegisterBatchDataGavi <- function (gavi_coverage,
 
   # get min and max birthcohorts that should be modelled, following template
   min_year <- min(reporting_years) -
-    max(gavi_template[year==min(reporting_years),age])
+    max(vimc_template[year==min(reporting_years),age])
   max_year <- max(reporting_years) -
-    min(gavi_template[year==max(reporting_years),age])
+    min(vimc_template[year==max(reporting_years),age])
 
   # restrict to years for which we have demographic data, or to years for which
   # we have coverage data
@@ -340,7 +340,7 @@ RegisterBatchDataGavi <- function (gavi_coverage,
                                   ]
 
   # model countries without coverage data but in template (with coverage-level of 0)
-  countries <- sort (unique(gavi_template[, country]))
+  countries <- sort (unique(vimc_template[, country]))
   countries <- countries [!(countries %in% unique(coverage_data[, country_code]))]
 
   if (length(countries) > 0) {
@@ -425,7 +425,7 @@ RegisterBatchDataGavi <- function (gavi_coverage,
   # ----------------------------------------------------------------------------
   # ----------------------------------------------------------------------------
 
-} # end of function -- RegisterBatchDataGavi
+} # end of function -- RegisterBatchDataVimc
 
 
 #' Run multiple cohorts in a batch
@@ -466,7 +466,7 @@ RegisterBatchDataGavi <- function (gavi_coverage,
 #' @param psa integer, number of runs for probabilistic sensitivity analysis (PSA)
 #' @param psa_vals data table with values to use in probabilistic sensitivity
 #'        analysis, usually .data.batch.psa, generated by
-#'        RegisterBatchData* functions (currently only RegisterBatchdataGavi)
+#'        RegisterBatchData* functions (currently only RegisterBatchDataVimc)
 #' @param disability.weights character, disability weights for cervical cancer
 #'        from GBD 2017 or GBD 2001
 #' @param wb.indicator character, World Bank indicator for GDP/GNI per capita
@@ -697,23 +697,23 @@ BatchRun <- function (countries                       = -1,
 
 #' Formatting output for VIMC Montagu
 #'
-#' \code{OutputGavi} takes result of BatchRun and outputs it in format to be
+#' \code{OutputVimc} takes result of BatchRun and outputs it in format to be
 #'   uploaded to VIMC Montagu.
 #'
 #' @param DT data table with results
 #' @param age_stratified logical, whether output should be stratified by age
 #' @param calendar_year logical, whether output should be given by calendar year
 #'        of event OR by year of birth of cohort
-#' @param gavi_template data table with template file downloaded from montagu
+#' @param vimc_template data table with template file downloaded from montagu
 #'
 #' @return #
 #' @export
 #'
 #' @examples #
-OutputGavi <- function (DT,
+OutputVimc <- function (DT,
                         age_stratified = TRUE,
                         calendar_year  = FALSE,
-                        gavi_template  = -1) {
+                        vimc_template  = -1) {
 
   #check if data by calendar_year
   if ("year" %in% colnames(DT)) {
@@ -794,29 +794,29 @@ OutputGavi <- function (DT,
     }
   }
 
-  if (is.data.table(gavi_template)) {
-    #calendar year is needed to select data in gavi_template
+  if (is.data.table(vimc_template)) {
+    #calendar year is needed to select data in vimc_template
     if (!is_by_calendar_year) {
       DT[,"year"] <- DT[,year] + DT[,age]
     }
-    DT <- DT[year %in% gavi_template[,year]]
+    DT <- DT[year %in% vimc_template[,year]]
     for (y in sort(unique(DT[,year]))) {
-      DT <- DT[year!=y | (year==y & age %in% gavi_template[year==y,age])]
+      DT <- DT[year!=y | (year==y & age %in% vimc_template[year==y,age])]
     }
     for (c in unique(DT[,country])) {
-      DT [country == c, "country_name"] <- unique (gavi_template[country == c,
+      DT [country == c, "country_name"] <- unique (vimc_template[country == c,
                                                                  country_name])
     }
-    DT[,"disease"] <- unique(gavi_template[,"disease"])
+    DT[,"disease"] <- unique(vimc_template[,"disease"])
 
     #revert back to impact year
     if (!is_by_calendar_year) {
       DT[,"year"] <- DT[,year] - DT[,age]
     }
     if ("run_id" %in% colnames(DT)) {
-      DT <- DT[,c("scenario","run_id",colnames(gavi_template)),with=F]
+      DT <- DT[,c("scenario","run_id",colnames(vimc_template)),with=F]
     } else {
-      DT <- DT[,c("scenario",colnames(gavi_template)),with=F]
+      DT <- DT[,c("scenario",colnames(vimc_template)),with=F]
     }
   }
 
@@ -848,7 +848,7 @@ OutputGavi <- function (DT,
 
   return(DT)
 
-} # end of function -- OutputGavi
+} # end of function -- OutputVimc
 
 
 #' Run PRIME for a single birth-cohort
@@ -1390,11 +1390,11 @@ RunCountry <- function (country_iso3,
   # set country specific variables
   # cost per FVG
   cost.vac <- monetary_to_number (
-    data.global [iso3==country_iso3,
-                 `Vaccine price [4]`]
+    data.global [iso3 == country_iso3,
+                 `Vaccine price (USD) [4]`]
   ) + monetary_to_number (
-    data.global [iso3==country_iso3,
-                 `Vaccine delivery/ operational/ admin costs [5]`]
+    data.global [iso3 == country_iso3,
+                 `Vaccine delivery/ operational/ admin costs (USD) [5]`]
   )
 
   # cost per cancer episode
