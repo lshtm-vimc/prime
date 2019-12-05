@@ -13,7 +13,8 @@ BatchRun(countries = -1, coverage = -1, agevac = -1,
   analyseCosts = FALSE, canc.cost = "unadj", discounting = FALSE,
   disc.cost = 0.03, disc.ben = 0.03, psa = 0,
   psa_vals = ".data.batch.psa", disability.weights = "gbd_2017",
-  wb.indicator = "NY.GDP.PCAP.PP.CD", wb.year = 2017)
+  wb.indicator = "NY.GDP.PCAP.PP.CD", wb.year = 2017,
+  vaccine = "4vHPV")
 }
 \arguments{
 \item{countries}{ignore, read from .data.batch}
@@ -80,6 +81,9 @@ from GBD 2017 or GBD 2001}
 in I$/US$ and current/constant data}
 
 \item{wb.year}{numeric, year of the World Bank indicator value}
+
+\item{vaccine}{character, bivalent/quadrivalent (4vHPV) or
+nonavalent (9vHPV) vaccine}
 }
 \value{
 Returns combined results

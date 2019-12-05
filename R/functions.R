@@ -472,6 +472,8 @@ RegisterBatchDataVimc <- function (vimc_coverage,
 #' @param wb.indicator character, World Bank indicator for GDP/GNI per capita
 #'        in I$/US$ and current/constant data
 #' @param wb.year numeric, year of the World Bank indicator value
+#' @param vaccine character, bivalent/quadrivalent (4vHPV) or
+#'        nonavalent (9vHPV) vaccine
 #' @return Returns combined results
 #' @export
 #'
@@ -500,7 +502,8 @@ BatchRun <- function (countries                       = -1,
                       psa_vals                        = ".data.batch.psa",
                       disability.weights              = "gbd_2017",
                       wb.indicator                    = "NY.GDP.PCAP.PP.CD",
-                      wb.year                         = 2017
+                      wb.year                         = 2017,
+                      vaccine                         = "4vHPV"
                       ) {
 
   ages <- as.numeric(colnames(data.incidence)[!grepl("\\D",colnames(data.incidence))])
@@ -649,7 +652,8 @@ BatchRun <- function (countries                       = -1,
       psadat                = cpsadat,
       disability.weights    = disability.weights,
       wb.indicator          = wb.indicator,
-      wb.year               = wb.year
+      wb.year               = wb.year,
+      vaccine               = vaccine
     )
 
     data [,"country"]     <- countries [cn]
@@ -1294,6 +1298,8 @@ RunCohort <- function (lifetab,
 #' @param wb.indicator character, World Bank indicator for GDP/GNI per capita
 #'        in I$/US$ and current/constant data
 #' @param wb.year numeric, year of the World Bank indicator value
+#' @param vaccine character, bivalent/quadrivalent (4vHPV) or
+#'        nonavalent (9vHPV) vaccine
 #'
 #' @return data.table with country-specific results of HPV vaccination.
 #'         Returns cost-analysis if analyseCosts=TRUE
@@ -1326,7 +1332,8 @@ RunCountry <- function (country_iso3,
                         psadat                = -1,
                         disability.weights    = "gbd_2017",
                         wb.indicator          = "NY.GDP.PCAP.PP.CD",
-                        wb.year               = 2017) {
+                        wb.year               = 2017,
+                        vaccine               = "4vHPV") {
 
   ## check if all required data is present in the global environment
   # if(sum(!(c("data.incidence", "data.global", "data.costcecx", "data.popproj", "data.mortcecx", "data.mortall", "data.mortall.unwpp") %in% ls(name=.GlobalEnv, all.names=T))) > 0){
@@ -1406,8 +1413,36 @@ RunCountry <- function (country_iso3,
     cost.canc <- data.costcecx [iso3==country_iso3, cancer_cost_adj]
   }
 
-  # % of CeCx due to 16/18
-  p1618 <- data.global [iso3==country_iso3, `% CeCx due to 16/18`] / 100
+  ######################### Look into this
+  # # burden & demography data available for PSE (switch back from JOR)
+  # if (proxy) {
+  #   country_iso3 <- switch (
+  #     country_iso3,
+  #     "JOR" = "PSE",  # burden & demography data available for PSE but no cost
+  #     country_iso3
+  #   )
+  # }
+  ######################### Look into this
+
+  # ----------------------------------------------------------------------------
+  # # % of CeCx due to 16/18
+  # p1618 <- data.global [iso3==country_iso3, `% CeCx due to 16/18`] / 100
+
+  # Percentage (%) of cervical cancer due to HPV high risk types contained in
+  # bivalent/quadrivalent/nonavalent HPV vaccine
+  # 4vHPV - bivalent/quadrivalent HPV vaccine
+  # 9vHPV - nonavalent HPV vaccine
+  #
+  if (vaccine == "4vHPV") {
+
+    p1618 <- data.hpv_distribution [iso3 == country_iso3, hpv_4v] / 100
+
+  } else if (vaccine == "9vHPV") {
+
+    p1618 <- data.hpv_distribution [iso3 == country_iso3, hpv_9v] / 100
+
+  }
+  # ----------------------------------------------------------------------------
 
   # age-dependent parameters
   if (canc.inc == "2018") {

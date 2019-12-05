@@ -11,7 +11,8 @@ RunCountry(country_iso3, vaceff_beforesexdebut = 1,
   campaigns = -1, analyseCosts = FALSE, canc.cost = "unadj",
   discounting = FALSE, disc.cost = 0.03, disc.ben = 0.03,
   run_batch = FALSE, psadat = -1, disability.weights = "gbd_2017",
-  wb.indicator = "NY.GDP.PCAP.PP.CD", wb.year = 2017)
+  wb.indicator = "NY.GDP.PCAP.PP.CD", wb.year = 2017,
+  vaccine = "4vHPV")
 }
 \arguments{
 \item{country_iso3}{Character string (required): ISO3 code of the country}
@@ -65,6 +66,9 @@ from GBD 2017 or GBD 2001}
 in I$/US$ and current/constant data}
 
 \item{wb.year}{numeric, year of the World Bank indicator value}
+
+\item{vaccine}{character, bivalent/quadrivalent (4vHPV) or
+nonavalent (9vHPV) vaccine}
 
 \item{vaceff}{Number (optional): Proportion indicating vaccine-efficacy}
 }
