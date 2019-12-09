@@ -1378,14 +1378,16 @@ RunCountry <- function (country_iso3,
                                                     colnames (data.incidence))])
   ages <- ages[!is.na(ages)]
 
+  # ----------------------------------------------------------------------------
   # If no data available, use other country as proxy
   # if ( country_iso3 %in% c("XK","MHL","TUV","PSE") ) {
-  if ( country_iso3 %in% c("XK", "PSE") ) {
+  if ( country_iso3 %in% c("XK") ) {
     proxy <- TRUE
     country_iso3 <- switch (
       country_iso3,
       "XK"  = "ALB",  # demography data available for XK but no burden & cost
-      "PSE" = "JOR",  # burden & demography data available for PSE but no cost
+      # "PSE" = "JOR",  # burden & demography data available for PSE but no cost
+                        # no cancer burden data for globocan 2012
       # "MHL" = "KIR",
       # "TUV" = "FJI",
       country_iso3
@@ -1394,24 +1396,21 @@ RunCountry <- function (country_iso3,
     proxy <- FALSE
   }
 
-  # set country specific variables
-  # cost per FVG
-  cost.vac <- monetary_to_number (
-    data.global [iso3 == country_iso3,
-                 `Vaccine price (USD) [4]`]
-  ) + monetary_to_number (
-    data.global [iso3 == country_iso3,
-                 `Vaccine delivery/ operational/ admin costs (USD) [5]`]
-  )
-
-  # cost per cancer episode
-  if (canc.cost == "unadj") {
-    # cost.canc <- monetary_to_number(data.costcecx[iso3==country_iso3, cancer_cost])
-    cost.canc <- data.costcecx [iso3==country_iso3, cancer_cost]
-  } else if (canc.cost == "adj") {
-    # cost.canc <- monetary_to_number(data.costcecx[iso3==country_iso3, cancer_cost_adj])
-    cost.canc <- data.costcecx [iso3==country_iso3, cancer_cost_adj]
+  # If no data available, use other country as proxy
+  if ( (country_iso3 %in% c("PSE")) & (canc.inc == "2012")) {
+    proxy <- TRUE
+    country_iso3 <- switch (
+      country_iso3,
+      "PSE" = "JOR",  # burden & demography data available for PSE but no cost and
+                      # no cancer burden data for globocan 2012
+      country_iso3
+    )
+  } else {
+    proxy <- FALSE
   }
+
+  # ----------------------------------------------------------------------------
+
 
   ######################### Look into this
   # # burden & demography data available for PSE (switch back from JOR)
@@ -1530,6 +1529,25 @@ RunCountry <- function (country_iso3,
     }
   }
 
+  # ----------------------------------------------------------------------------
+  # If no data available, use other country as proxy
+  # if ( country_iso3 %in% c("XK","MHL","TUV","PSE") ) {
+  if ( country_iso3 %in% c("PSE") ) {
+    proxy <- TRUE
+    country_iso3 <- switch (
+      country_iso3,
+      # "XK"  = "ALB",  # demography data available for XK but no burden & cost
+      "PSE" = "JOR",  # burden & demography data available for PSE but no cost
+      # "MHL" = "KIR",
+      # "TUV" = "FJI",
+      country_iso3
+    )
+  } else {
+    # proxy <- FALSE
+  }
+  # ----------------------------------------------------------------------------
+
+
   # create lifetables
   if (!unwpp_mortality) {
     # Use WHO mortality estimates
@@ -1570,6 +1588,35 @@ RunCountry <- function (country_iso3,
     lifetab <- lifeTable (mx=mx, agecohort=agecohort)
   }
 
+
+
+
+
+  # ----------------------------------------------------------------------------
+  # set country specific variables
+  # cost per FVG
+  cost.vac <- monetary_to_number (
+    data.global [iso3 == country_iso3,
+                 `Vaccine price (USD) [4]`]
+  ) + monetary_to_number (
+    data.global [iso3 == country_iso3,
+                 `Vaccine delivery/ operational/ admin costs (USD) [5]`]
+  )
+
+  # cost per cancer episode
+  if (canc.cost == "unadj") {
+    # cost.canc <- monetary_to_number(data.costcecx[iso3==country_iso3, cancer_cost])
+    cost.canc <- data.costcecx [iso3==country_iso3, cancer_cost]
+  } else if (canc.cost == "adj") {
+    # cost.canc <- monetary_to_number(data.costcecx[iso3==country_iso3, cancer_cost_adj])
+    cost.canc <- data.costcecx [iso3==country_iso3, cancer_cost_adj]
+  }
+  # ----------------------------------------------------------------------------
+
+
+
+
+
   ## UPDATE: To be updated -- PSA for cecx_5y_prev
 
   if (is.list(psadat)) {
@@ -1596,6 +1643,7 @@ RunCountry <- function (country_iso3,
       disc.ben <- disc.ben * psadat[["discounting_ben"]]
     }
   }
+
 
   # calling RunCohort function
   result_cohort <- RunCohort (
