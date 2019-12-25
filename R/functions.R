@@ -1571,24 +1571,89 @@ RunCountry <- function (country_iso3,
         lookup.yr <- year_born + a
       }
 
+    #   # ------------------------------------------------------------------------
+    #   #### UNWPP changes
+    #   mortality <- data.mortall.unwpp.mx [(country_code == country_iso3) &
+    #                                         (age_from   <= a) &
+    #                                         (age_to     >= a) &
+    #                                         (year - (lookup.yr) <  1) &
+    #                                         (year - (lookup.yr) > -5),
+    #                                       c(value, age_from, age_to)]
+    #
+    #   # set mortality to 1 if no data is found
+    #   if (length(mortality) < 1) {
+    #     mortality <- 1
+    #   } else {
+    #   mortality <- mortality [1] / (mortality [3] - mortality [2] + 1)
+    #   }
+    #
+    #   mx[which(ages==a)] <- mortality
+    # }
+    #
+    # lifetab <- lifeTable (qx = mx,
+    #                       agecohort = agecohort)
+    # # lifetab <- lifeTable (mx=mx, agecohort=agecohort)
+    # #### UNWPP changes
+    # # ------------------------------------------------------------------------
+
+      # ------------------------------------------------------------------------
+      #### UNWPP changes
+
+      # read nqx value and start and end ages of interval
+      # note: this is nqx (and not mx)
       mortality <- data.mortall.unwpp.mx [(country_code == country_iso3) &
                                             (age_from   <= a) &
                                             (age_to     >= a) &
                                             (year - (lookup.yr) <  1) &
                                             (year - (lookup.yr) > -5),
-                                          value]
+                                          list (value, age_from, age_to)]
 
       # set mortality to 1 if no data is found
-      if (length(mortality) < 1) {
+      # if (length(mortality) < 1) {
+      if (nrow (mortality) < 1) {
         mortality <- 1
+      } else {
+        # calculate central death rate (mx)
+        # Calculate central death rate for specific age intervals
+        age_interval <- (mortality$age_to - mortality$age_from + 1)
+
+        # 'mx' = ('nqx' / (1 - 0.5 * 'nqx') ) / n
+        mortality <- (mortality$value / (1 - 0.5 * mortality$value) ) / age_interval
       }
+
       mx[which(ages==a)] <- mortality
     }
 
-    lifetab <- lifeTable (mx=mx, agecohort=agecohort)
+    lifetab <- lifeTable (mx = mx,
+                          agecohort = agecohort)
+    # lifetab <- lifeTable (mx=mx, agecohort=agecohort)
+    #### UNWPP changes
+    # --------------------------------------------------------------------------
+
+
+
+
+  #   # ------------------------------------------------------------------------
+  #   #### UNWPP changes
+  #   mortality <- data.mortall.unwpp.mx [(country_code == country_iso3) &
+  #                                         (age_from   <= a) &
+  #                                         (age_to     >= a) &
+  #                                         (year - (lookup.yr) <  1) &
+  #                                         (year - (lookup.yr) > -5),
+  #                                       value]
+  #
+  #   # set mortality to 1 if no data is found
+  #   if (length(mortality) < 1) {
+  #     mortality <- 1
+  #   }
+  #   mx[which(ages==a)] <- mortality
+  # }
+  #
+  # lifetab <- lifeTable (mx=mx, agecohort=agecohort)
+  # #### UNWPP changes
+  # # --------------------------------------------------------------------------
+
   }
-
-
 
 
 

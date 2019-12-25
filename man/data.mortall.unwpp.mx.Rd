@@ -4,7 +4,7 @@
 \name{data.mortall.unwpp.mx}
 \alias{data.mortall.unwpp.mx}
 \title{UNWPP life table}
-\format{A data table with 115710 observations of 8 variables.
+\format{A data table with 122850 observations of 8 variables.
 \describe{
   \item{country_code_numeric}{Country code numeric}
   \item{country_code}{ISO3 country code}

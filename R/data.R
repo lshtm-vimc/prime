@@ -204,7 +204,7 @@
 #'
 #' A dataset containing the UNWPP life table (World Population Prospects 2019).
 #'
-#' @format A data table with 115710 observations of 8 variables.
+#' @format A data table with 122850 observations of 8 variables.
 #' \describe{
 #'   \item{country_code_numeric}{Country code numeric}
 #'   \item{country_code}{ISO3 country code}
@@ -260,7 +260,7 @@
 #'
 #' A dataset containing the UNWPP population estimates -- World Population Prospects 2019.
 #'
-#' @format A data table with 3306163 observations of 8 variables.
+#' @format A data table with 3392220 observations of 8 variables.
 #' \describe{
 #'   \item{country_code_numeric}{Country code numeric}
 #'   \item{country_code}{ISO3 country code}
