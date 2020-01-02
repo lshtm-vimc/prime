@@ -14,5 +14,6 @@ data.popproj
 }
 \description{
 A dataset containing population projections of 5-year old girls.
+(not used -- to be removed)
 }
 \keyword{datasets}

@@ -213,10 +213,10 @@
 #'   \item{age_to}{age to (end-age)}
 #'   \item{year}{Year}
 #'   \item{gender}{Gender}
-#'   \item{value}{mx mortality rate in year = proportion of individuals of age x dying by age x+1}
+#'   \item{value}{nqx - probability of dying between ages x and x+n}
 #' }
 #' @source \url{https://population.un.org/wpp/}
-"data.mortall.unwpp.mx"
+"data.mortall.unwpp.nqx"
 
 
 #' Mortality from cervical cancer, by age and country
@@ -279,6 +279,7 @@
 #' Population projections of 5-year old girls
 #'
 #' A dataset containing population projections of 5-year old girls.
+#' (not used -- to be removed)
 #'
 #' @format A data table with 98 observations of 91 variables.
 #' \describe{

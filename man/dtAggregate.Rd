@@ -34,6 +34,3 @@ Returns collapsed data.table
 \description{
 Collapse data-tables
 }
-\examples{
-dtAggregate (data.popproj, "iso3", id.vars="")
-}

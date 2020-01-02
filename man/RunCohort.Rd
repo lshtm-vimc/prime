@@ -61,7 +61,6 @@ Runs PRIME for one birth-cohort. Usually called by another function such as
 \examples{
 lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG",
   as.character(0:100), with=F], use.names=F), 9)
-cohort <- unlist(data.popproj[iso3=="AFG", "2020"], use.names=F)
 incidence <- unlist(data.incidence[iso3=="AFG", as.character(0:100), with=F],
   use.names=F)
 mortality_cecx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F],

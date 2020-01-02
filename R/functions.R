@@ -892,7 +892,6 @@ OutputVimc <- function (DT,
 #' @examples
 #' lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG",
 #'   as.character(0:100), with=F], use.names=F), 9)
-#' cohort <- unlist(data.popproj[iso3=="AFG", "2020"], use.names=F)
 #' incidence <- unlist(data.incidence[iso3=="AFG", as.character(0:100), with=F],
 #'   use.names=F)
 #' mortality_cecx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F],
@@ -1336,7 +1335,7 @@ RunCountry <- function (country_iso3,
                         vaccine               = "4vHPV") {
 
   ## check if all required data is present in the global environment
-  # if(sum(!(c("data.incidence", "data.global", "data.costcecx", "data.popproj", "data.mortcecx", "data.mortall", "data.mortall.unwpp") %in% ls(name=.GlobalEnv, all.names=T))) > 0){
+  # if(sum(!(c("data.incidence", "data.global", "data.costcecx", "data.mortcecx", "data.mortall", "data.mortall.unwpp") %in% ls(name=.GlobalEnv, all.names=T))) > 0){
   #	stop("Not all required datafiles seem to be present in your environment. Please load all datafiles required.")
   # }
 
@@ -1510,10 +1509,18 @@ RunCountry <- function (country_iso3,
   # If UN population projections unavailable, cohort size = 1 otherwise
   # cohort size = number of 10-14y/5
   if (cohort==-1) {
-    cohort <- unlist (data.popproj [iso3 == country_iso3,
-                                    as.character(year_born + agecohort),
-                                    with=F],
-                      use.names=F)/5
+
+    # get cohort size from UNWPP data table -- data.pop
+    cohort <- data.pop [country_code == country_iso3 &
+                          year == (year_born + agecohort) &
+                          age_from == agecohort,
+                        value]
+
+    # data.popproj -- not used anymore (to be removed from prime package)
+    # cohort <- unlist (data.popproj [iso3 == country_iso3,
+    #                                 as.character(year_born + agecohort),
+    #                                 with=F],
+    #                   use.names=F)/5
 
     if (length(cohort)==0) {
       cohort <- 1
@@ -1563,45 +1570,20 @@ RunCountry <- function (country_iso3,
     mx <- numeric(length(ages))
 
     for (a in ages) {
-      if (year_born+a > max(data.mortall.unwpp.mx[country_code==country_iso3,year])) {
-        lookup.yr <- max(data.mortall.unwpp.mx[country_code==country_iso3,year])
-      } else if (year_born+a < min(data.mortall.unwpp.mx[country_code==country_iso3,year])) {
-        lookup.yr <- min(data.mortall.unwpp.mx[country_code==country_iso3,year])
+      if (year_born+a > max (data.mortall.unwpp.nqx [country_code == country_iso3, year])) {
+        lookup.yr <- max (data.mortall.unwpp.nqx [country_code == country_iso3, year])
+      } else if (year_born+a < min (data.mortall.unwpp.nqx [country_code == country_iso3, year])) {
+        lookup.yr <- min (data.mortall.unwpp.nqx [country_code == country_iso3, year])
       } else {
         lookup.yr <- year_born + a
       }
-
-    #   # ------------------------------------------------------------------------
-    #   #### UNWPP changes
-    #   mortality <- data.mortall.unwpp.mx [(country_code == country_iso3) &
-    #                                         (age_from   <= a) &
-    #                                         (age_to     >= a) &
-    #                                         (year - (lookup.yr) <  1) &
-    #                                         (year - (lookup.yr) > -5),
-    #                                       c(value, age_from, age_to)]
-    #
-    #   # set mortality to 1 if no data is found
-    #   if (length(mortality) < 1) {
-    #     mortality <- 1
-    #   } else {
-    #   mortality <- mortality [1] / (mortality [3] - mortality [2] + 1)
-    #   }
-    #
-    #   mx[which(ages==a)] <- mortality
-    # }
-    #
-    # lifetab <- lifeTable (qx = mx,
-    #                       agecohort = agecohort)
-    # # lifetab <- lifeTable (mx=mx, agecohort=agecohort)
-    # #### UNWPP changes
-    # # ------------------------------------------------------------------------
 
       # ------------------------------------------------------------------------
       #### UNWPP changes
 
       # read nqx value and start and end ages of interval
       # note: this is nqx (and not mx)
-      mortality <- data.mortall.unwpp.mx [(country_code == country_iso3) &
+      mortality <- data.mortall.unwpp.nqx [(country_code == country_iso3) &
                                             (age_from   <= a) &
                                             (age_to     >= a) &
                                             (year - (lookup.yr) <  1) &
@@ -1630,11 +1612,19 @@ RunCountry <- function (country_iso3,
     #### UNWPP changes
     # --------------------------------------------------------------------------
 
-
-
-
   #   # ------------------------------------------------------------------------
   #   #### UNWPP changes
+    # if data.mortall.unwpp.mx is used instead of data.mortall.unwpp.nqx,
+    # then uncomment the below code snippet and comment the above code snippet.
+    #
+    # if (year_born+a > max(data.mortall.unwpp.mx[country_code==country_iso3,year])) {
+    #   lookup.yr <- max(data.mortall.unwpp.mx[country_code==country_iso3,year])
+    # } else if (year_born+a < min(data.mortall.unwpp.mx[country_code==country_iso3,year])) {
+    #   lookup.yr <- min(data.mortall.unwpp.mx[country_code==country_iso3,year])
+    # } else {
+    #   lookup.yr <- year_born + a
+    # }
+    #
   #   mortality <- data.mortall.unwpp.mx [(country_code == country_iso3) &
   #                                         (age_from   <= a) &
   #                                         (age_to     >= a) &
@@ -1654,7 +1644,6 @@ RunCountry <- function (country_iso3,
   # # --------------------------------------------------------------------------
 
   }
-
 
 
   # ----------------------------------------------------------------------------
@@ -2192,7 +2181,6 @@ lifeTable <- function (qx        = NULL,
 #' vaccine_efficacy <- 0.8
 #' lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG", as.character(0:100),
 #'   with=F], use.names=F), 9)
-#' cohort <- unlist(data.popproj[iso3=="AFG", "2020"], use.names=F)
 #' agevac <- 9
 #' ageCoverage (ages, routine_coverage, vaccine_efficacy, -1,
 #'   lifetab, cohort, agevac)
@@ -2398,7 +2386,6 @@ dtColMatch <- function (input,
 #' @return Returns collapsed data.table
 #' @export
 #'
-#' @examples dtAggregate (data.popproj, "iso3", id.vars="")
 dtAggregate <- function (DT,
                          aggr_on,
                          measure.vars = c(),

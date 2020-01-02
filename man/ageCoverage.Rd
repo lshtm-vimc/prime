@@ -38,7 +38,6 @@ routine_coverage <- 0.75
 vaccine_efficacy <- 0.8
 lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG", as.character(0:100),
   with=F], use.names=F), 9)
-cohort <- unlist(data.popproj[iso3=="AFG", "2020"], use.names=F)
 agevac <- 9
 ageCoverage (ages, routine_coverage, vaccine_efficacy, -1,
   lifetab, cohort, agevac)
