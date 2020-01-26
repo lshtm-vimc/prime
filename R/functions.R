@@ -1377,38 +1377,59 @@ RunCountry <- function (country_iso3,
                                                     colnames (data.incidence))])
   ages <- ages[!is.na(ages)]
 
+
   # ----------------------------------------------------------------------------
-  # If no data available, use other country as proxy
-  # if ( country_iso3 %in% c("XK","MHL","TUV","PSE") ) {
-  if ( country_iso3 %in% c("XK") ) {
+  # Before using DISEASE BURDEN data (check for countries with unavailable data)
+  # ----------------------------------------------------------------------------
+  # If no data available, switch to another country as proxy
+  if ( (country_iso3 %in% c("XK")) |
+       ( (country_iso3 == "PSE") & (canc.inc == "2012") ) ) {
     proxy <- TRUE
     country_iso3 <- switch (
       country_iso3,
-      "XK"  = "ALB",  # demography data available for XK but no burden & cost
-      # "PSE" = "JOR",  # burden & demography data available for PSE but no cost
-                        # no cancer burden data for globocan 2012
-      # "MHL" = "KIR",
-      # "TUV" = "FJI",
+      "XK"  = "ALB",  # demography (unwpp) available for XK
+                      # no data for burden, demography (who), cost for XK
+      "PSE" = "JOR",  # burden (2018) & demography (unwpp) available for PSE but no cost
+                      # no data for burden (2012), demography (who), cost for PSE
       country_iso3
     )
   } else {
     proxy <- FALSE
   }
-
-  # If no data available, use other country as proxy
-  if ( (country_iso3 %in% c("PSE")) & (canc.inc == "2012")) {
-    proxy <- TRUE
-    country_iso3 <- switch (
-      country_iso3,
-      "PSE" = "JOR",  # burden & demography data available for PSE but no cost and
-                      # no cancer burden data for globocan 2012
-      country_iso3
-    )
-  } else {
-    proxy <- FALSE
-  }
-
   # ----------------------------------------------------------------------------
+  # The following commented code snippet is redundant -- can be removed
+  # # ----------------------------------------------------------------------------
+  # # If no data available, use other country as proxy
+  # # if ( country_iso3 %in% c("XK","MHL","TUV","PSE") ) {
+  # if ( country_iso3 %in% c("XK") ) {
+  #   proxy <- TRUE
+  #   country_iso3 <- switch (
+  #     country_iso3,
+  #     "XK"  = "ALB",  # demography data available for XK but no burden & cost
+  #     # "PSE" = "JOR",  # burden & demography data available for PSE but no cost
+  #                       # no cancer burden data for globocan 2012
+  #     # "MHL" = "KIR",
+  #     # "TUV" = "FJI",
+  #     country_iso3
+  #   )
+  # } else {
+  #   proxy <- FALSE
+  # }
+  #
+  # # If no data available, use other country as proxy
+  # if ( (country_iso3 %in% c("PSE")) & (canc.inc == "2012")) {
+  #   proxy <- TRUE
+  #   country_iso3 <- switch (
+  #     country_iso3,
+  #     "PSE" = "JOR",  # burden & demography data available for PSE but no cost and
+  #                     # no cancer burden data for globocan 2012
+  #     country_iso3
+  #   )
+  # } else {
+  #   proxy <- FALSE
+  # }
+  #
+  # # ----------------------------------------------------------------------------
 
 
   ######################### Look into this
@@ -1488,6 +1509,23 @@ RunCountry <- function (country_iso3,
   mort.cecx    [which (is.na (mort.cecx)    )] <- 0
   cecx_5y_prev [which (is.na (cecx_5y_prev) )] <- 0
 
+
+  # ----------------------------------------------------------------------------
+  # After using DISEASE BURDEN data
+  # ----------------------------------------------------------------------------
+  # Switch back to original country for which proxy was set due to unavailable data
+  if (proxy) {
+    proxy <- FALSE
+    country_iso3 <- switch (
+      country_iso3,
+      "ALB" = "XK",
+      "JOR" = "PSE",
+      country_iso3
+    )
+  }
+  # ----------------------------------------------------------------------------
+
+
   ##############################################################################
   # daly.canc.seq <- switch(
   #   data.global[iso3==country_iso3,`WHO Mortality Stratum`],
@@ -1524,7 +1562,11 @@ RunCountry <- function (country_iso3,
 
     if (length(cohort)==0) {
       cohort <- 1
-    } else if (proxy) {
+    }
+    # --------------------------------------------------------------------------
+    # The following code snippet is redundant (proxy is FALSE at this stage) -- start
+    # It can be removed.
+    else if (proxy) {
       cohort <- switch (
         country_iso3,
         "ALB" = cohort * 1824000/2774000,
@@ -1533,26 +1575,49 @@ RunCountry <- function (country_iso3,
         "JOR" = cohort * 4170000/6459000,
         cohort
       )
+      # The above code snippet is redundant (proxy is FALSE at this stage) -- end
+      # --------------------------------------------------------------------------
     }
   }
 
+
   # ----------------------------------------------------------------------------
-  # If no data available, use other country as proxy
-  # if ( country_iso3 %in% c("XK","MHL","TUV","PSE") ) {
-  if ( country_iso3 %in% c("PSE") ) {
+  # Before using DEMOGRAPHY data (check for countries with unavailable data)
+  # ----------------------------------------------------------------------------
+  # If no data available, switch to another country as proxy
+  if ( (country_iso3 %in% c("XK", "PSE")) &
+       (unwpp_mortality == FALSE) )  {
     proxy <- TRUE
     country_iso3 <- switch (
       country_iso3,
-      # "XK"  = "ALB",  # demography data available for XK but no burden & cost
-      "PSE" = "JOR",  # burden & demography data available for PSE but no cost
-      # "MHL" = "KIR",
-      # "TUV" = "FJI",
+      "XK"  = "ALB",  # demography (unwpp) available for XK
+                      # no data for burden, demography (who), cost for XK
+      "PSE" = "JOR",  # burden (2018) & demography (unwpp) available for PSE but no cost
+                      # no data for burden (2012), demography (who), cost for PSE
       country_iso3
     )
   } else {
-    # proxy <- FALSE
+    proxy <- FALSE
   }
   # ----------------------------------------------------------------------------
+  # The following commented code snippet is redundant -- can be removed
+  # # ----------------------------------------------------------------------------
+  # # If no data available, use other country as proxy
+  # # if ( country_iso3 %in% c("XK","MHL","TUV","PSE") ) {
+  # if ( country_iso3 %in% c("PSE") ) {
+  #   proxy <- TRUE
+  #   country_iso3 <- switch (
+  #     country_iso3,
+  #     # "XK"  = "ALB",  # demography data available for XK but no burden & cost
+  #     "PSE" = "JOR",  # burden & demography data available for PSE but no cost
+  #     # "MHL" = "KIR",
+  #     # "TUV" = "FJI",
+  #     country_iso3
+  #   )
+  # } else {
+  #   # proxy <- FALSE
+  # }
+  # # ----------------------------------------------------------------------------
 
 
   # create lifetables
@@ -1609,6 +1674,8 @@ RunCountry <- function (country_iso3,
     lifetab <- lifeTable (mx = mx,
                           agecohort = agecohort)
     # lifetab <- lifeTable (mx=mx, agecohort=agecohort)
+
+
     #### UNWPP changes
     # --------------------------------------------------------------------------
 
@@ -1643,7 +1710,43 @@ RunCountry <- function (country_iso3,
   # #### UNWPP changes
   # # --------------------------------------------------------------------------
 
+  }  # end of -- if (!unwpp_mortality)  # create lifetables
+
+  # ----------------------------------------------------------------------------
+  # After using DEMOGRAPHY data
+  # ----------------------------------------------------------------------------
+  # Switch back to original country for which proxy was set due to unavailable data
+  if (proxy) {
+    proxy <- FALSE
+    country_iso3 <- switch (
+      country_iso3,
+      "ALB" = "XK",
+      "JOR" = "PSE",
+      country_iso3
+    )
   }
+  # ----------------------------------------------------------------------------
+
+
+
+  # ----------------------------------------------------------------------------
+  # Before using COST data (check for countries with unavailable data)
+  # ----------------------------------------------------------------------------
+  # If no data available, switch to another country as proxy
+  if ( country_iso3 %in% c("XK", "PSE") ) {
+    proxy <- TRUE
+    country_iso3 <- switch (
+      country_iso3,
+      "XK"  = "ALB",  # demography (unwpp) available for XK
+                      # no data for burden, demography (who), cost for XK
+      "PSE" = "JOR",  # burden (2018) & demography (unwpp) available for PSE but no cost
+                      # no data for burden (2012), demography (who), cost for PSE
+      country_iso3
+    )
+  } else {
+    proxy <- FALSE
+  }
+  # ----------------------------------------------------------------------------
 
 
   # ----------------------------------------------------------------------------
@@ -1668,7 +1771,20 @@ RunCountry <- function (country_iso3,
   # ----------------------------------------------------------------------------
 
 
-
+  # ----------------------------------------------------------------------------
+  # After using COST data
+  # ------------------------------------------------------------------------------
+  # Switch back to original country for which proxy was set due to unavailable data
+  if (proxy) {
+    proxy <- FALSE
+    country_iso3 <- switch (
+      country_iso3,
+      "ALB" = "XK",
+      "JOR" = "PSE",
+      country_iso3
+    )
+  }
+  # ----------------------------------------------------------------------------
 
 
   ## UPDATE: To be updated -- PSA for cecx_5y_prev
@@ -1731,6 +1847,7 @@ RunCountry <- function (country_iso3,
     # GDP/GNI per capita
     # wb.indicator: World Bank indicator for GDP/GNI per capita in I$/US$ and current/constant data
     # wb.year: year of the World Bank indicator value
+    # Note: Data available for PSE and XK -- thereby, no need to set proxy to another country
     gdp_per_capita <- wb (country   = country_iso3,
                           indicator = wb.indicator,
                           startdate = wb.year,
