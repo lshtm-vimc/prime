@@ -57,7 +57,7 @@ writelog <- function (logname,
 #' @param force Logical, whether .data.batch should be overwritten if it already
 #'        exists (parameter: not required)
 #'
-#' @return None
+#' @return batch data of cohorts with vaccination coverage
 #' @export
 #'
 #' @examples #
@@ -203,7 +203,7 @@ RegisterBatchData <- function (coverage_data,
 #' @param psa integer, indicating how many runs for probabilistic sensitivity
 #'   analysis (PSA). 0 to run no PSA.
 #'
-#' @return None
+#' @return batch data of cohorts with vaccination coverage
 #' @export
 #'
 #' @examples #

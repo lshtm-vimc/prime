@@ -33,7 +33,7 @@ exists}
 analysis (PSA). 0 to run no PSA.}
 }
 \value{
-None
+batch data of cohorts with vaccination coverage
 }
 \description{
 Creates .data.batch which is used when running/looping over multiple birth
