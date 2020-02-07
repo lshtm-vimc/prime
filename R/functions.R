@@ -449,7 +449,7 @@ RegisterBatchDataVimc <- function (vimc_coverage,
 #'        and DALY estimation based on prevalence instead of age of incidence
 #' @param sens ignore, does not do anything anymore
 #' @param unwpp_mortality logical, whether to create lifetables based on
-#'        UNWPP mx estimates or WHO data
+#'        UNWPP mortality estimates or WHO data
 #' @param year_born ignore
 #' @param year_vac ignore
 #' @param runs ignore
