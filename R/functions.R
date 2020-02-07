@@ -169,6 +169,9 @@ RegisterBatchData <- function (coverage_data,
 
   .data.batch <<- coverage_data
 
+  # return batch data of cohorts with vaccination coverage
+  return (.data.batch)
+
 } # end of function -- RegisterBatchData
 
 
@@ -416,7 +419,7 @@ RegisterBatchDataVimc <- function (vimc_coverage,
       )
     }
 
-    if (exists(".data.batch") & !force) {
+    if (exists(".data.batch.psa") & !force) {
       warning("'.data.batch.psa' already exists and is NOT overwritten.")
     } else {
       .data.batch.psa <<- psadat
@@ -424,6 +427,9 @@ RegisterBatchDataVimc <- function (vimc_coverage,
   }
   # ----------------------------------------------------------------------------
   # ----------------------------------------------------------------------------
+
+  # return batch data of cohorts with vaccination coverage
+  return (.data.batch)
 
 } # end of function -- RegisterBatchDataVimc
 
@@ -1768,6 +1774,17 @@ RunCountry <- function (country_iso3,
     # cost.canc <- monetary_to_number(data.costcecx[iso3==country_iso3, cancer_cost_adj])
     cost.canc <- data.costcecx [iso3==country_iso3, cancer_cost_adj]
   }
+
+  # if cost unavailable and cost analysis is not required, then set cost to 0
+  # in this way, health impact analysis can still be run for such countries
+  # (GLP, REU, NCL, MTQ, PYF, GUM, PRI, GUF)
+  if ( (length(cost.vac)  == 0) & (analyseCosts == FALSE) ) {
+    cost.vac <- 0
+  }
+  if ( (length(cost.canc) == 0) & (analyseCosts == FALSE) ) {
+    cost.canc <- 0
+  }
+
   # ----------------------------------------------------------------------------
 
 
