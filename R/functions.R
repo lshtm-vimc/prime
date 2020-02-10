@@ -512,63 +512,66 @@ BatchRun <- function (countries                       = -1,
                       vaccine                         = "4vHPV"
                       ) {
 
-  ages <- as.numeric(colnames(data.incidence)[!grepl("\\D",colnames(data.incidence))])
-  ages <- ages[!is.na(ages)]
+  ages <- as.numeric (colnames (data.incidence) [!grepl("\\D", colnames(data.incidence) ) ] )
+  ages <- ages [!is.na(ages)]
 
-  if(countries==-1){
-    countries <- sort(unique(.data.batch[,country_code]))
+  if (countries == -1) {
+    countries <- sort (unique (.data.batch [, country_code] ) )
   }
 
-  if(year_vac==-1 & year_born==-1){
-    years <- sort(unique(.data.batch[,birthcohort]))
+  if (year_vac == -1 & year_born == -1) {
+    years <- sort (unique (.data.batch [, birthcohort] ) )
   }
 
-  if(psa>1){
+  if (psa > 1) {
     psadat <- get(".data.batch.psa")
     if(length(unique(psadat[,run_id])) != psa){
       stop ("Number of specified PSA does not correspond to number of run ids in PSA file")
     } else {
-      runs <- psa
+      runs  <- psa
       dopsa <- TRUE
     }
   } else {
-    dopsa <- FALSE
-    runs <- 1
+    dopsa  <- FALSE
+    runs   <- 1
     psadat <- -1
   }
 
-  #create initial variables that won't be overwritten in foreach loops
-  init_coverage <- coverage
-  init_agevac <- agevac
+  # create initial variables that won't be overwritten in foreach loops
+  init_coverage  <- coverage
+  init_agevac    <- agevac
   init_agecohort <- agecohort
-  combine <- foreach(
+
+  combine <- foreach (
     cn = 1:length(countries),
-    .packages=c("data.table","prime"),
+    .packages = c("data.table", "prime"),
     # .errorhandling="pass",
-    .export=c(".data.batch","data.pop", "writelog")
+    .export = c(".data.batch", "data.pop", "writelog")
   ) %:% foreach(
-    y=1:length(years)
+    y = 1:length(years)
   ) %:% foreach(
     r=1:runs
   ) %dopar% {
     #) %do% {
     .t_data.batch <- .data.batch [country_code == countries[cn] &
                                     birthcohort == years[y]]
-    if(init_coverage==-1){
-      coverage <- .t_data.batch[1, coverage]
+    if (init_coverage == -1){
+      coverage <- .t_data.batch [1, coverage]
     } else {
       coverage <- init_coverage
     }
-    if(init_agevac==-1){
-      agevac <- .t_data.batch[1, agevac]
+    if (init_agevac==-1){
+      agevac <- .t_data.batch [1, agevac]
     } else {
       agevac <- init_agevac
     }
-    if(init_agecohort==-1 & agevac>1){
-      agecohort <- agevac-1
-      #agecohort <- agevac
-    } else if(init_agecohort==-1){
-      agecohort <- 1
+    if ( (init_agecohort == -1) & (agevac >= 0) ) {
+    # if ( (init_agecohort == -1) & (agevac > 1) ) {
+      # agecohort <- agevac - 1
+      agecohort <- agevac
+    } else if (init_agecohort == -1){
+      agecohort <- 0
+      # agecohort <- 1
     } else {
       agecohort <- init_agecohort
     }
@@ -603,22 +606,22 @@ BatchRun <- function (countries                       = -1,
       )
     }
 
-    if (nrow(.t_data.batch)>1) {
+    if (nrow (.t_data.batch) > 1) {
       campaigns <- list()
-      for(cmp in 2:nrow(.t_data.batch)){
+      for (cmp in 2:nrow(.t_data.batch)) {
         campaigns[[length(campaigns)+1]] <- list(
-          "year" = .t_data.batch[cmp,birthcohort],
-          "ages" = .t_data.batch[cmp,agevac],
+          "year" = .t_data.batch [cmp, birthcohort],
+          "ages" = .t_data.batch [cmp, agevac],
           # add type and coverage data -
           # if type is 'routine', coverage is already a proportion;
           # if type is 'campaign', proportion will be calculated from target population
-          "type" = .t_data.batch[cmp,activity_type],
+          "type" = .t_data.batch [cmp, activity_type],
           #"coverage" = switch(
           #  .t_data.batch[cmp,activity_type],
           #  "routine" = .t_data.batch[cmp,coverage],
           #  "campaign" = .t_data.batch[cmp,coverage]*.t_data.batch[cmp,target]
           #)
-          "coverage" = .t_data.batch[cmp,coverage]
+          "coverage" = .t_data.batch [cmp, coverage]
         )
       }
     } else {
@@ -1320,7 +1323,7 @@ RunCountry <- function (country_iso3,
                         vaceff_aftersexdebut  = 0,
                         cov                   = 1,
                         agevac                = 10,
-                        agecohort             = 9,
+                        agecohort             = 10,
                         cohort                = -1,
                         canc.inc              = "2018",
                         sens                  = -1,
@@ -1633,7 +1636,7 @@ RunCountry <- function (country_iso3,
                                      as.character(ages),
                                      with=F],
                         use.names=F)
-    lifetab  <- lifeTable (qx=mort.all,agecohort)
+    lifetab  <- lifeTable (qx=mort.all, agecohort)
   } else {
 
     # Use UNWPP mortality estimates
@@ -2293,7 +2296,7 @@ lifeTable <- function (qx        = NULL,
   # lx - general definition: number of persons surviving to exact age x
   # lifetab [age < agecohort,  "lx.adj"] <- 0
 
-  return(lifetab)
+  return (lifetab)
 
 } # end of function -- lifeTable
 
