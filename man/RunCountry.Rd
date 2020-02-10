@@ -5,7 +5,7 @@
 \title{Run PRIME for a specific country}
 \usage{
 RunCountry(country_iso3, vaceff_beforesexdebut = 1,
-  vaceff_aftersexdebut = 0, cov = 1, agevac = 10, agecohort = 10,
+  vaceff_aftersexdebut = 0, cov = 1, agevac = 10, agecohort = 9,
   cohort = -1, canc.inc = "2018", sens = -1,
   unwpp_mortality = TRUE, year_born = -1, year_vac = -1,
   campaigns = -1, analyseCosts = FALSE, canc.cost = "unadj",

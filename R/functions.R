@@ -1164,12 +1164,12 @@ RunCohort <- function (lifetab,
   # expected number of cases, deaths, dalys, and costs (static)
   out.pre <- data.table (
     age         = ages,
-    cohort_size = cohort * lifetab[,lx.adj],
-    vaccinated  = rep(0,length(ages)),
-    immunized   = rep(0,length(ages)),
+    cohort_size = cohort * lifetab [, lx.adj],
+    vaccinated  = rep (0, length(ages)),
+    immunized   = rep (0, length(ages)),
     inc.cecx    = incidence,
     mort.cecx   = mortality_cecx,
-    lifey       = mortality_cecx*lexp,
+    lifey       = mortality_cecx * lexp,
     # disability  = (incidence - mortality_cecx)*daly.canc.nonfatal + mortality_cecx*daly.canc.fatal,
     # disability  = (incidence  * daly.canc.diag * 4.8/12) + (prevalence * daly.canc.control) + (mortality_cecx * (daly.canc.metastatic * 9.21/12 + daly.canc.terminal * 1/12) ),
     # disability  = (incidence  * dw$diag * cecx_duration$diag) + (prevalence * dw$control) + (mortality_cecx * (dw$metastatic * cecx_duration$metastatic + dw$terminal * cecx_duration$terminal) ),
@@ -1180,7 +1180,7 @@ RunCohort <- function (lifetab,
   out.post                   <- out.pre
   out.post                   <- out.post * (1 - coverage [, effective_coverage])
   out.post [, "age"]         <- ages
-  out.post [, "cohort_size"] <- cohort * lifetab[,lx.adj]
+  out.post [, "cohort_size"] <- cohort * lifetab [, lx.adj]
   out.post [, "vaccinated"]  <- coverage [, coverage]
   out.post [, "immunized"]   <- coverage [, effective_coverage]
 
@@ -1320,7 +1320,7 @@ RunCountry <- function (country_iso3,
                         vaceff_aftersexdebut  = 0,
                         cov                   = 1,
                         agevac                = 10,
-                        agecohort             = 10,
+                        agecohort             = 9,
                         cohort                = -1,
                         canc.inc              = "2018",
                         sens                  = -1,
@@ -2286,7 +2286,12 @@ lifeTable <- function (qx        = NULL,
   # impact of vaccinating people at age agecohort
   lifetab [age >= agecohort, "lx.adj"] <- lifetab [age >= agecohort, lx] /
                                           lifetab [age == agecohort, lx]
-  lifetab [age < agecohort,  "lx.adj"] <- 0
+
+  lifetab [age <  agecohort, "lx.adj"] <- lifetab [age <  agecohort, lx] /
+                                          lifetab [age == agecohort, lx]
+  # lx at age less than agecohort will be larger than lx at age of agecohort
+  # lx - general definition: number of persons surviving to exact age x
+  # lifetab [age < agecohort,  "lx.adj"] <- 0
 
   return(lifetab)
 

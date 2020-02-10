@@ -34,7 +34,7 @@ and DALY estimation based on prevalence instead of age of incidence}
 \item{sens}{ignore, does not do anything anymore}
 
 \item{unwpp_mortality}{logical, whether to create lifetables based on
-UNWPP mx estimates or WHO data}
+UNWPP mortality estimates or WHO data}
 
 \item{year_born}{ignore}
 
