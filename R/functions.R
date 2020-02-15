@@ -688,19 +688,24 @@ BatchRun <- function (countries                       = -1,
     colnames(combine)[colnames(combine) == "birthcohort"] <- "year"
   }
   if (!use_proportions) {
-    combine[, "vaccinated"] <- combine[,vaccinated]*combine[,cohort_size]
-    combine[, "immunized"]  <- combine[,immunized]*combine[,cohort_size]
 
-    combine[, "inc.cecx"] <- combine[,inc.cecx]*combine[,cohort_size]
-    colnames(combine)[colnames(combine) == "inc.cecx"] <- "cases"
-    combine[, "mort.cecx"] <- combine[,mort.cecx]*combine[,cohort_size]
-    colnames(combine)[colnames(combine) == "mort.cecx"] <- "deaths"
+    # estimate absolute values from proportions
+    combine [, "vaccinated"] <- combine [, vaccinated] * combine [, cohort_size]
+    combine [, "immunized"]  <- combine [, immunized]  * combine [, cohort_size]
 
-    combine[, "lifey"]      <- combine[,lifey]*combine[,cohort_size]
-    combine[, "disability"] <- combine[,disability]*combine[,cohort_size]
+    combine [, "inc.cecx"]   <- combine [, inc.cecx]   * combine [, cohort_size]
+    combine [, "mort.cecx"]  <- combine [, mort.cecx]  * combine [, cohort_size]
+    combine [, "prev.cecx"]  <- combine [, prev.cecx]  * combine [, cohort_size]
 
-    combine[, "cost.cecx"] <- combine[,cost.cecx]*combine[,cohort_size]
-    colnames(combine)[colnames(combine) == "cost.cecx"] <- "costs"
+    combine [, "lifey"]      <- combine [, lifey]      * combine [, cohort_size]
+    combine [, "disability"] <- combine [, disability] * combine [, cohort_size]
+    combine [, "cost.cecx"]  <- combine [, cost.cecx]  * combine [, cohort_size]
+
+    # change column names to more meaningful names
+    colnames (combine) [colnames (combine) == "inc.cecx"]  <- "cases"
+    colnames (combine) [colnames (combine) == "mort.cecx"] <- "deaths"
+    colnames (combine) [colnames (combine) == "prev.cecx"] <- "prevalence"
+    colnames (combine) [colnames (combine) == "cost.cecx"] <- "costs"
   }
 
   return(combine)
@@ -1177,7 +1182,8 @@ RunCohort <- function (lifetab,
     # disability  = (incidence  * daly.canc.diag * 4.8/12) + (prevalence * daly.canc.control) + (mortality_cecx * (daly.canc.metastatic * 9.21/12 + daly.canc.terminal * 1/12) ),
     # disability  = (incidence  * dw$diag * cecx_duration$diag) + (prevalence * dw$control) + (mortality_cecx * (dw$metastatic * cecx_duration$metastatic + dw$terminal * cecx_duration$terminal) ),
     disability  = yld,
-    cost.cecx   = incidence * cost_cancer
+    cost.cecx   = incidence * cost_cancer,
+    prev.cecx   = prevalence
   )
 
   out.post                   <- out.pre
@@ -1190,8 +1196,9 @@ RunCohort <- function (lifetab,
   # discounted
   if (discounting) {
     out.pre.disc                  <- out.pre
-    out.pre.disc [, "inc.cecx"]   <- out.pre.disc [, inc.cecx]  * disc.ben.yr
-    out.pre.disc [, "mort.cecx"]  <- out.pre.disc [, mort.cecx] * disc.ben.yr
+    out.pre.disc [, "inc.cecx"]   <- out.pre.disc [, inc.cecx]   * disc.ben.yr
+    out.pre.disc [, "mort.cecx"]  <- out.pre.disc [, mort.cecx]  * disc.ben.yr
+    out.pre.disc [, "prev.cecx"]  <- out.pre.disc [, prev.cecx]  * disc.ben.yr
     out.pre.disc [, "lifey"]      <- out.pre [,mort.cecx] * lexp.disc * disc.ben.yr
 
     ############################################################################
@@ -1258,7 +1265,8 @@ RunCohort <- function (lifetab,
                     "mort.cecx",
                     "lifey",
                     "disability",
-                    "cost.cecx"),
+                    "cost.cecx",
+                    "prev.cecx"),
                with = FALSE]
 
   return (out)
