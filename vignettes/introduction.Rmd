@@ -128,7 +128,8 @@ getISO3 ("Malawi")
 
 If you want to analyse the costs/benefits of vaccinating this specific cohort, set analyseCosts to TRUE.
 ```{r}
-RunCountry ("MWI", analyseCosts=TRUE)
+# To be updated
+# RunCountry ("MWI", analyseCosts=TRUE)
 ```
 
 
@@ -138,7 +139,8 @@ RunCountry automatically assumes 100% coverage, 100% vaccine-efficacy, and age o
 * Tweak the different values by passing them to the function. 
 * See ?RunCountry for all options.
 ```{r}
-RunCountry("MWI", analyseCosts=TRUE, discounting=TRUE, agevac=10, agecohort=10, vaceff_beforesexdebut=0.98, vaceff_aftersexdebut=0, cov=0.75, year_vac=2020)
+# To be updated
+# RunCountry("MWI", analyseCosts=TRUE, discounting=TRUE, agevac=10, agecohort=10, vaceff_beforesexdebut=0.98, vaceff_aftersexdebut=0, cov=0.75, year_vac=2020)
 ```
 
 * In essence, RunCountry() calls RunCohort(), and will provide it with country-specific estimates.
@@ -146,11 +148,12 @@ RunCountry("MWI", analyseCosts=TRUE, discounting=TRUE, agevac=10, agecohort=10, 
 * You could also run it yourself, providing your own estimates for vaccine-costs and GDP per capita.
 
 ```{r}
-analyseCosts (
-  RunCountry("MWI", analyseCosts=FALSE, discounting=TRUE, agevac=10, agecohort=10, vaceff_beforesexdebut=0.98, vaceff_aftersexdebut=0, cov=0.75, year_vac=2020),
-  vaccine_cost=100,
-  gdp_per_capita=561
-)
+# To be updated
+# analyseCosts (
+#   RunCountry("MWI", analyseCosts=FALSE, discounting=TRUE, agevac=10, agecohort=10, vaceff_beforesexdebut=0.98, vaceff_aftersexdebut=0, cov=0.75, year_vac=2020),
+#   vaccine_cost=100,
+#   gdp_per_capita=561
+# )
 ```
 
 * Lifetables are used to follow the size of a birth-cohort over time. 

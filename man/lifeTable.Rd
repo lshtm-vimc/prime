@@ -19,6 +19,6 @@ qx = age-specific probability of dying
 }
 \examples{
 
-qx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F], use.names=F)
+qx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=FALSE], use.names=FALSE)
 lifeTable(qx, 9)
 }

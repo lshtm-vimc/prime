@@ -918,13 +918,13 @@ OutputVimc <- function (DT,
 #'
 #' @examples
 #' lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG",
-#'   as.character(0:100), with=F], use.names=F), 9)
-#' incidence <- unlist(data.incidence[iso3=="AFG", as.character(0:100), with=F],
-#'   use.names=F)
-#' mortality_cecx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F],
-#'   use.names=F)
+#'   as.character(0:100), with=FALSE], use.names=FALSE), 9)
+#' incidence <- unlist(data.incidence[iso3=="AFG", as.character(0:100), with=FALSE],
+#'   use.names=FALSE)
+#' mortality_cecx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=FALSE],
+#'   use.names=FALSE)
 #' prevalence <- unlist(data.cecx_5y_prevalence[iso3=="AFG",
-#'   as.character(0:100), with=F], use.names=F)
+#'   as.character(0:100), with=FALSE], use.names=FALSE)
 #' agevac <- 9
 #' coverage <- 0.8
 #' campaigns <- -1
@@ -2259,7 +2259,7 @@ checkSize <- function (v) {
 #'
 #' @examples
 #'
-#' qx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F], use.names=F)
+#' qx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=FALSE], use.names=FALSE)
 #' lifeTable(qx, 9)
 lifeTable <- function (qx        = NULL,
                        mx        = NULL,
@@ -2355,7 +2355,7 @@ lifeTable <- function (qx        = NULL,
 #' routine_coverage <- 0.75
 #' vaccine_efficacy <- 0.8
 #' lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG", as.character(0:100),
-#'   with=F], use.names=F), 9)
+#'   with=FALSE], use.names=FALSE), 9)
 #' agevac <- 9
 #' ageCoverage (ages, routine_coverage, vaccine_efficacy, -1,
 #'   lifetab, cohort, agevac)
@@ -2777,14 +2777,15 @@ monetary_to_number <- function (x) {
 #' @return Null return value; disease burden estimates are saved to corresponding files
 #' @export
 #'
-#' @examples EstimateVaccineImpactVimcCentral (
-#'   vaccine_coverage_file = "coverage_hpv-routine-default.csv",
-#'   disease_burden_template_file       = "central-burden-template.csv",
-#'   disease_burden_no_vaccination_file = "central_burden_no_vaccination.csv",
-#'   disease_burden_vaccination_file    = "central_burden_vaccination.csv",
-#'   disease_burden_results_file        = "central_burden_results.csv",
-#'   routine_vaccination                = TRUE,
-#'   campaign_vaccination               = TRUE)
+#' @examples
+#'   # EstimateVaccineImpactVimcCentral (
+#'   #   vaccine_coverage_file              = "coverage_hpv-routine-default.csv",
+#'   #   disease_burden_template_file       = "central-burden-template.csv",
+#'   #   disease_burden_no_vaccination_file = "central_burden_no_vaccination.csv",
+#'   #   disease_burden_vaccination_file    = "central_burden_vaccination.csv",
+#'   #   disease_burden_results_file        = "central_burden_results.csv",
+#'   #   routine_vaccination                = TRUE,
+#'   #   campaign_vaccination               = TRUE)
 
 EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
                                               disease_burden_template_file,
@@ -2890,14 +2891,18 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
 #'
 #' @return Null return value; disease burden estimates are saved to corresponding files
 #' @export
+#' @import lhs
+#' @import stats
+#' @importFrom prevalence betaExpert
 #'
-#' @examples CreatePsaData (
-#'   country_codes    = c("AFG", "ALB"),
-#'   vaccine          = "4vHPV",
-#'   psa_runs         = 200,
-#'   seed_state       = 1,
-#'   psadat_file      = "psadat.csv",
-#'   psadat_vimc_file = "psadat_vimc.csv")
+#' @examples
+#'   # CreatePsaData (
+#'   #   country_codes    = c("AFG", "ALB"),
+#'   #   vaccine          = "4vHPV",
+#'   #   psa_runs         = 200,
+#'   #   seed_state       = 1,
+#'   #   psadat_file      = "psadat.csv",
+#'   #   psadat_vimc_file = "psadat_vimc.csv")
 # ------------------------------------------------------------------------------
 CreatePsaData <- function (country_codes,
                            vaccine          = "4vHPV",

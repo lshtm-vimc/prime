@@ -60,13 +60,13 @@ Runs PRIME for one birth-cohort. Usually called by another function such as
 }
 \examples{
 lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG",
-  as.character(0:100), with=F], use.names=F), 9)
-incidence <- unlist(data.incidence[iso3=="AFG", as.character(0:100), with=F],
-  use.names=F)
-mortality_cecx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=F],
-  use.names=F)
+  as.character(0:100), with=FALSE], use.names=FALSE), 9)
+incidence <- unlist(data.incidence[iso3=="AFG", as.character(0:100), with=FALSE],
+  use.names=FALSE)
+mortality_cecx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=FALSE],
+  use.names=FALSE)
 prevalence <- unlist(data.cecx_5y_prevalence[iso3=="AFG",
-  as.character(0:100), with=F], use.names=F)
+  as.character(0:100), with=FALSE], use.names=FALSE)
 agevac <- 9
 coverage <- 0.8
 campaigns <- -1
