@@ -2867,7 +2867,7 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
   fwrite (x    = vaccination,
           file = disease_burden_vaccination_file)
 
-  return ()
+  return (NULL)
 
 } # end of function -- EstimateVaccineImpactVimcCentral
 #-------------------------------------------------------------------------------
@@ -3420,7 +3420,7 @@ EmulateVaccineImpactVimcStochastic <- function (disease_burden_template_file,
 
   } # end of -- for (country_code in countryCodes)
 
-  return ()
+  return (NULL)
 
 } # end of function -- EmulateVaccineImpactVimcStochastic
 #-------------------------------------------------------------------------------
