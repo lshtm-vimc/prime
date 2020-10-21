@@ -2751,7 +2751,7 @@ monetary_to_number <- function (x) {
 #-------------------------------------------------------------------------------
 #' Generate vaccine impact estimates (VIMC central run)
 #'
-#' Genrate vaccine impact estimates for VIMC central runs. The inputs are
+#' Generate vaccine impact estimates for VIMC central runs. The inputs are
 #'   vaccine coverage and disease burden template files and outputs are
 #'   disease burden estimates (pre-vaccination and post-vaccination).
 #'
@@ -2774,7 +2774,7 @@ monetary_to_number <- function (x) {
 #' @param campaign_vaccination logical, indicates campaign vaccination
 #' @param routine_vaccination logical, indicates routine vaccination
 #'
-#' @return
+#' @return Null return value; disease burden estimates are saved to corresponding files
 #' @export
 #'
 #' @examples EstimateVaccineImpactVimcCentral (
@@ -2874,8 +2874,30 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
 
 
 # ------------------------------------------------------------------------------
-# create psa data for probabilistic sensitivity analysis
-# generate random samples of input parameters based on their distributions
+#' Generate Latin hyper cube sample of parameters for sensitivity analysis
+#'
+#' Generate Latin hyper cube sample of input parameters based on their
+#'   distributions for probabilistic sensitivity analysis.
+#'
+#' @param country_codes ISO3 country codes of countries
+#' @param vaccine bivalent/quadrivalent or nonavalent HPV vaccine
+#' @param psa_runs integer, simulation runs for sensitivity analysis
+#' @param seed_state integer, seed value for random number generator
+#' @param psadat_file character string, file to save Latin hyper cube
+#'   sample of input parameters
+#' @param psadat_vimc_file character string, file to save Latin hyper cube
+#'   sample of input parameters (VIMC format)
+#'
+#' @return Null return value; disease burden estimates are saved to corresponding files
+#' @export
+#'
+#' @examples CreatePsaData (
+#'   country_codes    = c("AFG", "ALB"),
+#'   vaccine          = "4vHPV",
+#'   psa_runs         = 200,
+#'   seed_state       = 1,
+#'   psadat_file      = "psadat.csv",
+#'   psadat_vimc_file = "psadat_vimc.csv")
 # ------------------------------------------------------------------------------
 CreatePsaData <- function (country_codes,
                            vaccine          = "4vHPV",
@@ -3187,7 +3209,7 @@ CreatePsaData <- function (country_codes,
 #'
 #' Emulate vaccine impact estimates for VIMC stochastic runs/sensitivity
 #'   analysis. The inputs are central disease burden estimates, input
-#'   parameter distributions (latin hyper sampling), runs forsensitivity analysis,
+#'   parameter distributions (latin hyper sampling), runs for sensitivity analysis,
 #'   and filename for stochastic burden estimates. The outputs are stochastic
 #'   disease burden estimates (full results file plus a file per country).
 #'
@@ -3217,17 +3239,17 @@ CreatePsaData <- function (country_codes,
 #' @param vaccination_scenario logical (required), generate stochastic burden
 #'   estimates for (vaccination) or (no vaccination) scenario
 #'
-#' @return
+#' @return Null return value; disease burden estimates are saved to corresponding files
 #' @export
 #'
 EmulateVaccineImpactVimcStochastic <- function (disease_burden_template_file,
-                                                 centralBurdenResultsFile,
-                                                 psaData,
-                                                 diseaseBurdenStochasticFolder,
-                                                 diseaseBurdenStochasticFile,
-                                                 psa_runs,
-                                                 countryCodes = -1,
-                                                 vaccination_scenario) {
+                                                centralBurdenResultsFile,
+                                                psaData,
+                                                diseaseBurdenStochasticFolder,
+                                                diseaseBurdenStochasticFile,
+                                                psa_runs,
+                                                countryCodes = -1,
+                                                vaccination_scenario) {
 
   # read file -- central disease burden template
   vimc_template <- fread (disease_burden_template_file)
