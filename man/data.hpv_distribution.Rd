@@ -4,7 +4,8 @@
 \name{data.hpv_distribution}
 \alias{data.hpv_distribution}
 \title{Relative contribution of HPV 16/18/31/33/45/52/58 in ICC HPV-positive cases}
-\format{A data table with 249 observations of 12 variables.
+\format{
+A data table with 249 observations of 12 variables.
 \describe{
   \item{Global}{World}
   \item{Region}{UN region}
@@ -18,7 +19,8 @@
   \item{hpv_9v}{Relative contribution (\%) of HPV 16/18/31/33/45/52/58 in ICC HPV-positive cases (mean)}
   \item{hpv_9v_low}{Relative contribution (\%) of HPV 16/18/31/33/45/52/58 in ICC HPV-positive cases (lower bound of 95\% uncertainty interval)}
   \item{hpv_9v_high}{Relative contribution (\%) of HPV 16/18/31/33/45/52/58 in ICC HPV-positive cases (upper bound of 95\% uncertainty interval)}
-}}
+}
+}
 \source{
 {Serrano B, Alemany L, Tous S, Bruni L, Clifford GM, Weiss T, et al.
 Potential impact of a nine-valent vaccine in human papillomavirus related cervical disease.

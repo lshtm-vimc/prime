@@ -4,7 +4,8 @@
 \name{data.sexual_debut}
 \alias{data.sexual_debut}
 \title{Sexual debut data}
-\format{A data table with 94 observations of 14 variables.
+\format{
+A data table with 94 observations of 14 variables.
 \describe{
   \item{V1}{Row number}
   \item{iso2}{ISO2 country code}
@@ -20,7 +21,8 @@
   \item{cluster.id}{Clustering countries with similar characteristics}
   \item{a}{Parameter for sexual debut curve (logistic model)}
   \item{b}{Parameter for sexual debut curve (logistic model)}
-}}
+}
+}
 \usage{
 data.sexual_debut
 }

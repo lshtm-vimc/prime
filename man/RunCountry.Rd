@@ -4,15 +4,32 @@
 \alias{RunCountry}
 \title{Run PRIME for a specific country}
 \usage{
-RunCountry(country_iso3, vaceff_beforesexdebut = 1,
-  vaceff_aftersexdebut = 0, cov = 1, agevac = 10, agecohort = 10,
-  cohort = -1, canc.inc = "2018", sens = -1,
-  unwpp_mortality = TRUE, year_born = -1, year_vac = -1,
-  campaigns = -1, analyseCosts = FALSE, canc.cost = "unadj",
-  discounting = FALSE, disc.cost = 0.03, disc.ben = 0.03,
-  run_batch = FALSE, psadat = -1, disability.weights = "gbd_2017",
-  wb.indicator = "NY.GDP.PCAP.PP.CD", wb.year = 2017,
-  vaccine = "4vHPV")
+RunCountry(
+  country_iso3,
+  vaceff_beforesexdebut = 1,
+  vaceff_aftersexdebut = 0,
+  cov = 1,
+  agevac = 10,
+  agecohort = 10,
+  cohort = -1,
+  canc.inc = "2018",
+  sens = -1,
+  unwpp_mortality = TRUE,
+  year_born = -1,
+  year_vac = -1,
+  campaigns = -1,
+  analyseCosts = FALSE,
+  canc.cost = "unadj",
+  discounting = FALSE,
+  disc.cost = 0.03,
+  disc.ben = 0.03,
+  run_batch = FALSE,
+  psadat = -1,
+  disability.weights = "gbd_2017",
+  wb.indicator = "NY.GDP.PCAP.PP.CD",
+  wb.year = 2017,
+  vaccine = "4vHPV"
+)
 }
 \arguments{
 \item{country_iso3}{Character string (required): ISO3 code of the country}
@@ -83,7 +100,7 @@ If year_born and year_vac are not provided, assumes vaccination occurs in
 }
 \examples{
 RunCountry("AFG")
-RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88)
-RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88,
+RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff_beforesexdebut =0.88)
+RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff_beforesexdebut =0.88,
           analyseCosts=TRUE)
 }

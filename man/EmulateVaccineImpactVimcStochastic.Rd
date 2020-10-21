@@ -4,10 +4,16 @@
 \alias{EmulateVaccineImpactVimcStochastic}
 \title{Emulate vaccine impact estimates (VIMC stochastic runs)}
 \usage{
-EmulateVaccineImpactVimcStochastic(disease_burden_template_file,
-  centralBurdenResultsFile, psaData, diseaseBurdenStochasticFolder,
-  diseaseBurdenStochasticFile, psa_runs, countryCodes = -1,
-  vaccination_scenario)
+EmulateVaccineImpactVimcStochastic(
+  disease_burden_template_file,
+  centralBurdenResultsFile,
+  psaData,
+  diseaseBurdenStochasticFolder,
+  diseaseBurdenStochasticFile,
+  psa_runs,
+  countryCodes = -1,
+  vaccination_scenario
+)
 }
 \arguments{
 \item{disease_burden_template_file}{csv file (required),

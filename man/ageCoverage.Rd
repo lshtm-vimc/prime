@@ -4,9 +4,17 @@
 \alias{ageCoverage}
 \title{Get age-specific coverage-rates}
 \usage{
-ageCoverage(ages, routine_coverage, vaccine_efficacy_nosexdebut,
-  vaccine_efficacy_sexdebut, campaigns, lifetab, cohort, agevac,
-  country_iso3 = NULL)
+ageCoverage(
+  ages,
+  routine_coverage,
+  vaccine_efficacy_nosexdebut,
+  vaccine_efficacy_sexdebut,
+  campaigns,
+  lifetab,
+  cohort,
+  agevac,
+  country_iso3 = NULL
+)
 }
 \arguments{
 \item{ages}{Numeric vector (required): ages in model}

@@ -4,9 +4,14 @@
 \alias{CreatePsaData}
 \title{Generate Latin hyper cube sample of parameters for sensitivity analysis}
 \usage{
-CreatePsaData(country_codes, vaccine = "4vHPV", psa_runs = 0,
-  seed_state = 1, psadat_file = "psadat.csv",
-  psadat_vimc_file = "psadat_vimc.csv")
+CreatePsaData(
+  country_codes,
+  vaccine = "4vHPV",
+  psa_runs = 0,
+  seed_state = 1,
+  psadat_file = "psadat.csv",
+  psadat_vimc_file = "psadat_vimc.csv"
+)
 }
 \arguments{
 \item{country_codes}{ISO3 country codes of countries}

@@ -4,13 +4,15 @@
 \name{data.quality}
 \alias{data.quality}
 \title{Data quality of incidence and mortality}
-\format{A data table with 186 observations of 4 variables.
+\format{
+A data table with 186 observations of 4 variables.
 \describe{
   \item{Country}{Country name}
   \item{Incidence}{Quality of cervical cancer incidence data}
   \item{Mortality}{Quality of cervical cancer mortality data}
   \item{iso3}{ISO3 country code}
-}}
+}
+}
 \usage{
 data.quality
 }

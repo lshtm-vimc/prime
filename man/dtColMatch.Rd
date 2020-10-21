@@ -4,8 +4,13 @@
 \alias{dtColMatch}
 \title{Match two data-tables on multiple columns}
 \usage{
-dtColMatch(input, input_match_on, reference, reference_match_on,
-  reference_return)
+dtColMatch(
+  input,
+  input_match_on,
+  reference,
+  reference_match_on,
+  reference_return
+)
 }
 \arguments{
 \item{input}{Data.table (required): input-table to match}

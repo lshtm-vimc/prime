@@ -4,9 +4,15 @@
 \alias{RegisterBatchDataVimc}
 \title{Creates .data.batch for running multiple birth cohorts (VIMC runs)}
 \usage{
-RegisterBatchDataVimc(vimc_coverage, vimc_template, use_campaigns,
-  use_routine, restrict_to_coverage_data = FALSE, force = FALSE,
-  psa = 0)
+RegisterBatchDataVimc(
+  vimc_coverage,
+  vimc_template,
+  use_campaigns,
+  use_routine,
+  restrict_to_coverage_data = FALSE,
+  force = FALSE,
+  psa = 0
+)
 }
 \arguments{
 \item{vimc_coverage}{data table with coverage estimates as downloaded from

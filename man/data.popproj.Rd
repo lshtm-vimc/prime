@@ -4,11 +4,13 @@
 \name{data.popproj}
 \alias{data.popproj}
 \title{Population projections of 5-year old girls}
-\format{A data table with 98 observations of 91 variables.
+\format{
+A data table with 98 observations of 91 variables.
 \describe{
   \item{iso3}{ISO3 country code}
   \item{2011..2100}{Year -- 2011..2100}
-}}
+}
+}
 \usage{
 data.popproj
 }

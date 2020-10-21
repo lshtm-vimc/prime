@@ -4,7 +4,8 @@
 \name{data.disability_weights}
 \alias{data.disability_weights}
 \title{Disability weights and duration of cervical cancer stages}
-\format{A data table with 13 observations of 8 variables.
+\format{
+A data table with 13 observations of 8 variables.
 \describe{
   \item{Source}{Source of disability weights - IHME / WHO}
   \item{Sequela}{Sequelae / stage / phase of cervical cancer}
@@ -14,7 +15,8 @@
   \item{Low}{Disability weight (low)}
   \item{High}{Disability weight (high)}
   \item{Description}{Description of cervical cancer phase}
-}}
+}
+}
 \usage{
 data.disability_weights
 }

@@ -919,6 +919,7 @@ OutputVimc <- function (DT,
 #' @examples
 #' lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG",
 #'   as.character(0:100), with=FALSE], use.names=FALSE), 9)
+#' cohort <- -1
 #' incidence <- unlist(data.incidence[iso3=="AFG", as.character(0:100), with=FALSE],
 #'   use.names=FALSE)
 #' mortality_cecx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=FALSE],
@@ -1338,8 +1339,8 @@ RunCohort <- function (lifetab,
 #' @importFrom wbstats wb
 #'
 #' @examples RunCountry("AFG")
-#' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88)
-#' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff=0.88,
+#' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff_beforesexdebut =0.88)
+#' @examples RunCountry("AFG", year_vac=2020, agevac=10, cov=0.75, vaceff_beforesexdebut =0.88,
 #'           analyseCosts=TRUE)
 RunCountry <- function (country_iso3,
                         vaceff_beforesexdebut = 1,

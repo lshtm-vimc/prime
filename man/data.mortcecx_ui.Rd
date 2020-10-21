@@ -4,7 +4,8 @@
 \name{data.mortcecx_ui}
 \alias{data.mortcecx_ui}
 \title{Mortality from cervical cancer with uncertainty intervals, all ages and by country}
-\format{A data table with 185 observations of 5 variables.
+\format{
+A data table with 185 observations of 5 variables.
 \describe{
   \item{Country}{Country name}
   \item{iso3}{ISO3 country code}
@@ -13,7 +14,8 @@
   \item{High}{Estimated number of deaths in 2018, cervix uteri, females, all ages (upper bound of 95\% uncertainty interval)}
   \item{Source}{Data source}
   \item{Year}{Data source (year)}
-}}
+}
+}
 \source{
 \url{https://gco.iarc.fr/today/online-analysis-table}
 }

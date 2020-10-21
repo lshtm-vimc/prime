@@ -4,7 +4,8 @@
 \name{data.costcecx}
 \alias{data.costcecx}
 \title{Cost of cervical cancer treatment}
-\format{A data table with 194 observations of 7 variables.
+\format{
+A data table with 194 observations of 7 variables.
 \describe{
   \item{country}{Country name}
   \item{cancer_cost}{cost per cancer episode, in 2017 US$}
@@ -19,7 +20,8 @@
   \item{inflation_factor}{Inflation factor from 2011 to 2017 estimated from
         Inflation, GDP deflator (annual \%) --
         https://data.worldbank.org/indicator/NY.GDP.DEFL.KD.ZG}
-}}
+}
+}
 \usage{
 data.costcecx
 }

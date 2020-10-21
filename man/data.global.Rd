@@ -4,7 +4,8 @@
 \name{data.global}
 \alias{data.global}
 \title{Global data table}
-\format{A data table with 194 observations of 35 variables.
+\format{
+A data table with 194 observations of 35 variables.
 \describe{
   \item{Country}{Country name}
   \item{iso2}{ISO2 country code}
@@ -41,7 +42,8 @@
   \item{V33}{International$}
   \item{V34}{US$}
   \item{iso3}{ISO3 country code}
-}}
+}
+}
 \usage{
 data.global
 }

@@ -4,17 +4,34 @@
 \alias{BatchRun}
 \title{Run multiple cohorts in a batch}
 \usage{
-BatchRun(countries = -1, coverage = -1, agevac = -1,
-  agecohort = -1, canc.inc = "2018", sens = -1,
-  unwpp_mortality = TRUE, year_born = -1, year_vac = -1, runs = 1,
+BatchRun(
+  countries = -1,
+  coverage = -1,
+  agevac = -1,
+  agecohort = -1,
+  canc.inc = "2018",
+  sens = -1,
+  unwpp_mortality = TRUE,
+  year_born = -1,
+  year_vac = -1,
+  runs = 1,
   vaccine_efficacy_beforesexdebut = 1,
-  vaccine_efficacy_aftersexdebut = 0, log = -1,
-  by_calendaryear = FALSE, use_proportions = TRUE,
-  analyseCosts = FALSE, canc.cost = "unadj", discounting = FALSE,
-  disc.cost = 0.03, disc.ben = 0.03, psa = 0,
-  psa_vals = ".data.batch.psa", disability.weights = "gbd_2017",
-  wb.indicator = "NY.GDP.PCAP.PP.CD", wb.year = 2017,
-  vaccine = "4vHPV")
+  vaccine_efficacy_aftersexdebut = 0,
+  log = -1,
+  by_calendaryear = FALSE,
+  use_proportions = TRUE,
+  analyseCosts = FALSE,
+  canc.cost = "unadj",
+  discounting = FALSE,
+  disc.cost = 0.03,
+  disc.ben = 0.03,
+  psa = 0,
+  psa_vals = ".data.batch.psa",
+  disability.weights = "gbd_2017",
+  wb.indicator = "NY.GDP.PCAP.PP.CD",
+  wb.year = 2017,
+  vaccine = "4vHPV"
+)
 }
 \arguments{
 \item{countries}{ignore, read from .data.batch}

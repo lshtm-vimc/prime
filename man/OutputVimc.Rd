@@ -4,8 +4,12 @@
 \alias{OutputVimc}
 \title{Formatting output for VIMC Montagu}
 \usage{
-OutputVimc(DT, age_stratified = TRUE, calendar_year = FALSE,
-  vimc_template = -1)
+OutputVimc(
+  DT,
+  age_stratified = TRUE,
+  calendar_year = FALSE,
+  vimc_template = -1
+)
 }
 \arguments{
 \item{DT}{data table with results}

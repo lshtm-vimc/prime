@@ -4,7 +4,8 @@
 \name{data.pop}
 \alias{data.pop}
 \title{UNWPP population estimates}
-\format{A data table with 3392220 observations of 8 variables.
+\format{
+A data table with 3392220 observations of 8 variables.
 \describe{
   \item{country_code_numeric}{Country code numeric}
   \item{country_code}{ISO3 country code}
@@ -14,7 +15,8 @@
   \item{year}{Year}
   \item{gender}{Gender}
   \item{value}{Population size}
-}}
+}
+}
 \source{
 \url{https://population.un.org/wpp/Download/Standard/Population/}
 

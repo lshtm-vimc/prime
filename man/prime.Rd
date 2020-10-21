@@ -3,7 +3,6 @@
 \docType{package}
 \name{prime}
 \alias{prime}
-\alias{prime-package}
 \title{prime: Papillomavirus Rapid Interface for Modelling and Economics (PRIME).}
 \description{
 PRIME stands for “Papillomavirus Rapid Interface for Modelling and Economics”.

@@ -4,7 +4,8 @@
 \name{data.valid}
 \alias{data.valid}
 \title{Model validation}
-\format{A data table with 26 observations of 49 variables.
+\format{
+A data table with 26 observations of 49 variables.
 \describe{
   \item{Country}{Country name}
   \item{iso2}{ISO2 country code}
@@ -55,7 +56,8 @@
   \item{70-74}{70-74 years}
   \item{75-79}{75-79 years}
   \item{80+}{80+ years}
-}}
+}
+}
 \usage{
 data.valid
 }

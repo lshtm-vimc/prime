@@ -4,7 +4,8 @@
 \name{data.countryname}
 \alias{data.countryname}
 \title{Country names and codes}
-\format{A data table with 251 observations of 13 variables.
+\format{
+A data table with 251 observations of 13 variables.
 \describe{
   \item{name1, name2, name3, name4}{Country names}
   \item{iso2, iso3}{ISO2 and ISO3 country codes}
@@ -15,7 +16,8 @@
   \item{WBincome}{WB income classification of countries}
   \item{UNgroup}{UN group classification of countries}
   \item{GDPpc2011id}{GDP per capita (2011)}
-}}
+}
+}
 \usage{
 data.countryname
 }

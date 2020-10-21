@@ -4,11 +4,25 @@
 \alias{RunCohort}
 \title{Run PRIME for a single birth-cohort}
 \usage{
-RunCohort(lifetab, cohort, incidence, mortality_cecx, prevalence, agevac,
-  coverage, campaigns, vaccine_efficacy_nosexdebut,
-  vaccine_efficacy_sexdebut, cost_cancer, discounting = FALSE,
-  disc.cost = 0.03, disc.ben = 0.03, country_iso3 = NULL,
-  run_country = FALSE, disability.weights = "gbd_2017")
+RunCohort(
+  lifetab,
+  cohort,
+  incidence,
+  mortality_cecx,
+  prevalence,
+  agevac,
+  coverage,
+  campaigns,
+  vaccine_efficacy_nosexdebut,
+  vaccine_efficacy_sexdebut,
+  cost_cancer,
+  discounting = FALSE,
+  disc.cost = 0.03,
+  disc.ben = 0.03,
+  country_iso3 = NULL,
+  run_country = FALSE,
+  disability.weights = "gbd_2017"
+)
 }
 \arguments{
 \item{lifetab}{Data.table: The life-table for this cohort. Can be created
@@ -61,6 +75,7 @@ Runs PRIME for one birth-cohort. Usually called by another function such as
 \examples{
 lifetab <- lifeTable(unlist(data.mortall[iso3=="AFG",
   as.character(0:100), with=FALSE], use.names=FALSE), 9)
+cohort <- -1
 incidence <- unlist(data.incidence[iso3=="AFG", as.character(0:100), with=FALSE],
   use.names=FALSE)
 mortality_cecx <- unlist(data.mortall[iso3=="AFG", as.character(0:100), with=FALSE],

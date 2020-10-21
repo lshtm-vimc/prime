@@ -4,10 +4,16 @@
 \alias{EstimateVaccineImpactVimcCentral}
 \title{Generate vaccine impact estimates (VIMC central run)}
 \usage{
-EstimateVaccineImpactVimcCentral(vaccine_coverage_file,
-  disease_burden_template_file, disease_burden_no_vaccination_file,
-  disease_burden_vaccination_file, disease_burden_results_file,
-  campaign_vaccination, routine_vaccination, vaccine = "4vHPV")
+EstimateVaccineImpactVimcCentral(
+  vaccine_coverage_file,
+  disease_burden_template_file,
+  disease_burden_no_vaccination_file,
+  disease_burden_vaccination_file,
+  disease_burden_results_file,
+  campaign_vaccination,
+  routine_vaccination,
+  vaccine = "4vHPV"
+)
 }
 \arguments{
 \item{vaccine_coverage_file}{csv file (input), vaccine coverage data

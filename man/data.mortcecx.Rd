@@ -4,14 +4,16 @@
 \name{data.mortcecx}
 \alias{data.mortcecx}
 \title{Mortality from cervical cancer, by age and country}
-\format{A data table with 185 observations of 103 variables.
+\format{
+A data table with 185 observations of 103 variables.
 \describe{
   \item{Country}{Country name}
   \item{iso3}{ISO3 country code}
   \item{Source}{Data source}
   \item{Year}{Data source (year)}
   \item{0..100}{Age 0-100}
-}}
+}
+}
 \source{
 \url{https://gco.iarc.fr/today/online-analysis-table}
 }

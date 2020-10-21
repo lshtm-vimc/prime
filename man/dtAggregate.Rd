@@ -4,8 +4,14 @@
 \alias{dtAggregate}
 \title{Collapse data-tables}
 \usage{
-dtAggregate(DT, aggr_on, measure.vars = c(), id.vars = c(),
-  func = "sum", na.rm = TRUE)
+dtAggregate(
+  DT,
+  aggr_on,
+  measure.vars = c(),
+  id.vars = c(),
+  func = "sum",
+  na.rm = TRUE
+)
 }
 \arguments{
 \item{DT}{Data-table (required)}

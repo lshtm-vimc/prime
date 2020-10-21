@@ -4,13 +4,15 @@
 \name{data.mortall}
 \alias{data.mortall}
 \title{WHO life table}
-\format{A data table with 196 observations of 107 variables.
+\format{
+A data table with 196 observations of 107 variables.
 \describe{
   \item{Country ¦ Age [12]}{Country name}
   \item{0..100}{Age 0-100}
   \item{V103..V106}{na}
   \item{iso3}{ISO3 country code}
-}}
+}
+}
 \source{
 \url{https://www.who.int/gho/mortality_burden_disease/life_tables/life_tables/en/}
 }
