@@ -11,7 +11,7 @@ A data table with 185 observations of 103 variables.
   \item{iso3}{ISO3 country code}
   \item{Source}{Data source}
   \item{Year}{Data source (year)}
-  \item{0..100}{Age 0-100}
+  \item{0..100}{Age 0-100 - Crude and age-standardized rates, cervix uteri, females, by age; annual rate per individual}
 }
 }
 \source{
@@ -21,7 +21,8 @@ A data table with 185 observations of 103 variables.
 data.mortcecx
 }
 \description{
-A dataset containing the mortality from cervical cancer in 185 countries, as reported by
-    IARC's Globocan 2018 database.
+A dataset containing the mortality (crude and age-standardized rates)
+    from cervical cancer in 185 countries,
+    as reported by IARC's Globocan 2018 database.
 }
 \keyword{datasets}
