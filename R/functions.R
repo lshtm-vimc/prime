@@ -2802,7 +2802,6 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
 
   # read file -- central disease burden template
   vimc_template <- fread (disease_burden_template_file)
-  vimc_template <- vimc_template [country == "CHN"] # DEBUG -- comment this line later
 
   # register batch data for vimc runs
   RegisterBatchDataVimc (vimc_coverage             = vimc_coverage,
