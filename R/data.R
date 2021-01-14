@@ -154,7 +154,7 @@
 #'
 #' A dataset containing the incidence of cervical cancer in 185 countries, as reported by
 #'     IARC's Globocan 2018 database.
-#'     Crude and age-standardized rates, cervix uteri, females, by age.
+#'     Crude rates, cervix uteri, females, by age.
 #'
 #' @format A data table with 185 observations of 103 variables.
 #' \describe{
@@ -162,7 +162,7 @@
 #'   \item{iso3}{ISO3 country code}
 #'   \item{Source}{Data source}
 #'   \item{Year}{Data source (year)}
-#'   \item{0..100}{Age 0-100 -- Crude and age-standardized rates, cervix uteri, females, by age; annual rate per individual}
+#'   \item{0..100}{Age 0-100 -- Crude rates, cervix uteri, females, by age; annual rate per individual}
 #' }
 #' @source \url{https://gco.iarc.fr/today/online-analysis-table}
 "data.incidence"
@@ -222,7 +222,7 @@
 
 #' Mortality from cervical cancer, by age and country
 #'
-#' A dataset containing the mortality (crude and age-standardized rates)
+#' A dataset containing the mortality (crude rates)
 #'     from cervical cancer in 185 countries,
 #'     as reported by IARC's Globocan 2018 database.
 #'
@@ -232,7 +232,7 @@
 #'   \item{iso3}{ISO3 country code}
 #'   \item{Source}{Data source}
 #'   \item{Year}{Data source (year)}
-#'   \item{0..100}{Age 0-100 - Crude and age-standardized rates, cervix uteri, females, by age; annual rate per individual}
+#'   \item{0..100}{Age 0-100 - Crude rates, cervix uteri, females, by age; annual rate per individual}
 #' }
 #' @source \url{https://gco.iarc.fr/today/online-analysis-table}
 "data.mortcecx"
