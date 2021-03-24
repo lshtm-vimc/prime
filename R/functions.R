@@ -1304,7 +1304,7 @@ RunCohort <- function (lifetab,
 #'        (only used when 'cohort' is not provided)
 #' @param cohort Integer (optional): Cohort-size. -1 if unknown
 #' @param canc.inc Integer (optional): Reference year for cancer incidence rates
-#'        (Globocan: 2018 or 2012)
+#'        (Globocan: 2020 or 2018 or 2012)
 #' @param sens Numeric-vector (optional): Specific values to be used in a PSA.
 #'        -1 if PSA's are not used
 #' @param unwpp_mortality Logical (optional): If TRUE, uses year-specific UNWPP
@@ -1349,7 +1349,7 @@ RunCountry <- function (country_iso3,
                         agevac                = 10,
                         agecohort             = 10,
                         cohort                = -1,
-                        canc.inc              = "2018",
+                        canc.inc              = "2020",
                         sens                  = -1,
                         unwpp_mortality       = TRUE,
                         year_born             = -1,
@@ -1497,7 +1497,23 @@ RunCountry <- function (country_iso3,
   # ----------------------------------------------------------------------------
 
   # age-dependent parameters
-  if (canc.inc == "2018") {
+  if (canc.inc == "2020") {
+    inc <- unlist (data.incidence2020 [iso3 == country_iso3,
+                                       as.character(ages),
+                                       with = F],
+                   use.names=F) * p1618
+
+    mort.cecx <- unlist (data.mortcecx2020 [iso3 == country_iso3,
+                                            as.character(ages),
+                                            with = F],
+                         use.names=F) * p1618
+
+    cecx_5y_prev <- unlist (data.cecx_5y_prevalence2020 [iso3==country_iso3,
+                                                         as.character(ages),
+                                                         with = F],
+                            use.names=F) * p1618
+  }
+  else if (canc.inc == "2018") {
     inc <- unlist (data.incidence [iso3==country_iso3,
                                    as.character(ages),
                                    with=F],

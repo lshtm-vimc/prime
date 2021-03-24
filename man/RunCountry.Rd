@@ -12,7 +12,7 @@ RunCountry(
   agevac = 10,
   agecohort = 10,
   cohort = -1,
-  canc.inc = "2018",
+  canc.inc = "2020",
   sens = -1,
   unwpp_mortality = TRUE,
   year_born = -1,
@@ -44,7 +44,7 @@ RunCountry(
 \item{cohort}{Integer (optional): Cohort-size. -1 if unknown}
 
 \item{canc.inc}{Integer (optional): Reference year for cancer incidence rates
-(Globocan: 2018 or 2012)}
+(Globocan: 2020 or 2018 or 2012)}
 
 \item{sens}{Numeric-vector (optional): Specific values to be used in a PSA.
 -1 if PSA's are not used}
