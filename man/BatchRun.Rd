@@ -9,7 +9,7 @@ BatchRun(
   coverage = -1,
   agevac = -1,
   agecohort = -1,
-  canc.inc = "2018",
+  canc.inc = "2020",
   sens = -1,
   unwpp_mortality = TRUE,
   year_born = -1,

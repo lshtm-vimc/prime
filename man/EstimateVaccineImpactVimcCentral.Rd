@@ -12,7 +12,8 @@ EstimateVaccineImpactVimcCentral(
   disease_burden_results_file,
   campaign_vaccination,
   routine_vaccination,
-  vaccine = "4vHPV"
+  vaccine = "4vHPV",
+  canc.inc = "2020"
 )
 }
 \arguments{
@@ -34,6 +35,10 @@ pre-vaccination and post-vaccination}
 \item{campaign_vaccination}{logical, indicates campaign vaccination}
 
 \item{routine_vaccination}{logical, indicates routine vaccination}
+
+\item{vaccine}{character, bivalent/quadrivalent/nonovalent HPV vaccine}
+
+\item{canc.inc}{character, year of GLOBOCAN estimates}
 }
 \value{
 Null return value; disease burden estimates are saved to corresponding files

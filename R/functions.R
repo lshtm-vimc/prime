@@ -497,7 +497,7 @@ BatchRun <- function (countries                       = -1,
                       coverage                        = -1,
                       agevac                          = -1,
                       agecohort                       = -1,
-                      canc.inc                        = "2018",
+                      canc.inc                        = "2020",
                       sens                            = -1,
                       unwpp_mortality                 = TRUE,
                       year_born                       = -1,
@@ -2790,6 +2790,8 @@ monetary_to_number <- function (x) {
 #'   pre-vaccination and post-vaccination
 #' @param campaign_vaccination logical, indicates campaign vaccination
 #' @param routine_vaccination logical, indicates routine vaccination
+#' @param vaccine character, bivalent/quadrivalent/nonovalent HPV vaccine
+#' @param canc.inc character, year of GLOBOCAN estimates
 #'
 #' @return Null return value; disease burden estimates are saved to corresponding files
 #' @export
@@ -2811,7 +2813,8 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
                                               disease_burden_results_file,
                                               campaign_vaccination,
                                               routine_vaccination,
-                                              vaccine = "4vHPV") {
+                                              vaccine  = "4vHPV",
+                                              canc.inc = "2020") {
 
   # read files -- vaccination coverage
   vimc_coverage <- fread (vaccine_coverage_file)
@@ -2854,7 +2857,7 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
                       psa_vals                        = ".data.batch.psa",
                       unwpp_mortality                 = TRUE,
                       disability.weights              = "gbd_2017",
-                      canc.inc                        = "2018",
+                      canc.inc                        = canc.inc,
                       vaccine                         = vaccine
   )
 
