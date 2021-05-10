@@ -21,6 +21,27 @@
 "data.cecx_1y_prevalence"
 
 
+#' 1-year prevalence of cervical cancer
+#'
+#' A dataset containing the 1-year prevalence (proportion) of cervical cancer in 185 countries, as reported by
+#'     IARC's Globocan 2020 database.
+#'
+#' As per IARC definition -- The (1-year) prevalence of a given cancer
+#'     is the number of individuals within a defined population who have been diagnosed with that
+#'     cancer (within 1 year) and who are still alive at a given point in time (i.e. the survivors).
+#'
+#' @format A data table containing 185 observations of 103 variables.
+#' \describe{
+#'   \item{Country}{Country name}
+#'   \item{iso3}{ISO3 country code}
+#'   \item{Source}{Data source}
+#'   \item{Year}{Data source (year)}
+#'   \item{0..100}{Age 0-100}
+#' }
+#' @source \url{https://gco.iarc.fr/today/online-analysis-table?v=2020}
+"data.cecx_1y_prevalence2020"
+
+
 #' 3-year prevalence of cervical cancer
 #'
 #' A dataset containing the 3-year prevalence (proportion) of cervical cancer in 185 countries, as reported by
@@ -42,6 +63,27 @@
 "data.cecx_3y_prevalence"
 
 
+#' 3-year prevalence of cervical cancer
+#'
+#' A dataset containing the 3-year prevalence (proportion) of cervical cancer in 185 countries, as reported by
+#'     IARC's Globocan 2020 database.
+#'
+#' As per IARC definition -- The (3-year) prevalence of a given cancer
+#'     is the number of individuals within a defined population who have been diagnosed with that
+#'     cancer (within 3 years) and who are still alive at a given point in time (i.e. the survivors).
+#'
+#' @format A data table containing 185 observations of 103 variables.
+#' \describe{
+#'   \item{Country}{Country name}
+#'   \item{iso3}{ISO3 country code}
+#'   \item{Source}{Data source}
+#'   \item{Year}{Data source (year)}
+#'   \item{0..100}{Age 0-100}
+#' }
+#' @source \url{https://gco.iarc.fr/today/online-analysis-table?v=2020}
+"data.cecx_3y_prevalence2020"
+
+
 #' 5-year prevalence of cervical cancer
 #'
 #' A dataset containing the 5-year prevalence (proportion) of cervical cancer in 185 countries, as reported by
@@ -61,6 +103,27 @@
 #' }
 #' @source \url{https://gco.iarc.fr/today/online-analysis-table}
 "data.cecx_5y_prevalence"
+
+
+#' 5-year prevalence of cervical cancer
+#'
+#' A dataset containing the 5-year prevalence (proportion) of cervical cancer in 185 countries, as reported by
+#'     IARC's Globocan 2020 database.
+#'
+#' As per IARC definition -- The (5-year) prevalence of a given cancer
+#'     is the number of individuals within a defined population who have been diagnosed with that
+#'     cancer (within 5 years) and who are still alive at a given point in time (i.e. the survivors).
+#'
+#' @format A data table with 185 observations of 103 variables.
+#' \describe{
+#'   \item{Country}{Country name}
+#'   \item{iso3}{ISO3 country code}
+#'   \item{Source}{Data source}
+#'   \item{Year}{Data source (year)}
+#'   \item{0..100}{Age 0-100}
+#' }
+#' @source \url{https://gco.iarc.fr/today/online-analysis-table?v=2020}
+"data.cecx_5y_prevalence2020"
 
 
 #' Cost of cervical cancer treatment
@@ -167,6 +230,25 @@
 #' @source \url{https://gco.iarc.fr/today/online-analysis-table}
 "data.incidence"
 
+
+#' Incidence of cervical cancer, by age and country
+#'
+#' A dataset containing the incidence of cervical cancer in 185 countries, as reported by
+#'     IARC's Globocan 2020 database.
+#'     Crude rates, cervix uteri, females, by age.
+#'
+#' @format A data table with 185 observations of 103 variables.
+#' \describe{
+#'   \item{Country}{Country name}
+#'   \item{iso3}{ISO3 country code}
+#'   \item{Source}{Data source}
+#'   \item{Year}{Data source (year)}
+#'   \item{0..100}{Age 0-100 -- Crude rates, cervix uteri, females, by age; annual rate per individual}
+#' }
+#' @source \url{https://gco.iarc.fr/today/online-analysis-table?v=2020}
+"data.incidence2020"
+
+
 #' Incidence of cervical cancer with uncertainty intervals, all ages and by country
 #'
 #' A dataset containing the incidence of cervical cancer with uncertainty
@@ -236,6 +318,24 @@
 #' }
 #' @source \url{https://gco.iarc.fr/today/online-analysis-table}
 "data.mortcecx"
+
+
+#' Mortality from cervical cancer, by age and country
+#'
+#' A dataset containing the mortality (crude rates)
+#'     from cervical cancer in 185 countries,
+#'     as reported by IARC's Globocan 2020 database.
+#'
+#' @format A data table with 185 observations of 103 variables.
+#' \describe{
+#'   \item{Country}{Country name}
+#'   \item{iso3}{ISO3 country code}
+#'   \item{Source}{Data source}
+#'   \item{Year}{Data source (year)}
+#'   \item{0..100}{Age 0-100 - Crude rates, cervix uteri, females, by age; annual rate per individual}
+#' }
+#' @source \url{https://gco.iarc.fr/today/online-analysis-table?v=2020}
+"data.mortcecx2020"
 
 
 #' Mortality from cervical cancer with uncertainty intervals, all ages and by country
