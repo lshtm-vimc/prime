@@ -2766,13 +2766,13 @@ monetary_to_number <- function (x) {
 
 
 #-------------------------------------------------------------------------------
-#' Generate vaccine impact estimates (VIMC central run)
+#' Generate vaccine impact estimates - HPV 16/18 types (VIMC central run)
 #'
 #' Generate vaccine impact estimates for VIMC central runs. The inputs are
 #'   vaccine coverage and disease burden template files and outputs are
 #'   disease burden estimates (pre-vaccination and post-vaccination).
 #'
-#' Three disease burden estimates are generated.
+#' Three disease burden estimates (HPV 16/18 types) are generated.
 #'   (i)   disease burden estimates for no vaccination (vimc format)
 #'   (ii)  disease burden estimates for vaccination (vimc format)
 #'   (iii) disease burden estimates for vaccination (pre- and post-vaccination)
