@@ -2797,14 +2797,14 @@ monetary_to_number <- function (x) {
 #' @export
 #'
 #' @examples
-#'   # EstimateVaccineImpactVimcCentral (
-#'   #   vaccine_coverage_file              = "coverage_hpv-routine-default.csv",
-#'   #   disease_burden_template_file       = "central-burden-template.csv",
-#'   #   disease_burden_no_vaccination_file = "central_burden_no_vaccination.csv",
-#'   #   disease_burden_vaccination_file    = "central_burden_vaccination.csv",
-#'   #   disease_burden_results_file        = "central_burden_results.csv",
-#'   #   routine_vaccination                = TRUE,
-#'   #   campaign_vaccination               = TRUE)
+#'   EstimateVaccineImpactVimcCentral (
+#'     vaccine_coverage_file              = "coverage_hpv-routine-default.csv",
+#'     disease_burden_template_file       = "central-burden-template.csv",
+#'     disease_burden_no_vaccination_file = "central_burden_no_vaccination.csv",
+#'     disease_burden_vaccination_file    = "central_burden_vaccination.csv",
+#'     disease_burden_results_file        = "central_burden_results.csv",
+#'     routine_vaccination                = TRUE,
+#'     campaign_vaccination               = TRUE)
 
 EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
                                               disease_burden_template_file,
