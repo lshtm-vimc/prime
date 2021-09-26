@@ -13,7 +13,8 @@ EstimateVaccineImpactVimcCentral(
   campaign_vaccination,
   routine_vaccination,
   vaccine = "4vHPV",
-  canc.inc = "2020"
+  canc.inc = "2020",
+  country_iso3 = "all"
 )
 }
 \arguments{
@@ -39,6 +40,9 @@ pre-vaccination and post-vaccination}
 \item{vaccine}{character, bivalent/quadrivalent/nonovalent HPV vaccine}
 
 \item{canc.inc}{character, year of GLOBOCAN estimates}
+
+\item{country_iso3}{character, run for all countries specified in
+disease burden template file (or) run for a specific country}
 }
 \value{
 Null return value; disease burden estimates are saved to corresponding files
@@ -64,4 +68,5 @@ Three disease burden estimates (HPV 16/18 types) are generated.
     disease_burden_results_file        = "central_burden_results.csv",
     routine_vaccination                = TRUE,
     campaign_vaccination               = TRUE)
+
 }

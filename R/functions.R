@@ -2792,6 +2792,8 @@ monetary_to_number <- function (x) {
 #' @param routine_vaccination logical, indicates routine vaccination
 #' @param vaccine character, bivalent/quadrivalent/nonovalent HPV vaccine
 #' @param canc.inc character, year of GLOBOCAN estimates
+#' @param country_iso3 character, run for all countries specified in
+#'   disease burden template file (or) run for a specific country
 #'
 #' @return Null return value; disease burden estimates are saved to corresponding files
 #' @export
@@ -2805,7 +2807,7 @@ monetary_to_number <- function (x) {
 #'     disease_burden_results_file        = "central_burden_results.csv",
 #'     routine_vaccination                = TRUE,
 #'     campaign_vaccination               = TRUE)
-
+#'
 EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
                                               disease_burden_template_file,
                                               disease_burden_no_vaccination_file,
@@ -2813,14 +2815,21 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
                                               disease_burden_results_file,
                                               campaign_vaccination,
                                               routine_vaccination,
-                                              vaccine  = "4vHPV",
-                                              canc.inc = "2020") {
+                                              vaccine      = "4vHPV",
+                                              canc.inc     = "2020",
+                                              country_iso3 = "all") {
 
   # read files -- vaccination coverage
   vimc_coverage <- fread (vaccine_coverage_file)
 
   # read file -- central disease burden template
   vimc_template <- fread (disease_burden_template_file)
+
+  # run for all countries or a specific country
+  if (country_iso3 != "all")
+  {
+    vimc_template <- vimc_template [country == country_iso3]
+  }
 
   # register batch data for vimc runs
   RegisterBatchDataVimc (vimc_coverage             = vimc_coverage,
@@ -3448,3 +3457,206 @@ EmulateVaccineImpactVimcStochastic <- function (disease_burden_template_file,
 
 } # end of function -- EmulateVaccineImpactVimcStochastic
 #-------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------
+#' Generate vaccine impact estimates - HPV all types (VIMC central run)
+#'
+#' Generate vaccine impact estimates (HPV all types) for VIMC central runs.
+#'   The inputs are cecx burden estimates pre- and post-vaccination with
+#'     4vHPV / 9vHPV at different ages.
+#'   The outputs are cecx burden estimates pre- and post-vaccination with
+#'     HPV all types at different ages.
+#'
+#' Three disease burden estimates (HPV all types) are generated.
+#'   (i)   disease burden estimates for no vaccination (vimc format)
+#'   (ii)  disease burden estimates for vaccination (vimc format)
+#'   (iii) disease burden estimates for vaccination (pre- and post-vaccination)
+#'           and includes YLDs and YLLs
+#'
+#' @param cecx_burden_file csv file (input), disease burden estimates
+#'   (cecx burden attributable to HPV 16/18)
+#' @param cecx_burden_file_all csv file (output), disease burden estimates
+#'   (cecx burden attributable to HPV all types)
+#' @param vaccine character, bivalent/quadrivalent/nonovalent HPV vaccine
+#' @param vimc_template_file csv file (input), disease burden template
+#'   (vimc format)
+#' @param disease_burden_no_vaccination_file_all csv file (output), disease burden estimates
+#'   for no vaccination (cecx burden attributable to HPV all types - vimc format)
+#' @param disease_burden_vaccination_file_all csv file (output), disease burden estimates
+#'   for vaccination (cecx burden attributable to HPV all types - vimc format)
+#'
+#' @return Null return value; disease burden estimates are saved to corresponding files
+#' @export
+#'
+#' @examples
+#'     Estimate_all_cecx_burden_central (
+#'       cecx_burden_file                       = "central_burden_results_file.csv",
+#'       cecx_burden_file_all                   = "central_burden_results_file_all.csv",
+#'       vaccine                                = "4vHPV",
+#'       vimc_template_file                     = "central_burden_template_file.csv",
+#'       disease_burden_no_vaccination_file_all = "central_burden_no_vaccination_file_all_vimc_format.csv",
+#'       disease_burden_vaccination_file_all    = "central_burden_vaccination_file_all_vimc_format.csv" )
+#'
+Estimate_all_cecx_burden_central <- function (cecx_burden_file,
+                                              cecx_burden_file_all,
+                                              vaccine,
+                                              vimc_template_file,
+                                              disease_burden_no_vaccination_file_all,
+                                              disease_burden_vaccination_file_all) {
+
+  # read vimc template file
+  vimc_template <- fread (file             = vimc_template_file,
+                          header           = "auto",
+                          stringsAsFactors = F)
+
+  # read cecx burden estimates (vaccine HPV types) pre- and post-vaccination
+  cecx_burden <- fread (file             = cecx_burden_file,
+                        header           = "auto",
+                        stringsAsFactors = F)
+
+  # split cecx burden estimates by pre- and post-vaccination
+  cecx_burden_prevac  <- cecx_burden [scenario == "pre-vaccination" ]
+  cecx_burden_postvac <- cecx_burden [scenario == "post-vaccination"]
+
+  # combine data tables by matched columns
+  # cecx_burden_prevac & cecx_burden_postvac
+  cecx_burden_prepostvac <- cecx_burden_prevac [cecx_burden_postvac,
+                                                on = .(type    = type,
+                                                       age     = age,
+                                                       country = country,
+                                                       year    = year)]
+
+  # create data table of country (iso3) and HPV vaccine type distribution
+  if (vaccine == "4vHPV") {
+    hpv_distribution <- data.hpv_distribution [, c ("iso3", "hpv_4v")]
+
+    # rename hpv distribution column to hpv
+    setnames (hpv_distribution, old = c("hpv_4v"), new = c ("hpv"))
+
+  } else if (vaccine == "9vHPV") {
+
+    hpv_distribution <- data.hpv_distribution [, c ("iso3", "hpv_9v")]
+
+    # rename hpv distribution column to hpv
+    setnames (hpv_distribution, old = c("hpv_9v"), new = c ("hpv"))
+  }
+
+  # combine data tables -- cecx_burden_prepostvac & hpv_distribution
+  cecx_burden_prepostvac <- merge (x     = cecx_burden_prepostvac,
+                                   y     = hpv_distribution,
+                                   by.x  = "country",
+                                   by.y  = "iso3",
+                                   all.x = TRUE)
+
+  # ----------------------------------------------------------------------------
+  # add additional burden due to non-vaccine hpv types causing cervical cancer to
+  # both pre- and post-vaccination burden due to vaccine hpv types causing cervical cancer
+
+  # incidence
+  # cecx_burden_prepostvac [, i.inc.cecx := i.inc.cecx + (inc.cecx * (100/hpv - 1)) ]
+  # cecx_burden_prepostvac [, inc.cecx   := inc.cecx * (100/hpv) ]
+
+  # burden -- incidence, mortality, yll, yld, cost
+  for (burden_type in c("inc.cecx", "mort.cecx", "lifey", "disability", "cost.cecx")) {
+
+    cecx_burden_prepostvac [, paste0("i.",burden_type) :=
+                              get (paste0("i.",burden_type)) +
+                              (get(burden_type) * (100/hpv - 1)) ]
+
+    cecx_burden_prepostvac [, paste0(burden_type) := get(burden_type) * 100/hpv]
+  }
+  # ----------------------------------------------------------------------------
+
+  # ----------------------------------------------------------------------------
+  # (i) split the table into 2 tables for pre- and post-vaccination with burden
+  #     estimates for all hpv types causing cervical cancer
+  # (ii) combine the 2 tables for pre- and post-vaccination
+
+  cecx_burden_prevac_all <- cecx_burden_prepostvac [, c("country",
+                                                        "scenario",
+                                                        "type",
+                                                        "age",
+                                                        "cohort_size",
+                                                        "vaccinated",
+                                                        "immunized",
+                                                        "inc.cecx",
+                                                        "mort.cecx",
+                                                        "lifey",
+                                                        "disability",
+                                                        "cost.cecx",
+                                                        "year")]
+
+  cecx_burden_postvac_all <- cecx_burden_prepostvac [, c("country",
+                                                         "i.scenario",
+                                                         "type",
+                                                         "age",
+                                                         "i.cohort_size",
+                                                         "i.vaccinated",
+                                                         "i.immunized",
+                                                         "i.inc.cecx",
+                                                         "i.mort.cecx",
+                                                         "i.lifey",
+                                                         "i.disability",
+                                                         "i.cost.cecx",
+                                                         "year")]
+
+
+  # rename column names
+  setnames (cecx_burden_postvac_all,
+            old = c("i.scenario",
+                    "i.cohort_size",
+                    "i.vaccinated",
+                    "i.immunized",
+                    "i.inc.cecx",
+                    "i.mort.cecx",
+                    "i.lifey",
+                    "i.disability",
+                    "i.cost.cecx"),
+            new = c("scenario",
+                    "cohort_size",
+                    "vaccinated",
+                    "immunized",
+                    "inc.cecx",
+                    "mort.cecx",
+                    "lifey",
+                    "disability",
+                    "cost.cecx"))
+
+  # combine the 2 tables for pre- and post-vaccination
+  cecx_burden_all <- rbind (cecx_burden_prevac_all,
+                            cecx_burden_postvac_all,
+                            use.names = TRUE)
+  # ----------------------------------------------------------------------------
+
+  # save file cecx burden estimates (all HPV types) pre- and post-vaccination
+  fwrite (x         = cecx_burden_all,
+          file      = cecx_burden_file_all,
+          col.names = T,
+          row.names = F)
+
+  # convert results to vimc format
+  convert_results <- OutputVimc (DT            = cecx_burden_all,
+                                 calendar_year = TRUE,
+                                 vimc_template = vimc_template)
+
+  # Saving output for no vaccination scenario (vimc format)
+  no_vaccination <- convert_results [scenario == "pre-vaccination"]
+  no_vaccination <- no_vaccination  [, colnames (vimc_template), with=FALSE]
+  no_vaccination <- no_vaccination  [!is.na(deaths)]
+  fwrite (x    = no_vaccination,
+          file = disease_burden_no_vaccination_file_all)
+
+  # Saving output for vaccination scenario (vimc format)
+  vaccination <- convert_results [scenario == "post-vaccination"]
+  vaccination <- vaccination     [, colnames (vimc_template), with=FALSE]
+  vaccination <- vaccination     [!is.na(deaths)]
+  fwrite (x    = vaccination,
+          file = disease_burden_vaccination_file_all)
+
+
+  return ()
+
+} # end of function -- Estimate_all_cecx_burden_central
+#-------------------------------------------------------------------------------
+
