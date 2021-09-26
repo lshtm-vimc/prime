@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{EstimateVaccineImpactVimcCentral}
 \alias{EstimateVaccineImpactVimcCentral}
-\title{Generate vaccine impact estimates (VIMC central run)}
+\title{Generate vaccine impact estimates - HPV 16/18 types (VIMC central run)}
 \usage{
 EstimateVaccineImpactVimcCentral(
   vaccine_coverage_file,
@@ -44,12 +44,12 @@ pre-vaccination and post-vaccination}
 Null return value; disease burden estimates are saved to corresponding files
 }
 \description{
-Generate vaccine impact estimates for VIMC central runs. The inputs are
-  vaccine coverage and disease burden template files and outputs are
-  disease burden estimates (pre-vaccination and post-vaccination).
+Generate vaccine impact estimates (HPV 16/18 types) for VIMC central runs.
+  The inputs are vaccine coverage and disease burden template files and
+  outputs are disease burden estimates (pre-vaccination and post-vaccination).
 }
 \details{
-Three disease burden estimates are generated.
+Three disease burden estimates (HPV 16/18 types) are generated.
   (i)   disease burden estimates for no vaccination (vimc format)
   (ii)  disease burden estimates for vaccination (vimc format)
   (iii) disease burden estimates for vaccination (pre- and post-vaccination)
