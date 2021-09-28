@@ -3660,3 +3660,271 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
 } # end of function -- Estimate_all_cecx_burden_central
 #-------------------------------------------------------------------------------
 
+
+#-------------------------------------------------------------------------------
+#' Generate diagnostic plots of vaccine coverage and burden estimates
+#'
+#' Generate diagnostic plots of vaccine coverage and
+#'   burden estimates (cases, deaths, dalys)
+#'
+#' Diagnostic plots of vaccine coverage and burden estimates (cases, deaths, dalys)
+#'   are generated for each country and scenario. Optionally, comparative plots
+#'   across all scenarios can be generated.
+#'
+#' @param vaccine_coverage_folder character, folder to read vaccine coverage of
+#'          different scenarios
+#' @param coverage_prefix character, prefix of coverage file
+#' @param touchstone character, touchstone (VIMC)
+#' @param scenarios character, names of vaccination scenarios
+#' @param no_vaccine_scenario character, name of no vaccination scenario
+#' @param burden_estimate_folder character, folder to read burden estimates of
+#'          different scenarios
+#' @param plot_folder character, folder to save diagnostic plots
+#' @param countries, character, "all" countries or specific countries (iso3 codes)
+#' @param start_year numeric, start year of plot
+#' @param end_year numeric, end year of plot
+#' @param compare_plots logical, if TRUE then generate comparative plots
+#' @param vaccine_prefix character, prefix of burden estimates file (vaccination scenarios)
+#' @param no_vaccine_prefix character, prefix of burden estimates file (no vaccination scenario)
+#'
+#' @return Null return value; diagnostic plots are saved to file
+#' @export
+#'
+#' @examples
+#'   Generate_diagnostic_plots (
+#'     vaccine_coverage_folder    = "input",
+#'     coverage_prefix            = "coverage,
+#'     touchstone                 = "touchstone",
+#'     scenarios                  = c ("hpv-routine-default", "hpv-routine-best")
+#'     no_vaccine_scenario        = "hpv-no-vaccination",
+#'     burden_estimate_folder     = "output_all",
+#'     plot_folder                = "plots",
+#'     countries                  = "all",
+#'     start_year                 = 2000,
+#'     end_year                   = 2100,
+#'     compare_plots              = TRUE )
+#'
+Generate_diagnostic_plots <- function (vaccine_coverage_folder,
+                                       coverage_prefix,
+                                       touchstone,
+                                       scenarios,
+                                       no_vaccine_scenario,
+                                       burden_estimate_folder,
+                                       plot_folder,
+                                       countries,
+                                       start_year        = -1,
+                                       end_year          = -1,
+                                       compare_plots     = FALSE,
+                                       vaccine_prefix    = "central-burden-vaccination_all_",
+                                       no_vaccine_prefix = "central-burden-novaccination_all_"
+                                       ) {
+
+  # # burden estimate type -- central or stochastic
+  # if (psa > 0) {
+  #   # uncomment next line when diagnostic plots for stochastic estimates
+  #   # are to be generated -- there are issues with RAM size to generate
+  #   # the stochastic plots since the combined stochastic estimates of
+  #   # all scenarios are bigger than the RAM size
+  #   # burden_estimate_type <- "stochastic_burden_estimate_" # DEBUG
+  # } else {
+  #   vaccine_prefix <- "central-burden-vaccination_all_"
+  #   no_vaccine_prefix <- "central-burden-novaccination_all_"
+  # }
+
+  # add no vaccination scenario in generation of diagnostic plots
+  scenarios <- c (no_vaccine_scenario, scenarios)
+
+  # diagnostic plots filename
+  pdf (paste0 (plot_folder,
+               "diagnostic_plot_",
+               touchstone,
+               ".pdf"))
+
+  # burden estimates of all scenarios
+  all_burden <- NULL
+
+  # scenarios
+  for (scenario_name in scenarios) {
+
+    # vaccine coverage file
+    vaccine_coverage_file <- paste0 (vaccine_coverage_folder,
+                                     coverage_prefix,
+                                     touchstone,
+                                     "_",
+                                     scenario_name,
+                                     ".csv")
+
+    # burden estimate filename
+    if (scenario_name == no_vaccine_scenario) {
+
+      burden_estimate_file <- paste0 (no_vaccine_prefix,
+                                      touchstone,
+                                      "_",
+                                      scenario_name,
+                                      ".csv")
+
+    } else {
+
+      burden_estimate_file <- paste0 (vaccine_prefix,
+                                      touchstone,
+                                      "_",
+                                      scenario_name,
+                                      ".csv")
+    }
+
+
+    # burden file with folder
+    burden_file <- paste0 (burden_estimate_folder,
+                           burden_estimate_file)
+
+    # read data -- vaccine coverage and burden estimates
+    vaccine_coverage <- fread (vaccine_coverage_file)
+    burden_estimate  <- fread (burden_file)
+
+    # set start and end year if not set
+    if (start_year == -1) {
+      start_year <- min (burden_estimate [, year])
+    }
+    if (end_year == -1) {
+      end_year <- max (burden_estimate [, year])
+    }
+
+    # extract vaccine coverage and burden estimates between start and end years
+    vaccine_coverage <- vaccine_coverage [year >= start_year & year <= end_year]
+    burden_estimate  <- burden_estimate  [year >= start_year & year <= end_year]
+
+    # add scenario name to burden estimate data table
+    burden_estimate [, scenario := scenario_name]
+
+    # ------------------------------------------------------------------------
+    # If comparative plots across all scenarios is desired, than combine
+    # burden estimates across all scenario. Make sure the combined data table
+    # size is within the size of RAM.
+    if (compare_plots) {
+      # combine burden estimates of all scenarios
+      if (is.null (all_burden)) {
+        all_burden <- burden_estimate
+      } else {
+        all_burden <- rbindlist (list (all_burden,
+                                       burden_estimate),
+                                 use.names = TRUE)
+      }
+    }
+    # ------------------------------------------------------------------------
+
+    # if countries are specified to all, then set countries to all countries in coverage file
+    if (countries == "all") {
+      countries	<- as.character (unique (burden_estimate [, country] ) )
+    }
+
+    # iso3 country codes
+    country_iso3_codes <- countries
+
+    # plot for each country
+    for (country_iso3_code in country_iso3_codes) {
+
+      # plot vaccine coverage
+      coverage_plot <- ggplot (data = vaccine_coverage [country_code == country_iso3_code],
+                               aes (x = year,
+                                    y = coverage * 100,
+                                    color = factor (activity_type))) +
+        scale_x_continuous (breaks = pretty_breaks ()) +
+        geom_point () +
+        labs (title = countrycode (sourcevar   = country_iso3_code,
+                                   origin      = "iso3c",
+                                   destination = "country.name"),
+              x = "Year",
+              y = "Vaccine coverage (%)",
+              colour = "vaccine") +
+        theme_bw ()
+
+
+      # plot burden -- cases, deaths, dalys
+      plotwhat       <- c("cases", "deaths", "dalys")
+      plotwhat_label <- c("Cases", "Deaths", "DALYs")
+
+      burden_plot_list <- lapply (1:length(plotwhat), function (i) {
+
+        toplot = plotwhat[i]
+
+        p <- ggplot(burden_estimate [country == country_iso3_code],
+                    aes(x = year, y = get(toplot))) +
+          scale_x_continuous (breaks = pretty_breaks ()) +
+          stat_summary (fun = sum, geom = "line") +
+          ylab (toplot) +
+          labs (title = countrycode (sourcevar   = country_iso3_code,
+                                     origin      = "iso3c",
+                                     destination = "country.name"),
+                x = "Year",
+                y = plotwhat_label [i]) +
+          theme_bw ()
+      })
+
+      # list of plots
+      plot_list <- list (coverage_plot,
+                         burden_plot_list [[1]],
+                         burden_plot_list [[2]],
+                         burden_plot_list [[3]])
+
+      # arrange plots in a single page
+      plots <- ggarrange (plotlist = plot_list,
+                          ncol = 2,
+                          nrow = 2)
+
+      # print plots
+      print (annotate_figure (plots,
+                              top = text_grob (scenario_name,
+                                               color = "black",
+                                               size = 9)))
+
+    } # end of loop -- for (country_iso3_code in country_iso3_codes)
+
+  } # end of loop -- for (scenario_name in scenarios)
+
+
+  # --------------------------------------------------------------------------
+  # comparative plots across all scenarios
+  if (compare_plots) {
+
+    # add comparative plot across all scenarios for each country
+    for (country_iso3_code in country_iso3_codes) {
+
+      # plot burden -- cases, deaths, dalys
+      plotwhat       <- c("cases", "deaths", "dalys")
+      plotwhat_label <- c("Cases", "Deaths", "DALYs")
+
+      for (i in 1:length (plotwhat)) {
+
+        toplot = plotwhat [i]
+
+        p <- ggplot(all_burden [country == country_iso3_code],
+                    aes(x     = year,
+                        y     = get (toplot),
+                        group = scenario,
+                        color = factor (scenario))) +
+          scale_x_continuous (breaks = pretty_breaks ()) +
+          stat_summary (fun = sum, geom = "line") +
+          ylab (toplot) +
+          labs (title = countrycode (sourcevar   = country_iso3_code,
+                                     origin      = "iso3c",
+                                     destination = "country.name"),
+                x = "Year",
+                y = plotwhat_label [i],
+                colour = "Scenario") +
+          theme_bw ()
+
+        print (p)
+      }
+
+    } # end of loop -- for (country_iso3_code in country_iso3_codes)
+
+  } # end of -- if (compare_plots)
+  # --------------------------------------------------------------------------
+
+  dev.off ()
+
+  return ()
+
+} # end of function -- Generate_diagnostic_plots
+# ------------------------------------------------------------------------------
+
