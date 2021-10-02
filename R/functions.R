@@ -3691,18 +3691,20 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
 #' @export
 #'
 #' @examples
-#'   Generate_diagnostic_plots (
-#'     vaccine_coverage_folder    = "input",
-#'     coverage_prefix            = "coverage,
+#' Generate_diagnostic_plots (
+#'     vaccine_coverage_folder    = "vaccine_coverage",
+#'     coverage_prefix            = "coverage_",
 #'     touchstone                 = "touchstone",
-#'     scenarios                  = c ("hpv-routine-default", "hpv-routine-best")
+#'     scenarios                  = c ("hpv-routine-default", "hpv-routine-best"),
 #'     no_vaccine_scenario        = "hpv-no-vaccination",
 #'     burden_estimate_folder     = "output_all",
 #'     plot_folder                = "plots",
 #'     countries                  = "all",
 #'     start_year                 = 2000,
 #'     end_year                   = 2100,
-#'     compare_plots              = TRUE )
+#'     compare_plots              = TRUE,
+#'     vaccine_prefix             = "central-burden-vaccination_all_",
+#'     no_vaccine_prefix          = "central-burden-novaccination_all_" )
 #'
 Generate_diagnostic_plots <- function (vaccine_coverage_folder,
                                        coverage_prefix,
@@ -3735,10 +3737,10 @@ Generate_diagnostic_plots <- function (vaccine_coverage_folder,
   scenarios <- c (no_vaccine_scenario, scenarios)
 
   # diagnostic plots filename
-  pdf (paste0 (plot_folder,
-               "diagnostic_plot_",
-               touchstone,
-               ".pdf"))
+  pdf (file.path (plot_folder,
+                  paste0 ("diagnostic_plot_",
+                          touchstone,
+                          ".pdf") ) )
 
   # burden estimates of all scenarios
   all_burden <- NULL
@@ -3747,12 +3749,12 @@ Generate_diagnostic_plots <- function (vaccine_coverage_folder,
   for (scenario_name in scenarios) {
 
     # vaccine coverage file
-    vaccine_coverage_file <- paste0 (vaccine_coverage_folder,
-                                     coverage_prefix,
-                                     touchstone,
-                                     "_",
-                                     scenario_name,
-                                     ".csv")
+    vaccine_coverage_file <- file.path (vaccine_coverage_folder,
+                                        paste0 (coverage_prefix,
+                                                touchstone,
+                                                "_",
+                                                scenario_name,
+                                                ".csv"))
 
     # burden estimate filename
     if (scenario_name == no_vaccine_scenario) {
@@ -3774,8 +3776,8 @@ Generate_diagnostic_plots <- function (vaccine_coverage_folder,
 
 
     # burden file with folder
-    burden_file <- paste0 (burden_estimate_folder,
-                           burden_estimate_file)
+    burden_file <- file.path (burden_estimate_folder,
+                              burden_estimate_file)
 
     # read data -- vaccine coverage and burden estimates
     vaccine_coverage <- fread (vaccine_coverage_file)

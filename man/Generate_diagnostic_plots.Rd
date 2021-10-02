@@ -61,3 +61,20 @@ Diagnostic plots of vaccine coverage and burden estimates (cases, deaths, dalys)
   are generated for each country and scenario. Optionally, comparative plots
   across all scenarios can be generated.
 }
+\examples{
+Generate_diagnostic_plots (
+    vaccine_coverage_folder    = "vaccine_coverage",
+    coverage_prefix            = "coverage_",
+    touchstone                 = "touchstone",
+    scenarios                  = c ("hpv-routine-default", "hpv-routine-best"),
+    no_vaccine_scenario        = "hpv-no-vaccination",
+    burden_estimate_folder     = "output_all",
+    plot_folder                = "plots",
+    countries                  = "all",
+    start_year                 = 2000,
+    end_year                   = 2100,
+    compare_plots              = TRUE,
+    vaccine_prefix             = "central-burden-vaccination_all_",
+    no_vaccine_prefix          = "central-burden-novaccination_all_" )
+
+}
