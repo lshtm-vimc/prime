@@ -11,7 +11,7 @@ Generate_diagnostic_plots(
   scenarios,
   no_vaccine_scenario,
   burden_estimate_folder,
-  plot_folder,
+  plot_file,
   countries,
   start_year = -1,
   end_year = -1,
@@ -35,7 +35,7 @@ different scenarios}
 \item{burden_estimate_folder}{character, folder to read burden estimates of
 different scenarios}
 
-\item{plot_folder}{character, folder to save diagnostic plots}
+\item{plot_file}{character, diagnostic plot file}
 
 \item{countries, }{character, "all" countries or specific countries (iso3 codes)}
 
@@ -69,7 +69,7 @@ Generate_diagnostic_plots (
     scenarios                  = c ("hpv-routine-default", "hpv-routine-best"),
     no_vaccine_scenario        = "hpv-no-vaccination",
     burden_estimate_folder     = "output_all",
-    plot_folder                = "plots",
+    plot_file                  = "plot_file.pdf",
     countries                  = "all",
     start_year                 = 2000,
     end_year                   = 2100,

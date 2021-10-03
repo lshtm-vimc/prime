@@ -3679,7 +3679,7 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
 #' @param no_vaccine_scenario character, name of no vaccination scenario
 #' @param burden_estimate_folder character, folder to read burden estimates of
 #'          different scenarios
-#' @param plot_folder character, folder to save diagnostic plots
+#' @param plot_file character, diagnostic plot file
 #' @param countries, character, "all" countries or specific countries (iso3 codes)
 #' @param start_year numeric, start year of plot
 #' @param end_year numeric, end year of plot
@@ -3698,7 +3698,7 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
 #'     scenarios                  = c ("hpv-routine-default", "hpv-routine-best"),
 #'     no_vaccine_scenario        = "hpv-no-vaccination",
 #'     burden_estimate_folder     = "output_all",
-#'     plot_folder                = "plots",
+#'     plot_file                  = "plot_file.pdf",
 #'     countries                  = "all",
 #'     start_year                 = 2000,
 #'     end_year                   = 2100,
@@ -3712,7 +3712,7 @@ Generate_diagnostic_plots <- function (vaccine_coverage_folder,
                                        scenarios,
                                        no_vaccine_scenario,
                                        burden_estimate_folder,
-                                       plot_folder,
+                                       plot_file,
                                        countries,
                                        start_year        = -1,
                                        end_year          = -1,
