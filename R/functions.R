@@ -3721,26 +3721,11 @@ Generate_diagnostic_plots <- function (vaccine_coverage_folder,
                                        no_vaccine_prefix = "central-burden-novaccination_all_"
                                        ) {
 
-  # # burden estimate type -- central or stochastic
-  # if (psa > 0) {
-  #   # uncomment next line when diagnostic plots for stochastic estimates
-  #   # are to be generated -- there are issues with RAM size to generate
-  #   # the stochastic plots since the combined stochastic estimates of
-  #   # all scenarios are bigger than the RAM size
-  #   # burden_estimate_type <- "stochastic_burden_estimate_" # DEBUG
-  # } else {
-  #   vaccine_prefix <- "central-burden-vaccination_all_"
-  #   no_vaccine_prefix <- "central-burden-novaccination_all_"
-  # }
-
   # add no vaccination scenario in generation of diagnostic plots
   scenarios <- c (no_vaccine_scenario, scenarios)
 
   # diagnostic plots filename
-  pdf (file.path (plot_folder,
-                  paste0 ("diagnostic_plot_",
-                          touchstone,
-                          ".pdf") ) )
+  pdf (plot_file)
 
   # burden estimates of all scenarios
   all_burden <- NULL
