@@ -3731,7 +3731,7 @@ Generate_diagnostic_plots <- function (vaccine_coverage_folder,
   scenarios <- c (no_vaccine_scenario, scenarios)
 
   # diagnostic plots filename
-  pdf (plot_file)
+  pdf (file.path (plot_folder, plot_file))
 
   # burden estimates of all scenarios
   all_burden <- NULL
