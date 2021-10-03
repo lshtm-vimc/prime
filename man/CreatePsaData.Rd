@@ -36,7 +36,7 @@ Generate Latin hyper cube sample of input parameters based on their
   distributions for probabilistic sensitivity analysis.
 }
 \examples{
-  # CreatePsaData (
+  # CreatePsaDataNew (
   #   country_codes    = c("AFG", "ALB"),
   #   vaccine          = "4vHPV",
   #   psa_runs         = 200,

@@ -2924,7 +2924,7 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
 #' @importFrom prevalence betaExpert
 #'
 #' @examples
-#'   # CreatePsaData (
+#'   # CreatePsaDataNew (
 #'   #   country_codes    = c("AFG", "ALB"),
 #'   #   vaccine          = "4vHPV",
 #'   #   psa_runs         = 200,
@@ -2945,18 +2945,19 @@ CreatePsaData <- function (country_codes,
   # sensitivity analysis
   if (psa_runs > 1) {
 
-    # create empty psa data table (8 psa parameters)
+    # create empty psa data table (8 + 1 psa parameters)
     psadat <- data.table (
-      country                = character (),  # iso3 country code
-      run_id                 = numeric   (),  # run id (psa run)
-      dw_diagnosis           = numeric   (),  # disability weight - diagnosis phase
-      dw_control             = numeric   (),  # disability weight - control phase
-      dw_metastatic          = numeric   (),  # disability weight - metastatic phase
-      dw_terminal            = numeric   (),  # disability weight - terminal phase
-      incidence_ratio        = numeric   (),  # cervical cancer incidence ratio
-      mortality_ratio        = numeric   (),  # cervical cancer mortality ratio
-      prevalence_ratio       = numeric   (),  # cervical cancer prevalence ratio
-      hpv_distribution_ratio = numeric   ()   # hpv (types in vaccine) distribution ratio
+      country                            = character (),  # iso3 country code
+      run_id                             = numeric   (),  # run id (psa run)
+      dw_diagnosis                       = numeric   (),  # disability weight - diagnosis phase
+      dw_control                         = numeric   (),  # disability weight - control phase
+      dw_metastatic                      = numeric   (),  # disability weight - metastatic phase
+      dw_terminal                        = numeric   (),  # disability weight - terminal phase
+      incidence_ratio                    = numeric   (),  # cervical cancer incidence ratio
+      mortality_ratio                    = numeric   (),  # cervical cancer mortality ratio
+      prevalence_ratio                   = numeric   (),  # cervical cancer prevalence ratio
+      hpv_distribution_ratio             = numeric   (),  # hpv (types in vaccine) distribution ratio
+      hpv_distribution_non_vaccine_ratio = numeric   ()   # hpv (non-vaccine types) distribution ratio
     )
   }
 
@@ -2971,8 +2972,11 @@ CreatePsaData <- function (country_codes,
   # HPV 16/18 for bivalent or quadrivalent vaccine  (4vHPV)
   # HPV 16/18/31/31/45/52/58 for nonavalent vaccine (9vHPV)
 
+  # hpv (types in vaccine) distribution ratio (and) hpv (non-vaccine types) distribution ratio
+  hpv_distribution_ratios <- 2
+
   # number of parameters
-  parameters <- length (cecx_phases) + length (burden_metrics) + length (vaccine)
+  parameters <- length (cecx_phases) + length (burden_metrics) + hpv_distribution_ratios
 
   # create data table specific for each country with parameter values for
   # probabilistic sensitivity analysis
@@ -3127,12 +3131,14 @@ CreatePsaData <- function (country_codes,
 
 
     #---------------------------------------------------------------------------
-    # hpv distribution ratio -- psa values
+    # hpv distribution ratios -- psa values
     #---------------------------------------------------------------------------
 
     # create data table to store psa values of
     # hpv distribution
     hpv_distribution_ratio_psa_DT <- data.table ()
+    # data.table (hpv_distribution_ratio             = numeric (),
+    #             hpv_distribution_non_vaccine_ratio = numeric ())
 
     # hpv distribution -- mean and 95% uncertainty intervals
     # HPV 16/18 for bivalent or quadrivalent vaccine  (4vHPV)
@@ -3164,23 +3170,30 @@ CreatePsaData <- function (country_codes,
 
     # sample input parameter values (latin hyper cube sampling)
     # based on their distributions for psa runs
+    # hpv (types in vaccine) distribution
     hpv_distribution_psa_values <- qbeta (p      = cube [, length (cecx_phases) +
                                                            length (burden_metrics) +
-                                                           length (vaccine)],
+                                                           hpv_distribution_ratios - 1],
                                           shape1 = shape_param$alpha,
                                           shape2 = shape_param$beta)
 
-    # ratio of hpv distribution values to mean values
-    hpv_distribution_ratio_psa_values <- hpv_distribution_psa_values / hpv_distribution$mid
+    # hpv (non-vaccine types) distribution
+    hpv_distribution_non_vaccine_psa_values <- 1 - hpv_distribution_psa_values
+
+    # ratio of hpv distribution values to mean values (types in vaccine)
+    hpv_distribution_ratio <- hpv_distribution_psa_values / hpv_distribution$mid
+
+    # ratio of hpv distribution values to mean values (non-vaccine types)
+    hpv_distribution_non_vaccine_ratio <-
+      hpv_distribution_non_vaccine_psa_values / (1 - hpv_distribution$mid)
 
     # data table of psa values containing
     # hpv distribution ratios
-    hpv_distribution_ratio_psa_DT <- cbind (hpv_distribution_ratio_psa_DT,
-                                            hpv_distribution_ratio_psa_values)
+    hpv_distribution_ratio_psa_DT <- cbind (hpv_distribution_ratio,
+                                            hpv_distribution_non_vaccine_ratio)
 
-    # set column names for psa table of hpv distribution ratios
-    names (hpv_distribution_ratio_psa_DT) <- c ("hpv_distribution_ratio")
-
+    # # set column names for psa table of hpv distribution ratios
+    # names (hpv_distribution_ratio_psa_DT) <- c ("hpv_distribution_ratio")
 
     #---------------------------------------------------------------------------
 
@@ -3210,11 +3223,14 @@ CreatePsaData <- function (country_codes,
 
   } # end of loop -- for (country_code in countries)
 
+  # drop hpv_distribution_non_vaccine_ratio column for vimc format file
+  psadat_temp <- psadat [, - ("hpv_distribution_non_vaccine_ratio")]
+
   # reshape psa data table to wide format (for VIMC)
-  psadat_vimc <- dcast (data      = psadat,
+  psadat_vimc <- dcast (data      = psadat_temp,
                         formula   = run_id ~ country,
                         sep       = ":",
-                        value.var = colnames (psadat [, -c("run_id", "country")]))
+                        value.var = colnames (psadat_temp [, -c("run_id", "country")]))
 
   # create list of psa data for internal runs and VIMC upload
   psadat_list <- list (psadat      = psadat,
@@ -3479,7 +3495,7 @@ EmulateVaccineImpactVimcStochastic <- function (disease_burden_template_file,
 #' @param cecx_burden_file_all csv file (output), disease burden estimates
 #'   (cecx burden attributable to HPV all types)
 #' @param vaccine character, bivalent/quadrivalent/nonovalent HPV vaccine
-#' @param vimc_template_file csv file (input), disease burden template
+#' @param disease_burden_template_file csv file (input), disease burden template
 #'   (vimc format)
 #' @param disease_burden_no_vaccination_file_all csv file (output), disease burden estimates
 #'   for no vaccination (cecx burden attributable to HPV all types - vimc format)
@@ -3494,19 +3510,19 @@ EmulateVaccineImpactVimcStochastic <- function (disease_burden_template_file,
 #'       cecx_burden_file                       = "central_burden_results_file.csv",
 #'       cecx_burden_file_all                   = "central_burden_results_file_all.csv",
 #'       vaccine                                = "4vHPV",
-#'       vimc_template_file                     = "central_burden_template_file.csv",
+#'       disease_burden_template_file           = "central_burden_template_file.csv",
 #'       disease_burden_no_vaccination_file_all = "central_burden_no_vaccination_file_all_vimc_format.csv",
 #'       disease_burden_vaccination_file_all    = "central_burden_vaccination_file_all_vimc_format.csv" )
 #'
 Estimate_all_cecx_burden_central <- function (cecx_burden_file,
                                               cecx_burden_file_all,
                                               vaccine,
-                                              vimc_template_file,
+                                              disease_burden_template_file,
                                               disease_burden_no_vaccination_file_all,
                                               disease_burden_vaccination_file_all) {
 
-  # read vimc template file
-  vimc_template <- fread (file             = vimc_template_file,
+  # read vimc disease burden template file
+  vimc_template <- fread (file             = disease_burden_template_file,
                           header           = "auto",
                           stringsAsFactors = F)
 
@@ -3558,7 +3574,7 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
   # cecx_burden_prepostvac [, inc.cecx   := inc.cecx * (100/hpv) ]
 
   # burden -- incidence, mortality, yll, yld, cost
-  for (burden_type in c("inc.cecx", "mort.cecx", "lifey", "disability", "cost.cecx")) {
+  for (burden_type in c("inc.cecx", "mort.cecx", "lifey", "disability", "cost.cecx", "prev.cecx")) {
 
     cecx_burden_prepostvac [, paste0("i.",burden_type) :=
                               get (paste0("i.",burden_type)) +
@@ -3585,6 +3601,7 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
                                                         "lifey",
                                                         "disability",
                                                         "cost.cecx",
+                                                        "prev.cecx",
                                                         "year")]
 
   cecx_burden_postvac_all <- cecx_burden_prepostvac [, c("country",
@@ -3599,6 +3616,7 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
                                                          "i.lifey",
                                                          "i.disability",
                                                          "i.cost.cecx",
+                                                         "i.prev.cecx",
                                                          "year")]
 
 
@@ -3612,7 +3630,8 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
                     "i.mort.cecx",
                     "i.lifey",
                     "i.disability",
-                    "i.cost.cecx"),
+                    "i.cost.cecx",
+                    "i.prev.cecx"),
             new = c("scenario",
                     "cohort_size",
                     "vaccinated",
@@ -3621,7 +3640,8 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
                     "mort.cecx",
                     "lifey",
                     "disability",
-                    "cost.cecx"))
+                    "cost.cecx",
+                    "prev.cecx"))
 
   # combine the 2 tables for pre- and post-vaccination
   cecx_burden_all <- rbind (cecx_burden_prevac_all,
