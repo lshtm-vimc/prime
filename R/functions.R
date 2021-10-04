@@ -2924,7 +2924,7 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
 #' @importFrom prevalence betaExpert
 #'
 #' @examples
-#'   # CreatePsaDataNew (
+#'   # CreatePsaData (
 #'   #   country_codes    = c("AFG", "ALB"),
 #'   #   vaccine          = "4vHPV",
 #'   #   psa_runs         = 200,
@@ -3730,22 +3730,22 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
 #'     vaccine_prefix             = "central-burden-vaccination_all_",
 #'     no_vaccine_prefix          = "central-burden-novaccination_all_" )
 #'
-Generate_diagnostic_plots <- function (vaccine_coverage_folder,
-                                       coverage_prefix,
-                                       touchstone,
-                                       scenarios,
-                                       no_vaccine_scenario,
-                                       burden_estimate_folder,
-                                       plot_folder,
-                                       plot_file,
-                                       plot_type,
-                                       countries,
-                                       start_year        = -1,
-                                       end_year          = -1,
-                                       compare_plots     = FALSE,
-                                       vaccine_prefix,
-                                       no_vaccine_prefix
-                                       ) {
+Generate_diagnostic_plots<- function (vaccine_coverage_folder,
+                                      coverage_prefix,
+                                      touchstone,
+                                      scenarios,
+                                      no_vaccine_scenario,
+                                      burden_estimate_folder,
+                                      plot_folder,
+                                      plot_file,
+                                      plot_type,
+                                      countries,
+                                      start_year        = -1,
+                                      end_year          = -1,
+                                      compare_plots     = FALSE,
+                                      vaccine_prefix,
+                                      no_vaccine_prefix
+) {
 
   # add no vaccination scenario in generation of diagnostic plots
   scenarios <- c (no_vaccine_scenario, scenarios)
@@ -3833,6 +3833,22 @@ Generate_diagnostic_plots <- function (vaccine_coverage_folder,
     # iso3 country codes
     country_iso3_codes <- countries
 
+    # --------------------------------------------------------------------------
+    # central_stochastic specific summary burden estimates
+    if (plot_type == "central_stochastic") {
+
+      # summary of burden estimates (sum burden by calendar year)
+      burden_estimate_summary <-
+        burden_estimate [, lapply (.SD, sum),
+                         .SDcols = c ("cases",        "dalys",        "deaths",
+                                      "cases.median", "dalys.median", "deaths.median",
+                                      "cases.low",    "dalys.low",    "deaths.low",
+                                      "cases.high",   "dalys.high",   "deaths.high"),
+                         by = .(year, country, scenario)]
+    }
+    # --------------------------------------------------------------------------
+
+
     # plot for each country
     for (country_iso3_code in country_iso3_codes) {
 
@@ -3852,26 +3868,66 @@ Generate_diagnostic_plots <- function (vaccine_coverage_folder,
         theme_bw ()
 
 
-      # plot burden -- cases, deaths, dalys
-      plotwhat       <- c("cases", "deaths", "dalys")
-      plotwhat_label <- c("Cases", "Deaths", "DALYs")
+      # ------------------------------------------------------------------------
+      # central specific plot
+      if (plot_type == "central") {
 
-      burden_plot_list <- lapply (1:length(plotwhat), function (i) {
+        # plot burden -- cases, deaths, dalys
+        plotwhat       <- c("cases", "deaths", "dalys")
+        plotwhat_label <- c("Cases", "Deaths", "DALYs")
 
-        toplot = plotwhat[i]
+        burden_plot_list <- lapply (1:length(plotwhat), function (i) {
 
-        p <- ggplot(burden_estimate [country == country_iso3_code],
-                    aes(x = year, y = get(toplot))) +
-          scale_x_continuous (breaks = pretty_breaks ()) +
-          stat_summary (fun = sum, geom = "line") +
-          ylab (toplot) +
-          labs (title = countrycode (sourcevar   = country_iso3_code,
-                                     origin      = "iso3c",
-                                     destination = "country.name"),
-                x = "Year",
-                y = plotwhat_label [i]) +
-          theme_bw ()
-      })
+          toplot = plotwhat [i]
+
+          p <- ggplot(burden_estimate [country == country_iso3_code],
+                      aes(x = year, y = get(toplot))) +
+            scale_x_continuous (breaks = pretty_breaks ()) +
+            stat_summary (fun = sum, geom = "line") +
+            ylab (toplot) +
+            labs (title = countrycode (sourcevar   = country_iso3_code,
+                                       origin      = "iso3c",
+                                       destination = "country.name"),
+                  x = "Year",
+                  y = plotwhat_label [i]) +
+            theme_bw ()
+        })
+
+      }
+      # central_stochastic specific plot
+      else if (plot_type == "central_stochastic") {
+
+
+        # plot burden -- cases, deaths, dalys
+        plotwhat        <- c ("cases", "deaths", "dalys")
+        plotwhat_label  <- c ("Cases", "Deaths", "DALYs")
+
+        plotwhat.median <- c ("cases.median", "deaths.median", "dalys.median")
+        plotwhat.low    <- c ("cases.low",    "deaths.low",    "dalys.low")
+        plotwhat.high   <- c ("cases.high",   "deaths.high",   "dalys.high")
+
+        burden_plot_list <- lapply (1:length(plotwhat), function (i) {
+
+          toplot = plotwhat [i]
+
+          p <- ggplot (burden_estimate_summary [country == country_iso3_code],
+                       aes (x = year)) +
+            geom_line (aes (y = get ( plotwhat        [i] )), color = "black") +
+            geom_line (aes (y = get ( plotwhat.median [i] )), color = "red") +
+            geom_line (aes (y = get ( plotwhat.low    [i] )), color = "pink") +
+            geom_line (aes (y = get ( plotwhat.high   [i] )), color = "pink") +
+            scale_x_continuous (breaks = pretty_breaks ()) +
+            # stat_summary (fun = sum, geom = "line") +
+            ylab (toplot) +
+            labs (title = countrycode (sourcevar   = country_iso3_code,
+                                       origin      = "iso3c",
+                                       destination = "country.name"),
+                  x = "Year",
+                  y = plotwhat_label [i]) +
+            theme_bw ()
+        })
+      }
+      # ------------------------------------------------------------------------
 
       # list of plots
       plot_list <- list (coverage_plot,
@@ -3941,3 +3997,394 @@ Generate_diagnostic_plots <- function (vaccine_coverage_folder,
 } # end of function -- Generate_diagnostic_plots
 # ------------------------------------------------------------------------------
 
+
+#-------------------------------------------------------------------------------
+#' Emulate vaccine impact estimates (VIMC stochastic runs) - all cervical cancer burden
+#'
+#' Emulate vaccine impact estimates for VIMC stochastic runs/sensitivity
+#'   analysis. The inputs are central disease burden estimates, input
+#'   parameter distributions (latin hyper sampling), runs for sensitivity analysis,
+#'   and filename for stochastic burden estimates.
+#'   The outputs are stochastic disease burden estimates -- all cervical cancer burden.
+#'   (full results file plus a file per country).
+#'
+#'
+#'   Stochastic disease burden estimates are generated.
+#'     (i)  full results files
+#'            1 full results file for pre-vaccination (optional)
+#'            1 full results file for post-vaccination
+#'     (ii) 1 file per country for all runs
+#'            1 file per country for all runs -- pre-vaccination (optional)
+#'            1 file per country for all runs -- post-vaccination
+#'
+#' @param disease_burden_template_file csv file (required),
+#'   central disease burden template (vimc format); add column with run_id to get
+#'   stochastic disease burden template
+#' @param centralBurdenResultsFile csv file (required), central disease burden
+#'   estimates pre and post vaccination (HPV 16/18 types)
+#' @param centralBurdenResultsFile_all_cecx_burden csv file (required), central disease burden
+#'   estimates pre and post vaccination (all HPV types)
+#' @param central_disease_burden_file_all csv file (required),
+#'   central disease burden estimates (vimc format)
+#' @param psaData data table (required), latin hyper cube sample of input parameters
+#' @param diseaseBurdenStochasticFile_all_cecx_burden character string (required),
+#'   stochastic disease burden estimates file(s) (output) - all cervical cancer burden
+#' @param diseaseBurden_central_StochasticFile_all_cecx_burden character string (required),
+#'   (central + 95% uncertainty interval) disease burden estimates file(s)
+#'   (output) - all cervical cancer burden
+#' @param psa_runs integer (required), simulation runs for sensitivity analysis
+#' @param countryCodes list (optional), If country codes are provided,
+#'   stochastic burden estimates are generated for these countries.
+#'   If set to -1, then stochastic burden estimates are generated for the
+#'   countries included in the central burden estimates.
+#' @param vaccination_scenario logical (required), generate stochastic burden
+#'   estimates for (vaccination) or (no vaccination) scenario
+#'
+#' @return Null return value; disease burden estimates are saved to corresponding files
+#' @export
+#'
+EmulateVaccineImpactVimcStochastic_all_cecx_burden <-
+  function (disease_burden_template_file,
+            centralBurdenResultsFile,
+            centralBurdenResultsFile_all_cecx_burden,
+            central_disease_burden_file_all,
+            psaData,
+            diseaseBurdenStochasticFile_all_cecx_burden,
+            diseaseBurden_central_StochasticFile_all_cecx_burden,
+            psa_runs,
+            countryCodes = -1,
+            vaccination_scenario) {
+
+    # ----------------------------------------------------------------------------
+    # read file -- central disease burden template
+    vimc_template <- fread (disease_burden_template_file)
+
+    # central burden estimates (vimc format -- all cecx burden)
+    burden_central_dt <- fread (central_disease_burden_file_all)
+
+    # read in central burden results -- HPV vaccine types (and) HPV all types
+    central_burden     <- fread (centralBurdenResultsFile)
+    central_burden_all <- fread (centralBurdenResultsFile_all_cecx_burden)
+
+    # initialise empty table to save stochastic results in vimc format
+    header <- vimc_template [0, ]                 # empty table with requisite
+    #   columns
+    header [, run_id := numeric ()]               # add column for run id
+    setcolorder (header, c("disease", "run_id"))  # reorder columns
+
+    # save header to file for stochastic estimates of disease burden
+    # all cecx burden
+    stochastic_file_all <- diseaseBurdenStochasticFile_all_cecx_burden
+
+    fwrite (x      = header,
+            file   = stochastic_file_all,
+            append = FALSE)
+    # ----------------------------------------------------------------------------
+
+    # initialise empty data table -- central + stochastic estimates (median + 95% uncertainty intervals)
+    central_stochastic_dt <- vimc_template [0, ]
+
+    # create new columns for burden (median + 95% uncertainty intervals)
+    central_stochastic_dt [, ':=' (cases.median  = numeric (), cases.low  = numeric (), cases.high  = numeric (),
+                                   dalys.median  = numeric (), dalys.low  = numeric (), dalys.high  = numeric (),
+                                   deaths.median = numeric (), deaths.low = numeric (), deaths.high = numeric ())]
+
+    # ----------------------------------------------------------------------------
+
+
+    # extract burden estimates for pre- or post-vaccination
+    if (vaccination_scenario) {
+
+      # vaccination scenario
+      central_burden     <- central_burden     [scenario == "post-vaccination"]
+      central_burden_all <- central_burden_all [scenario == "post-vaccination"]
+
+    } else {
+
+      # no vaccination scenario
+      central_burden     <- central_burden     [scenario == "pre-vaccination"]
+      central_burden_all <- central_burden_all [scenario == "pre-vaccination"]
+    }
+
+    # keep only needed columns in central burden data table (HPV types in vaccine)
+    central_burden <-
+      central_burden [, c ("scenario", "type", "age",
+                           "inc.cecx", "mort.cecx", "lifey", "disability", "prev.cecx",
+                           "country", "year")]
+
+    # get country codes
+    if (countryCodes [1] == -1) {
+      countryCodes <- unique (central_burden [, country])
+    }
+
+    # generate stochastic burden estimates for each country
+    for (country_code in countryCodes) {
+
+      # get disease burden template for current country (of this loop)
+      vimc_template_country <- vimc_template [country == country_code]
+
+      # get central burden estimates for current country
+      central_burden_country     <- central_burden     [country == country_code]
+      central_burden_all_country <- central_burden_all [country == country_code]
+
+      # get latin hyper cube sample of input parameters for curent country
+      psadat_country <- psaData [country == country_code]
+
+      # initialise header for stochastic burden estimates
+      stochastic_burden_country <- header
+
+      # generate post-hoc stochastic estimates for each run
+      for (run_number in 1:psa_runs) {
+
+        # ------------------------------------------------------------------------
+        # initialise burden estimate to central burden estimates
+        # make a copy of data table to avoid direct reference to original data table
+        burden     <- copy (central_burden_country)
+        burden_all <- copy (central_burden_all_country)
+        # ------------------------------------------------------------------------
+
+        # combine columns burden_all (all cecx burden) and burden (HPV types in vaccine) data tables
+        burden_dt <- merge (x    = burden_all,
+                            y    = burden,
+                            by.x = c("country", "age", "year", "scenario", "type"),
+                            by.y = c("country", "age", "year", "scenario", "type"),
+                            all  = TRUE)
+
+        # estimate cost of cervical cancer per case
+        burden_dt [inc.cecx.x > 0, cost.cecx.percase := cost.cecx / inc.cecx.x]
+
+        # estimate cervical cancer burden for non-vaccine HPV types
+        burden_dt [, inc.cecx.z   := inc.cecx.x   - inc.cecx.y]
+        burden_dt [, mort.cecx.z  := mort.cecx.x  - mort.cecx.y]
+        burden_dt [, lifey.z      := lifey.x      - lifey.y]
+        burden_dt [, disability.z := disability.x - disability.y]
+        burden_dt [, prev.cecx.z  := prev.cecx.x  - prev.cecx.y]
+
+
+
+
+        # ------------------------------------------------------------------------
+        # probabilistic sensitivity analysis to generate stochastic estimates
+        # ------------------------------------------------------------------------
+
+        # burden (HPV types in vaccine)
+
+        # cases -- incidence
+        burden_dt [, inc.cecx.y := (inc.cecx.y * psadat_country [run_id == run_number,
+                                                                 incidence_ratio]
+                                    * psadat_country [run_id == run_number,
+                                                      hpv_distribution_ratio])]
+
+        # deaths -- mortality
+        burden_dt [, mort.cecx.y := (mort.cecx.y * psadat_country [run_id == run_number,
+                                                                   mortality_ratio]
+                                     * psadat_country [run_id == run_number,
+                                                       hpv_distribution_ratio])]
+        # prevalence
+        burden_dt [, prev.cecx.y := (prev.cecx.y * psadat_country [run_id == run_number,
+                                                                   prevalence_ratio]
+                                     * psadat_country [run_id == run_number,
+                                                       hpv_distribution_ratio])]
+
+        # YLL -- premature mortality
+        burden_dt [, lifey.y := (lifey.y * psadat_country [run_id == run_number,
+                                                           mortality_ratio]
+                                 * psadat_country [run_id == run_number,
+                                                   hpv_distribution_ratio])]
+
+        # ------------------------------------------------------------------------
+        # burden (non-vaccine HPV types)
+
+        # cases -- incidence
+        burden_dt [, inc.cecx.z := (inc.cecx.z * psadat_country [run_id == run_number,
+                                                                 incidence_ratio]
+                                    * psadat_country [run_id == run_number,
+                                                      hpv_distribution_non_vaccine_ratio])]
+
+        # deaths -- mortality
+        burden_dt [, mort.cecx.z := (mort.cecx.z * psadat_country [run_id == run_number,
+                                                                   mortality_ratio]
+                                     * psadat_country [run_id == run_number,
+                                                       hpv_distribution_non_vaccine_ratio])]
+        # prevalence
+        burden_dt [, prev.cecx.z := (prev.cecx.z * psadat_country [run_id == run_number,
+                                                                   prevalence_ratio]
+                                     * psadat_country [run_id == run_number,
+                                                       hpv_distribution_non_vaccine_ratio])]
+
+        # YLL -- premature mortality
+        burden_dt [, lifey.z := (lifey.z * psadat_country [run_id == run_number,
+                                                           mortality_ratio]
+                                 * psadat_country [run_id == run_number,
+                                                   hpv_distribution_non_vaccine_ratio])]
+
+        # ------------------------------------------------------------------------
+        # estimation of YLD -- disability
+
+        # disability weights for different phases of cervical cancer
+        # (diagnosis & therapy, controlled, metastatic, terminal)
+        dw = list (diag       = psadat_country [run_id == run_number,
+                                                dw_diagnosis],
+                   control    = psadat_country [run_id == run_number,
+                                                dw_control],
+                   metastatic = psadat_country [run_id == run_number,
+                                                dw_metastatic],
+                   terminal   = psadat_country [run_id == run_number,
+                                                dw_terminal]
+        )
+
+        # duration of different phases of cervical cancer
+        # (diagnosis & therapy, controlled, metastatic, terminal) -- unit in years
+        disability.weights <- "gbd_2017"
+
+        cecx_duration = list (diag       = data.disability_weights [Source == disability.weights &
+                                                                      Sequela=="diagnosis",
+                                                                    Duration],
+                              metastatic = data.disability_weights [Source == disability.weights &
+                                                                      Sequela=="metastatic",
+                                                                    Duration],
+                              terminal   = data.disability_weights [Source == disability.weights &
+                                                                      Sequela=="terminal",
+                                                                    Duration])
+        # duration of controlled phases is based on remainder of
+        # time after attributing to other phases
+
+        # YLD -- disability
+        # combine yld contribution from (incidence, prevalence and mortality) cases
+
+        # burden (HPV types in vaccine)
+        burden_dt [, disability.y := (inc.cecx.y  * dw$diag * cecx_duration$diag) +
+                     (prev.cecx.y * dw$control) +
+                     (mort.cecx.y * ( (dw$metastatic * cecx_duration$metastatic) +
+                                        (dw$terminal   * cecx_duration$terminal) ) ) ]
+
+        # burden (non-vaccine HPV types)
+        burden_dt [, disability.z := (inc.cecx.z  * dw$diag * cecx_duration$diag) +
+                     (prev.cecx.z * dw$control) +
+                     (mort.cecx.z * ( (dw$metastatic * cecx_duration$metastatic) +
+                                        (dw$terminal   * cecx_duration$terminal) ) ) ]
+
+        # ------------------------------------------------------------------------
+
+        # sum burden (HPV types in vaccine) and burden (non-vaccine HPV types)
+        burden_dt [, inc.cecx.x   := inc.cecx.y   + inc.cecx.z   ]
+        burden_dt [, mort.cecx.x  := mort.cecx.y  + mort.cecx.z  ]
+        burden_dt [, prev.cecx.x  := prev.cecx.y  + prev.cecx.z  ]
+        burden_dt [, lifey.x      := lifey.y      + lifey.z      ]
+        burden_dt [, disability.x := disability.y + disability.z ]
+
+        # estimate updated cost
+        burden_dt [inc.cecx.x  > 0, cost.cecx := inc.cecx.x * cost.cecx.percase]
+        burden_dt [inc.cecx.x == 0, cost.cecx := 0]
+        # ------------------------------------------------------------------------
+
+        # keep columns of interest
+        burden_dt <- burden_dt [, .(country, scenario, type, age, cohort_size, vaccinated, immunized,
+                                    inc.cecx.x, mort.cecx.x, lifey.x, disability.x, cost.cecx, prev.cecx.x, year)]
+
+        # rename burden columns
+        setnames (burden_dt,
+                  old = c ("inc.cecx.x", "mort.cecx.x", "lifey.x", "disability.x", "prev.cecx.x"),
+                  new = c ("inc.cecx",   "mort.cecx",   "lifey",   "disability",   "prev.cecx"  ) )
+
+        # ------------------------------------------------------------------------
+
+        # convert results to vimc format
+        convert_results <- OutputVimc (DT            = burden_dt,
+                                       calendar_year = TRUE,
+                                       vimc_template = vimc_template_country)
+
+        # drop scenario (post-vaccination or pre-vaccination) column
+        convert_results [, scenario := NULL]
+
+        # add column for run id
+        convert_results [, run_id := run_number]
+
+        # add stochastic burden estimate adjusted by sensitivity analysis to the
+        # stochastic burden table of all runs
+        stochastic_burden_country <- rbind (stochastic_burden_country,
+                                            convert_results,
+                                            use.names = TRUE)
+
+      } # end of -- for (run_id in 1:psa_runs)
+
+      # save stochastic burden estimates of current country to larger file with
+      # stochastic burden estimates of all countries
+      fwrite (x      = stochastic_burden_country,
+              file   = stochastic_file_all,
+              append = TRUE)
+
+      # --------------------------------------------------------------------------
+      # generate burden for current country -- central + median + 95% uncertainty intervals
+
+      # burden -- median
+      burden_median_dt <- stochastic_burden_country [, lapply (.SD, quantile, probs = c(0.5)),
+                                                     .SDcols = c ("cases", "dalys", "deaths"),
+                                                     by = .(year, age, country)]
+
+      # burden -- low 95% uncertainty interval
+      burden_low_dt <- stochastic_burden_country [, lapply (.SD, quantile, probs = c(0.025)),
+                                                  .SDcols = c ("cases", "dalys", "deaths"),
+                                                  by = .(year, age, country)]
+
+      # burden -- high 95% uncertainty interval
+      burden_high_dt <- stochastic_burden_country [, lapply (.SD, quantile, probs = c(0.975)),
+                                                   .SDcols = c ("cases", "dalys", "deaths"),
+                                                   by = .(year, age, country)]
+
+      # rename burden columns
+      setnames (burden_median_dt,
+                old = c ("cases",        "dalys",        "deaths" ),
+                new = c ("cases.median", "dalys.median", "deaths.median" ) )
+
+      setnames (burden_low_dt,
+                old = c ("cases",        "dalys",        "deaths" ),
+                new = c ("cases.low",    "dalys.low",    "deaths.low" ) )
+
+      setnames (burden_high_dt,
+                old = c ("cases",        "dalys",        "deaths" ),
+                new = c ("cases.high",   "dalys.high",   "deaths.high" ) )
+
+      # central burden estimates for current country (vimc format -- all cecx burden)
+      burden_central_country_dt <- burden_central_dt [country == country_code]
+
+
+      # combine central, median, low, and high burden estimates
+      burden_central_country_dt <- merge (x = burden_central_country_dt,
+                                          y = burden_median_dt,
+                                          by.x = c ("year", "age", "country"),
+                                          by.y = c ("year", "age", "country"),
+                                          all  = TRUE)
+
+      burden_central_country_dt <- merge (x = burden_central_country_dt,
+                                          y = burden_low_dt,
+                                          by.x = c ("year", "age", "country"),
+                                          by.y = c ("year", "age", "country"),
+                                          all  = TRUE)
+
+      burden_central_country_dt <- merge (x = burden_central_country_dt,
+                                          y = burden_high_dt,
+                                          by.x = c ("year", "age", "country"),
+                                          by.y = c ("year", "age", "country"),
+                                          all  = TRUE)
+
+      # add central + stochastic estimates (median + 95% uncertainty intervals)
+      # for current country to table for multiple countries
+      # all cervical cancer burden
+      central_stochastic_dt <- rbind (central_stochastic_dt,
+                                      burden_central_country_dt,
+                                      use.names = TRUE)
+      # --------------------------------------------------------------------------
+
+
+    } # end of -- for (country_code in countryCodes)
+
+    # write streamlined stochastic estimates to file (central + median + 95% uncertainty intervals)
+    fwrite (x      = central_stochastic_dt,
+            file   = diseaseBurden_central_StochasticFile_all_cecx_burden,
+            append = FALSE)
+
+    return (NULL)
+
+  } # end of function -- EmulateVaccineImpactVimcStochastic_all_cecx_burden
+# ------------------------------------------------------------------------------

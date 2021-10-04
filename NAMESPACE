@@ -3,6 +3,7 @@
 export(BatchRun)
 export(CreatePsaData)
 export(EmulateVaccineImpactVimcStochastic)
+export(EmulateVaccineImpactVimcStochastic_all_cecx_burden)
 export(EstimateVaccineImpactVimcCentral)
 export(Estimate_all_cecx_burden_central)
 export(Generate_diagnostic_plots)
