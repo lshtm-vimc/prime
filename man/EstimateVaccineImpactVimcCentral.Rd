@@ -14,7 +14,7 @@ EstimateVaccineImpactVimcCentral(
   routine_vaccination,
   vaccine = "4vHPV",
   canc.inc = "2020",
-  country_iso3 = "all"
+  country_set = "all"
 )
 }
 \arguments{
@@ -41,8 +41,8 @@ pre-vaccination and post-vaccination}
 
 \item{canc.inc}{character, year of GLOBOCAN estimates}
 
-\item{country_iso3}{character, run for all countries specified in
-disease burden template file (or) run for a specific country}
+\item{country_set}{character, run for all countries specified in
+disease burden template file (or) run for a set of countries}
 }
 \value{
 Null return value; disease burden estimates are saved to corresponding files

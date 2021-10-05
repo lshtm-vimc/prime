@@ -585,10 +585,30 @@ BatchRun <- function (countries                       = -1,
       agecohort <- init_agecohort
     }
 
-    cohort <- data.pop [country_code == countries[cn] &
-                          year       == (years[y] + agecohort) &
-                          age_from   == agecohort,
-                        value]
+
+
+    # --------------------------------------------------------------------------
+    # get cohort size from UNWPP data table -- data.pop
+
+    # get cohort size for a specific age
+    # if year > 2100, then use cohort size for the specific age in 2100
+    if ((years[y] + agecohort) <= 2100) {
+
+      cohort <- data.pop [country_code == countries[cn] &
+                            year       == (years[y] + agecohort) &
+                            age_from   == agecohort,
+                          value]
+    } else {
+
+      cohort <- data.pop [country_code == countries[cn] &
+                            year       == 2100 &
+                            age_from   == agecohort,
+                          value]
+    }
+    # --------------------------------------------------------------------------
+
+
+
 
     if(is.character(log)){
       writelog(
@@ -1597,11 +1617,25 @@ RunCountry <- function (country_iso3,
   # cohort size = number of 10-14y/5
   if (cohort==-1) {
 
+    # --------------------------------------------------------------------------
     # get cohort size from UNWPP data table -- data.pop
-    cohort <- data.pop [country_code == country_iso3 &
-                          year == (year_born + agecohort) &
-                          age_from == agecohort,
-                        value]
+
+    # get cohort size at vaccination age
+    # if year > 2100, then use cohort size for vaccination age in 2100
+    if ((year_born + agecohort) <= 2100) {
+
+      cohort <- data.pop [country_code == country_iso3 &
+                            year == (year_born + agecohort) &
+                            age_from == agecohort,
+                          value]
+    } else {
+
+      cohort <- data.pop [country_code == country_iso3 &
+                            year == 2100 &
+                            age_from == agecohort,
+                          value]
+    }
+    # --------------------------------------------------------------------------
 
     # data.popproj -- not used anymore (to be removed from prime package)
     # cohort <- unlist (data.popproj [iso3 == country_iso3,
@@ -2792,8 +2826,8 @@ monetary_to_number <- function (x) {
 #' @param routine_vaccination logical, indicates routine vaccination
 #' @param vaccine character, bivalent/quadrivalent/nonovalent HPV vaccine
 #' @param canc.inc character, year of GLOBOCAN estimates
-#' @param country_iso3 character, run for all countries specified in
-#'   disease burden template file (or) run for a specific country
+#' @param country_set character, run for all countries specified in
+#'   disease burden template file (or) run for a set of countries
 #'
 #' @return Null return value; disease burden estimates are saved to corresponding files
 #' @export
@@ -2817,7 +2851,7 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
                                               routine_vaccination,
                                               vaccine      = "4vHPV",
                                               canc.inc     = "2020",
-                                              country_iso3 = "all") {
+                                              country_set  = "all") {
 
   # read files -- vaccination coverage
   vimc_coverage <- fread (vaccine_coverage_file)
@@ -2826,9 +2860,9 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
   vimc_template <- fread (disease_burden_template_file)
 
   # run for all countries or a specific country
-  if (country_iso3 != "all")
+  if (country_set [1] != "all")
   {
-    vimc_template <- vimc_template [country == country_iso3]
+    vimc_template <- vimc_template [country %in% country_set]
   }
 
   # register batch data for vimc runs
