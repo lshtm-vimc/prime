@@ -4352,17 +4352,17 @@ EmulateVaccineImpactVimcStochastic_all_cecx_burden <-
       # generate burden for current country -- central + median + 95% uncertainty intervals
 
       # burden -- median
-      burden_median_dt <- stochastic_burden_country [, lapply (.SD, quantile, probs = c(0.5)),
+      burden_median_dt <- stochastic_burden_country [, lapply (.SD, quantile, probs = c(0.5), na.rm = TRUE),
                                                      .SDcols = c ("cases", "dalys", "deaths"),
                                                      by = .(year, age, country)]
 
       # burden -- low 95% uncertainty interval
-      burden_low_dt <- stochastic_burden_country [, lapply (.SD, quantile, probs = c(0.025)),
+      burden_low_dt <- stochastic_burden_country [, lapply (.SD, quantile, probs = c(0.025), na.rm = TRUE),
                                                   .SDcols = c ("cases", "dalys", "deaths"),
                                                   by = .(year, age, country)]
 
       # burden -- high 95% uncertainty interval
-      burden_high_dt <- stochastic_burden_country [, lapply (.SD, quantile, probs = c(0.975)),
+      burden_high_dt <- stochastic_burden_country [, lapply (.SD, quantile, probs = c(0.975), na.rm = TRUE),
                                                    .SDcols = c ("cases", "dalys", "deaths"),
                                                    by = .(year, age, country)]
 
