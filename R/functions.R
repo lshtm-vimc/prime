@@ -3898,9 +3898,10 @@ Generate_diagnostic_plots<- function (vaccine_coverage_folder,
                                     color = factor (activity_type))) +
         scale_x_continuous (breaks = pretty_breaks ()) +
         geom_point () +
-        labs (title = countrycode (sourcevar   = country_iso3_code,
-                                   origin      = "iso3c",
-                                   destination = "country.name"),
+        labs (title = countrycode (sourcevar    = country_iso3_code,
+                                   origin       = "iso3c",
+                                   destination  = "country.name",
+                                   custom_match = c('XK' = 'Kosovo') ),
               x = "Year",
               y = "Vaccine coverage (%)",
               colour = "vaccine") +
@@ -3924,10 +3925,10 @@ Generate_diagnostic_plots<- function (vaccine_coverage_folder,
             scale_x_continuous (breaks = pretty_breaks ()) +
             stat_summary (fun = sum, geom = "line") +
             ylab (toplot) +
-            labs (title = countrycode (sourcevar   = country_iso3_code,
-                                       origin      = "iso3c",
-                                       destination = "country.name",
-                                       custom_match = c('XK' = 'Kosovo')),
+            labs (title = countrycode (sourcevar    = country_iso3_code,
+                                       origin       = "iso3c",
+                                       destination  = "country.name",
+                                       custom_match = c('XK' = 'Kosovo') ),
                   x = "Year",
                   y = plotwhat_label [i]) +
             theme_bw ()
@@ -3961,7 +3962,8 @@ Generate_diagnostic_plots<- function (vaccine_coverage_folder,
             ylab (toplot) +
             labs (title = countrycode (sourcevar   = country_iso3_code,
                                        origin      = "iso3c",
-                                       destination = "country.name"),
+                                       destination = "country.name",
+                                       custom_match = c('XK' = 'Kosovo') ),
                   x = "Year",
                   y = plotwhat_label [i]) +
             theme_bw ()
@@ -4016,7 +4018,8 @@ Generate_diagnostic_plots<- function (vaccine_coverage_folder,
           ylab (toplot) +
           labs (title = countrycode (sourcevar   = country_iso3_code,
                                      origin      = "iso3c",
-                                     destination = "country.name"),
+                                     destination = "country.name",
+                                     custom_match = c('XK' = 'Kosovo') ),
                 x = "Year",
                 y = plotwhat_label [i],
                 colour = "Scenario") +
