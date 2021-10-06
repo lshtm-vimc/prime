@@ -3164,6 +3164,19 @@ CreatePsaData <- function (country_codes,
 
 
 
+    # --------------------------------------------------------------------------
+    # Switch back to original country for which proxy was set due to unavailable data
+    if (proxy) {
+      proxy <- FALSE
+      country_code <- switch (
+        country_code,
+        "ALB" = "XK",
+        country_code
+      )
+    }
+    # --------------------------------------------------------------------------
+
+
     #---------------------------------------------------------------------------
     # hpv distribution ratios -- psa values
     #---------------------------------------------------------------------------
@@ -3230,18 +3243,6 @@ CreatePsaData <- function (country_codes,
     # names (hpv_distribution_ratio_psa_DT) <- c ("hpv_distribution_ratio")
 
     #---------------------------------------------------------------------------
-
-    # --------------------------------------------------------------------------
-    # Switch back to original country for which proxy was set due to unavailable data
-    if (proxy) {
-      proxy <- FALSE
-      country_code <- switch (
-        country_code,
-        "ALB" = "XK",
-        country_code
-      )
-    }
-    # --------------------------------------------------------------------------
 
     # create data table specific for this country with psa parameter values
     country_psa <- data.table (
@@ -3592,6 +3593,10 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
     setnames (hpv_distribution, old = c("hpv_9v"), new = c ("hpv"))
   }
 
+  # ----------------------------------------------------------------------------
+
+  # ----------------------------------------------------------------------------
+
   # combine data tables -- cecx_burden_prepostvac & hpv_distribution
   cecx_burden_prepostvac <- merge (x     = cecx_burden_prepostvac,
                                    y     = hpv_distribution,
@@ -3860,7 +3865,7 @@ Generate_diagnostic_plots<- function (vaccine_coverage_folder,
     # ------------------------------------------------------------------------
 
     # if countries are specified to all, then set countries to all countries in coverage file
-    if (countries == "all") {
+    if (countries[1] == "all") {
       countries	<- as.character (unique (burden_estimate [, country] ) )
     }
 
@@ -3921,7 +3926,8 @@ Generate_diagnostic_plots<- function (vaccine_coverage_folder,
             ylab (toplot) +
             labs (title = countrycode (sourcevar   = country_iso3_code,
                                        origin      = "iso3c",
-                                       destination = "country.name"),
+                                       destination = "country.name",
+                                       custom_match = c('XK' = 'Kosovo')),
                   x = "Year",
                   y = plotwhat_label [i]) +
             theme_bw ()
