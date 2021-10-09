@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{CreatePsaData}
 \alias{CreatePsaData}
-\title{Generate Latin hyper cube sample of parameters for sensitivity analysis}
+\title{Generate/read Latin hyper cube sample of parameters for sensitivity analysis}
 \usage{
 CreatePsaData(
   country_codes,
@@ -38,6 +38,8 @@ Null return value; disease burden estimates are saved to corresponding files
 \description{
 Generate Latin hyper cube sample of input parameters based on their
   distributions for probabilistic sensitivity analysis.
+  If file (sample of parameters) already exists,
+  then read Latin hyper cube sample of input parameters.
 }
 \examples{
   CreatePsaData (

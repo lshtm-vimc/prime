@@ -2937,10 +2937,12 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
 
 
 # ------------------------------------------------------------------------------
-#' Generate Latin hyper cube sample of parameters for sensitivity analysis
+#' Generate/read Latin hyper cube sample of parameters for sensitivity analysis
 #'
 #' Generate Latin hyper cube sample of input parameters based on their
 #'   distributions for probabilistic sensitivity analysis.
+#'   If file (sample of parameters) already exists,
+#'   then read Latin hyper cube sample of input parameters.
 #'
 #' @param country_codes ISO3 country codes of countries
 #' @param vaccine bivalent/quadrivalent or nonavalent HPV vaccine
