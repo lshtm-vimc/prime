@@ -10,6 +10,7 @@ Generate_diagnostic_plots(
   touchstone,
   scenarios,
   no_vaccine_scenario,
+  plot_no_vaccine_scenario = TRUE,
   burden_estimate_folder,
   plot_folder,
   plot_file,
@@ -33,6 +34,9 @@ different scenarios}
 \item{scenarios}{character, names of vaccination scenarios}
 
 \item{no_vaccine_scenario}{character, name of no vaccination scenario}
+
+\item{plot_no_vaccine_scenario, }{logical, if TRUE then also generate plots
+for no vaccine scenario}
 
 \item{burden_estimate_folder}{character, folder to read burden estimates of
 different scenarios}
@@ -74,6 +78,7 @@ Generate_diagnostic_plots (
     touchstone                 = "touchstone",
     scenarios                  = c ("hpv-routine-default", "hpv-routine-best"),
     no_vaccine_scenario        = "hpv-no-vaccination",
+    plot_no_vaccine_scenario   = TRUE,
     burden_estimate_folder     = "output_all",
     plot_folder                = "plots"
     plot_file                  = "plot_file.pdf",

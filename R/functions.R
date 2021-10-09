@@ -3736,6 +3736,8 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
 #' @param touchstone character, touchstone (VIMC)
 #' @param scenarios character, names of vaccination scenarios
 #' @param no_vaccine_scenario character, name of no vaccination scenario
+#' @param plot_no_vaccine_scenario, logical, if TRUE then also generate plots
+#'          for no vaccine scenario
 #' @param burden_estimate_folder character, folder to read burden estimates of
 #'          different scenarios
 #' @param plot_folder character, diagnostic plot folder
@@ -3758,6 +3760,7 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
 #'     touchstone                 = "touchstone",
 #'     scenarios                  = c ("hpv-routine-default", "hpv-routine-best"),
 #'     no_vaccine_scenario        = "hpv-no-vaccination",
+#'     plot_no_vaccine_scenario   = TRUE,
 #'     burden_estimate_folder     = "output_all",
 #'     plot_folder                = "plots"
 #'     plot_file                  = "plot_file.pdf",
@@ -3774,20 +3777,24 @@ Generate_diagnostic_plots<- function (vaccine_coverage_folder,
                                       touchstone,
                                       scenarios,
                                       no_vaccine_scenario,
+                                      plot_no_vaccine_scenario = TRUE,
                                       burden_estimate_folder,
                                       plot_folder,
                                       plot_file,
                                       plot_type,
                                       countries,
-                                      start_year        = -1,
-                                      end_year          = -1,
-                                      compare_plots     = FALSE,
+                                      start_year               = -1,
+                                      end_year                 = -1,
+                                      compare_plots            = FALSE,
                                       vaccine_prefix,
                                       no_vaccine_prefix
 ) {
 
-  # add no vaccination scenario in generation of diagnostic plots
-  scenarios <- c (no_vaccine_scenario, scenarios)
+  # if also plotting no vaccination scenario (in addition to vaccination scenarios),
+  # then add no vaccination scenario in generation of diagnostic plots
+  if (plot_no_vaccine_scenario) {
+    scenarios <- c (no_vaccine_scenario, scenarios)
+  }
 
   # diagnostic plots filename
   pdf (file.path (plot_folder, plot_file))
