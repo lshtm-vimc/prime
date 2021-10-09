@@ -2977,8 +2977,8 @@ CreatePsaData <- function (country_codes,
                            psadat_vimc_file = "psadat_vimc.csv",
                            run_lhs          = FALSE) {
 
-  # read sample of input parameters from file (or)
-  # create new sample of input parameters
+  # create new sample of input parameters (or)
+  # read sample of input parameters from file
   if (run_lhs) {
 
     # set seed for reproducibility
@@ -3287,13 +3287,13 @@ CreatePsaData <- function (country_codes,
     fwrite (x    = psadat_list [["psadat_vimc"]],
             file = psadat_vimc_file)
 
-  }  # end of -- if (create_new)
-  else {
+  } else {
 
+    # read sample of input parameters from file
     psadat_list <- list (psadat      = fread (psadat_file),
                          psadat_vimc = fread (psadat_vimc_file))
 
-  }
+  } # end of -- if (create_new)
 
   # return psa data for probabilistic sensitivity analysis
   # return (list (psadat      = psadat,
