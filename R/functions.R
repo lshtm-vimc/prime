@@ -2950,6 +2950,8 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
 #'   sample of input parameters
 #' @param psadat_vimc_file character string, file to save Latin hyper cube
 #'   sample of input parameters (VIMC format)
+#' @param run_lhs logical, if TRUE create new sample of input parameters,
+#'   if FALSE, read sample of input parameters from file
 #'
 #' @return Null return value; disease burden estimates are saved to corresponding files
 #' @export
@@ -2958,326 +2960,340 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
 #' @importFrom prevalence betaExpert
 #'
 #' @examples
-#'   # CreatePsaData (
-#'   #   country_codes    = c("AFG", "ALB"),
-#'   #   vaccine          = "4vHPV",
-#'   #   psa_runs         = 200,
-#'   #   seed_state       = 1,
-#'   #   psadat_file      = "psadat.csv",
-#'   #   psadat_vimc_file = "psadat_vimc.csv")
+#'   CreatePsaData (
+#'     country_codes    = c("AFG", "ALB"),
+#'     vaccine          = "4vHPV",
+#'     psa_runs         = 200,
+#'     seed_state       = 1,
+#'     psadat_file      = "psadat.csv",
+#'     psadat_vimc_file = "psadat_vimc.csv",
+#'     run_lhs          = TRUE)
 # ------------------------------------------------------------------------------
 CreatePsaData <- function (country_codes,
                            vaccine          = "4vHPV",
                            psa_runs         = 0,
                            seed_state       = 1,
                            psadat_file      = "psadat.csv",
-                           psadat_vimc_file = "psadat_vimc.csv") {
+                           psadat_vimc_file = "psadat_vimc.csv",
+                           run_lhs          = FALSE) {
 
-  # set seed for reproducibility
-  set.seed (seed = seed_state)
+  # read sample of input parameters from file (or)
+  # create new sample of input parameters
+  if (run_lhs) {
 
-  # sensitivity analysis
-  if (psa_runs > 1) {
+    # set seed for reproducibility
+    set.seed (seed = seed_state)
 
-    # create empty psa data table (8 + 1 psa parameters)
-    psadat <- data.table (
-      country                            = character (),  # iso3 country code
-      run_id                             = numeric   (),  # run id (psa run)
-      dw_diagnosis                       = numeric   (),  # disability weight - diagnosis phase
-      dw_control                         = numeric   (),  # disability weight - control phase
-      dw_metastatic                      = numeric   (),  # disability weight - metastatic phase
-      dw_terminal                        = numeric   (),  # disability weight - terminal phase
-      incidence_ratio                    = numeric   (),  # cervical cancer incidence ratio
-      mortality_ratio                    = numeric   (),  # cervical cancer mortality ratio
-      prevalence_ratio                   = numeric   (),  # cervical cancer prevalence ratio
-      hpv_distribution_ratio             = numeric   (),  # hpv (types in vaccine) distribution ratio
-      hpv_distribution_non_vaccine_ratio = numeric   ()   # hpv (non-vaccine types) distribution ratio
-    )
-  }
+    # sensitivity analysis
+    if (psa_runs > 1) {
 
-  # cervical cancer phases
-  # 1 - diagnosis; 2 - control, 3 - metastatic; 4 - terminal
-  cecx_phases <- c ("diagnosis", "control", "metastatic", "terminal")
-
-  # disease burden metrics
-  burden_metrics <- c ("incidence", "mortality", "prevalence")
-
-  # hpv distribution
-  # HPV 16/18 for bivalent or quadrivalent vaccine  (4vHPV)
-  # HPV 16/18/31/31/45/52/58 for nonavalent vaccine (9vHPV)
-
-  # hpv (types in vaccine) distribution ratio (and) hpv (non-vaccine types) distribution ratio
-  hpv_distribution_ratios <- 2
-
-  # number of parameters
-  parameters <- length (cecx_phases) + length (burden_metrics) + hpv_distribution_ratios
-
-  # create data table specific for each country with parameter values for
-  # probabilistic sensitivity analysis
-  for (country_code in country_codes) {
-
-    # construct a random Latin hypercube design
-    cube <- randomLHS (n = psa_runs,
-                       k = parameters)
-
-    # --------------------------------------------------------------------------
-    # If no data available for a country, switch to another country as proxy
-    if ( country_code %in% c ("XK") ) {
-      proxy <- TRUE
-      country_code <- switch (
-        country_code,
-        "XK"  = "ALB",  # demography (unwpp) available for XK
-        # no data for burden, demography (who), cost for XK
-        country_code
+      # create empty psa data table (8 + 1 psa parameters)
+      psadat <- data.table (
+        country                            = character (),  # iso3 country code
+        run_id                             = numeric   (),  # run id (psa run)
+        dw_diagnosis                       = numeric   (),  # disability weight - diagnosis phase
+        dw_control                         = numeric   (),  # disability weight - control phase
+        dw_metastatic                      = numeric   (),  # disability weight - metastatic phase
+        dw_terminal                        = numeric   (),  # disability weight - terminal phase
+        incidence_ratio                    = numeric   (),  # cervical cancer incidence ratio
+        mortality_ratio                    = numeric   (),  # cervical cancer mortality ratio
+        prevalence_ratio                   = numeric   (),  # cervical cancer prevalence ratio
+        hpv_distribution_ratio             = numeric   (),  # hpv (types in vaccine) distribution ratio
+        hpv_distribution_non_vaccine_ratio = numeric   ()   # hpv (non-vaccine types) distribution ratio
       )
-    } else {
-      proxy <- FALSE
     }
-    # --------------------------------------------------------------------------
+
+    # cervical cancer phases
+    # 1 - diagnosis; 2 - control, 3 - metastatic; 4 - terminal
+    cecx_phases <- c ("diagnosis", "control", "metastatic", "terminal")
+
+    # disease burden metrics
+    burden_metrics <- c ("incidence", "mortality", "prevalence")
+
+    # hpv distribution
+    # HPV 16/18 for bivalent or quadrivalent vaccine  (4vHPV)
+    # HPV 16/18/31/31/45/52/58 for nonavalent vaccine (9vHPV)
+
+    # hpv (types in vaccine) distribution ratio (and) hpv (non-vaccine types) distribution ratio
+    hpv_distribution_ratios <- 2
+
+    # number of parameters
+    parameters <- length (cecx_phases) + length (burden_metrics) + hpv_distribution_ratios
+
+    # create data table specific for each country with parameter values for
+    # probabilistic sensitivity analysis
+    for (country_code in country_codes) {
+
+      # construct a random Latin hypercube design
+      cube <- randomLHS (n = psa_runs,
+                         k = parameters)
+
+      # --------------------------------------------------------------------------
+      # If no data available for a country, switch to another country as proxy
+      if ( country_code %in% c ("XK") ) {
+        proxy <- TRUE
+        country_code <- switch (
+          country_code,
+          "XK"  = "ALB",  # demography (unwpp) available for XK
+          # no data for burden, demography (who), cost for XK
+          country_code
+        )
+      } else {
+        proxy <- FALSE
+      }
+      # --------------------------------------------------------------------------
 
 
-    #---------------------------------------------------------------------------
-    # disability weights -- psa values
-    #---------------------------------------------------------------------------
+      #---------------------------------------------------------------------------
+      # disability weights -- psa values
+      #---------------------------------------------------------------------------
 
-    # create data table to store psa values of
-    # disability weights of different sequelaes (cancer phases)
-    dw_psa_DT <- data.table (run_id = c (1:psa_runs))
+      # create data table to store psa values of
+      # disability weights of different sequelaes (cancer phases)
+      dw_psa_DT <- data.table (run_id = c (1:psa_runs))
 
-    # loop through disability weights of different sequelaes (cancer phases)
-    for (i in 1:length (cecx_phases)) {
+      # loop through disability weights of different sequelaes (cancer phases)
+      for (i in 1:length (cecx_phases)) {
 
-      # disability weight for a cancer phase -- mean and 95% uncertainty intervals
-      dw <- data.disability_weights [Source == "gbd_2017" & Sequela == cecx_phases [i],
-                                     c(Mid, Low, High)]
-      names (dw) <- c("mid", "low", "high")
+        # disability weight for a cancer phase -- mean and 95% uncertainty intervals
+        dw <- data.disability_weights [Source == "gbd_2017" & Sequela == cecx_phases [i],
+                                       c(Mid, Low, High)]
+        names (dw) <- c("mid", "low", "high")
+
+        # get shape parameters of beta distribution
+        shape_param <- betaExpert (best   = dw ["mid"],
+                                   lower  = dw ["low"],
+                                   upper  = dw ["high"],
+                                   p      = 0.95,
+                                   method = "mean")
+
+        # sample input parameter values (latin hyper cube sampling)
+        # based on their distributions for psa runs
+        dw_psa_values <- qbeta (p      = cube [, i],
+                                shape1 = shape_param$alpha,
+                                shape2 = shape_param$beta)
+
+        # data table of psa values containg
+        # disability weights of different sequelaes (cancer phases)
+        dw_psa_DT <- cbind (dw_psa_DT, dw_psa_values)
+
+      } # end of loop -- for (i in 1:length (cecx_phases))
+
+      # set column names for psa table of disability weights
+      names (dw_psa_DT) <- c ("run_id",
+                              "dw_diagnosis",
+                              "dw_control",
+                              "dw_metastatic",
+                              "dw_terminal")
+
+      #---------------------------------------------------------------------------
+      # (incidence, mortality, prevalence) burden ratios -- psa values
+      #---------------------------------------------------------------------------
+
+      # create data table to store psa values of
+      # (incidence, mortality, prevalence) ratios
+      burden_psa_DT <- data.table ()
+
+
+      # loop through burden ratios
+      for (i in 1:length (burden_metrics)) {
+
+        # mean value and 95% uncertainty intervals -- incidence, mortality, prevalence
+        #
+        # incidence
+        if (burden_metrics [i] == "incidence") {
+          burden  <- data.incidence_ui  [iso3 == country_code, c(Mid, Low, High)]
+
+          # set proxy values (incidence) for missing countries
+          # based around the median of available data for other countries
+          if (length (burden) == 0) {
+            burden <- c (1,
+                         median (data.incidence_ui$Low  / data.incidence_ui$Mid),
+                         median (data.incidence_ui$High / data.incidence_ui$Mid))
+          }
+        }
+        # mortality
+        else if (burden_metrics [i] == "mortality") {
+          burden  <- data.mortcecx_ui   [iso3 == country_code, c(Mid, Low, High)]
+
+          # set proxy values (mortality) for missing countries
+          # based around the median of available data for other countries
+          if (length (burden) == 0) {
+            burden <- c (1,
+                         median (data.mortcecx_ui$Low  / data.mortcecx_ui$Mid),
+                         median (data.mortcecx_ui$High / data.mortcecx_ui$Mid))
+          }
+        }
+        # prevalence
+        else if (burden_metrics [i] == "prevalence") {
+          burden <- data.prevalence_ui [iso3 == country_code, c(Mid, Low, High)]
+
+          # set proxy values (prevalence) for missing countries
+          # based around the median of available data for other countries
+          if (length (burden) == 0) {
+            burden <- c (1,
+                         median (data.prevalence_ui$Low  / data.prevalence_ui$Mid),
+                         median (data.prevalence_ui$High / data.prevalence_ui$Mid))
+          }
+        }
+
+        names (burden)  <- c("mid", "low", "high")
+
+        # log of burden values
+        log_burden  <- log (burden)
+
+        # Estimating the global cancer incidence and mortality in 2018:
+        # GLOBOCAN sources and methods
+        # (refer to paper for defintion of uncertainty intervals)
+        # https://www.ncbi.nlm.nih.gov/pubmed/30350310
+
+        # standard error in log scale
+        log_burden_se  <- (log_burden  ["high"] - log_burden ["low"]) / 3.92
+
+        # sample input parameter values (latin hyper cube sampling)
+        # based on their distributions for psa runs
+        burden_psa_values <- qlnorm (p       = cube [, (length (cecx_phases) + i)],
+                                     meanlog = log_burden ["mid"],
+                                     sdlog   = log_burden_se)
+
+        # ratio of psa values (incidence, mortality, prevalence) to mean values
+        burden_ratio  <- burden_psa_values / burden ["mid"]
+
+        # data table of psa values containg
+        # (incidence, mortality, prevalence) ratios
+        burden_psa_DT <- cbind (burden_psa_DT, burden_ratio)
+
+      } # end of loop -- for (i in 1:length (burden_metrics))
+
+      # set column names for psa table of disability weights
+      names (burden_psa_DT) <- c ("incidence_ratio",
+                                  "mortality_ratio",
+                                  "prevalence_ratio")
+
+
+
+      # --------------------------------------------------------------------------
+      # Switch back to original country for which proxy was set due to unavailable data
+      if (proxy) {
+        proxy <- FALSE
+        country_code <- switch (
+          country_code,
+          "ALB" = "XK",
+          country_code
+        )
+      }
+      # --------------------------------------------------------------------------
+
+
+      #---------------------------------------------------------------------------
+      # hpv distribution ratios -- psa values
+      #---------------------------------------------------------------------------
+
+      # create data table to store psa values of
+      # hpv distribution
+      hpv_distribution_ratio_psa_DT <- data.table ()
+      # data.table (hpv_distribution_ratio             = numeric (),
+      #             hpv_distribution_non_vaccine_ratio = numeric ())
+
+      # hpv distribution -- mean and 95% uncertainty intervals
+      # HPV 16/18 for bivalent or quadrivalent vaccine  (4vHPV)
+      # HPV 16/18/31/31/45/52/58 for nonavalent vaccine (9vHPV)
+      if (vaccine == "4vHPV") {
+
+        # Relative contribution of HPV 16/18 in ICC HPV-positive cases
+        hpv_distribution <- data.hpv_distribution [iso3 == country_code,
+                                                   c("hpv_4v", "hpv_4v_low", "hpv_4v_high")]
+      } else if (vaccine == "9vHPV") {
+
+        # Relative contribution of HPV 16/18/31/33/45/52/58 in ICC HPV-positive cases
+        hpv_distribution <- data.hpv_distribution [iso3 == country_code,
+                                                   c("hpv_9v", "hpv_9v_low", "hpv_9v_high")]
+      }
+
+      # change hpv distribution values from percentage to proportion
+      hpv_distribution <- hpv_distribution / 100
+
+      # set names for values
+      names (hpv_distribution) <- c("mid", "low", "high")
 
       # get shape parameters of beta distribution
-      shape_param <- betaExpert (best   = dw ["mid"],
-                                 lower  = dw ["low"],
-                                 upper  = dw ["high"],
+      shape_param <- betaExpert (best   = hpv_distribution$mid,
+                                 lower  = hpv_distribution$low,
+                                 upper  = hpv_distribution$high,
                                  p      = 0.95,
                                  method = "mean")
 
       # sample input parameter values (latin hyper cube sampling)
       # based on their distributions for psa runs
-      dw_psa_values <- qbeta (p      = cube [, i],
-                              shape1 = shape_param$alpha,
-                              shape2 = shape_param$beta)
+      # hpv (types in vaccine) distribution
+      hpv_distribution_psa_values <- qbeta (p      = cube [, length (cecx_phases) +
+                                                             length (burden_metrics) +
+                                                             hpv_distribution_ratios - 1],
+                                            shape1 = shape_param$alpha,
+                                            shape2 = shape_param$beta)
 
-      # data table of psa values containg
-      # disability weights of different sequelaes (cancer phases)
-      dw_psa_DT <- cbind (dw_psa_DT, dw_psa_values)
+      # hpv (non-vaccine types) distribution
+      hpv_distribution_non_vaccine_psa_values <- 1 - hpv_distribution_psa_values
 
-    } # end of loop -- for (i in 1:length (cecx_phases))
+      # ratio of hpv distribution values to mean values (types in vaccine)
+      hpv_distribution_ratio <- hpv_distribution_psa_values / hpv_distribution$mid
 
-    # set column names for psa table of disability weights
-    names (dw_psa_DT) <- c ("run_id",
-                            "dw_diagnosis",
-                            "dw_control",
-                            "dw_metastatic",
-                            "dw_terminal")
+      # ratio of hpv distribution values to mean values (non-vaccine types)
+      hpv_distribution_non_vaccine_ratio <-
+        hpv_distribution_non_vaccine_psa_values / (1 - hpv_distribution$mid)
 
-    #---------------------------------------------------------------------------
-    # (incidence, mortality, prevalence) burden ratios -- psa values
-    #---------------------------------------------------------------------------
+      # data table of psa values containing
+      # hpv distribution ratios
+      hpv_distribution_ratio_psa_DT <- cbind (hpv_distribution_ratio,
+                                              hpv_distribution_non_vaccine_ratio)
 
-    # create data table to store psa values of
-    # (incidence, mortality, prevalence) ratios
-    burden_psa_DT <- data.table ()
+      # # set column names for psa table of hpv distribution ratios
+      # names (hpv_distribution_ratio_psa_DT) <- c ("hpv_distribution_ratio")
 
+      #---------------------------------------------------------------------------
 
-    # loop through burden ratios
-    for (i in 1:length (burden_metrics)) {
-
-      # mean value and 95% uncertainty intervals -- incidence, mortality, prevalence
-      #
-      # incidence
-      if (burden_metrics [i] == "incidence") {
-        burden  <- data.incidence_ui  [iso3 == country_code, c(Mid, Low, High)]
-
-        # set proxy values (incidence) for missing countries
-        # based around the median of available data for other countries
-        if (length (burden) == 0) {
-          burden <- c (1,
-                       median (data.incidence_ui$Low  / data.incidence_ui$Mid),
-                       median (data.incidence_ui$High / data.incidence_ui$Mid))
-        }
-      }
-      # mortality
-      else if (burden_metrics [i] == "mortality") {
-        burden  <- data.mortcecx_ui   [iso3 == country_code, c(Mid, Low, High)]
-
-        # set proxy values (mortality) for missing countries
-        # based around the median of available data for other countries
-        if (length (burden) == 0) {
-          burden <- c (1,
-                       median (data.mortcecx_ui$Low  / data.mortcecx_ui$Mid),
-                       median (data.mortcecx_ui$High / data.mortcecx_ui$Mid))
-        }
-      }
-      # prevalence
-      else if (burden_metrics [i] == "prevalence") {
-        burden <- data.prevalence_ui [iso3 == country_code, c(Mid, Low, High)]
-
-        # set proxy values (prevalence) for missing countries
-        # based around the median of available data for other countries
-        if (length (burden) == 0) {
-          burden <- c (1,
-                       median (data.prevalence_ui$Low  / data.prevalence_ui$Mid),
-                       median (data.prevalence_ui$High / data.prevalence_ui$Mid))
-        }
-      }
-
-      names (burden)  <- c("mid", "low", "high")
-
-      # log of burden values
-      log_burden  <- log (burden)
-
-      # Estimating the global cancer incidence and mortality in 2018:
-      # GLOBOCAN sources and methods
-      # (refer to paper for defintion of uncertainty intervals)
-      # https://www.ncbi.nlm.nih.gov/pubmed/30350310
-
-      # standard error in log scale
-      log_burden_se  <- (log_burden  ["high"] - log_burden ["low"]) / 3.92
-
-      # sample input parameter values (latin hyper cube sampling)
-      # based on their distributions for psa runs
-      burden_psa_values <- qlnorm (p       = cube [, (length (cecx_phases) + i)],
-                                   meanlog = log_burden ["mid"],
-                                   sdlog   = log_burden_se)
-
-      # ratio of psa values (incidence, mortality, prevalence) to mean values
-      burden_ratio  <- burden_psa_values / burden ["mid"]
-
-      # data table of psa values containg
-      # (incidence, mortality, prevalence) ratios
-      burden_psa_DT <- cbind (burden_psa_DT, burden_ratio)
-
-    } # end of loop -- for (i in 1:length (burden_metrics))
-
-    # set column names for psa table of disability weights
-    names (burden_psa_DT) <- c ("incidence_ratio",
-                                "mortality_ratio",
-                                "prevalence_ratio")
-
-
-
-    # --------------------------------------------------------------------------
-    # Switch back to original country for which proxy was set due to unavailable data
-    if (proxy) {
-      proxy <- FALSE
-      country_code <- switch (
-        country_code,
-        "ALB" = "XK",
-        country_code
+      # create data table specific for this country with psa parameter values
+      country_psa <- data.table (
+        country = rep (x = country_code, times = psa_runs),
+        dw_psa_DT,
+        burden_psa_DT,
+        hpv_distribution_ratio_psa_DT
       )
-    }
-    # --------------------------------------------------------------------------
+
+      # add country specific table to full psa data table
+      psadat <- rbindlist (list (psadat, country_psa))
 
 
-    #---------------------------------------------------------------------------
-    # hpv distribution ratios -- psa values
-    #---------------------------------------------------------------------------
+    } # end of loop -- for (country_code in countries)
 
-    # create data table to store psa values of
-    # hpv distribution
-    hpv_distribution_ratio_psa_DT <- data.table ()
-    # data.table (hpv_distribution_ratio             = numeric (),
-    #             hpv_distribution_non_vaccine_ratio = numeric ())
+    # drop hpv_distribution_non_vaccine_ratio column for vimc format file
+    psadat_temp <- psadat [, - ("hpv_distribution_non_vaccine_ratio")]
 
-    # hpv distribution -- mean and 95% uncertainty intervals
-    # HPV 16/18 for bivalent or quadrivalent vaccine  (4vHPV)
-    # HPV 16/18/31/31/45/52/58 for nonavalent vaccine (9vHPV)
-    if (vaccine == "4vHPV") {
+    # reshape psa data table to wide format (for VIMC)
+    psadat_vimc <- dcast (data      = psadat_temp,
+                          formula   = run_id ~ country,
+                          sep       = ":",
+                          value.var = colnames (psadat_temp [, -c("run_id", "country")]))
 
-      # Relative contribution of HPV 16/18 in ICC HPV-positive cases
-      hpv_distribution <- data.hpv_distribution [iso3 == country_code,
-                                                 c("hpv_4v", "hpv_4v_low", "hpv_4v_high")]
-    } else if (vaccine == "9vHPV") {
+    # create list of psa data for internal runs and VIMC upload
+    psadat_list <- list (psadat      = psadat,
+                         psadat_vimc = psadat_vimc)
 
-      # Relative contribution of HPV 16/18/31/33/45/52/58 in ICC HPV-positive cases
-      hpv_distribution <- data.hpv_distribution [iso3 == country_code,
-                                                 c("hpv_9v", "hpv_9v_low", "hpv_9v_high")]
-    }
+    # save parameters values for sensitivity analysis -- internal
+    fwrite (x    = psadat_list [["psadat"]],
+            file = psadat_file)
 
-    # change hpv distribution values from percentage to proportion
-    hpv_distribution <- hpv_distribution / 100
+    # save parameters values for sensitivity analysis -- VIMC upload
+    fwrite (x    = psadat_list [["psadat_vimc"]],
+            file = psadat_vimc_file)
 
-    # set names for values
-    names (hpv_distribution) <- c("mid", "low", "high")
+  }  # end of -- if (create_new)
+  else {
 
-    # get shape parameters of beta distribution
-    shape_param <- betaExpert (best   = hpv_distribution$mid,
-                               lower  = hpv_distribution$low,
-                               upper  = hpv_distribution$high,
-                               p      = 0.95,
-                               method = "mean")
+    psadat_list <- list (psadat      = fread (psadat_file),
+                         psadat_vimc = fread (psadat_vimc_file))
 
-    # sample input parameter values (latin hyper cube sampling)
-    # based on their distributions for psa runs
-    # hpv (types in vaccine) distribution
-    hpv_distribution_psa_values <- qbeta (p      = cube [, length (cecx_phases) +
-                                                           length (burden_metrics) +
-                                                           hpv_distribution_ratios - 1],
-                                          shape1 = shape_param$alpha,
-                                          shape2 = shape_param$beta)
-
-    # hpv (non-vaccine types) distribution
-    hpv_distribution_non_vaccine_psa_values <- 1 - hpv_distribution_psa_values
-
-    # ratio of hpv distribution values to mean values (types in vaccine)
-    hpv_distribution_ratio <- hpv_distribution_psa_values / hpv_distribution$mid
-
-    # ratio of hpv distribution values to mean values (non-vaccine types)
-    hpv_distribution_non_vaccine_ratio <-
-      hpv_distribution_non_vaccine_psa_values / (1 - hpv_distribution$mid)
-
-    # data table of psa values containing
-    # hpv distribution ratios
-    hpv_distribution_ratio_psa_DT <- cbind (hpv_distribution_ratio,
-                                            hpv_distribution_non_vaccine_ratio)
-
-    # # set column names for psa table of hpv distribution ratios
-    # names (hpv_distribution_ratio_psa_DT) <- c ("hpv_distribution_ratio")
-
-    #---------------------------------------------------------------------------
-
-    # create data table specific for this country with psa parameter values
-    country_psa <- data.table (
-      country = rep (x = country_code, times = psa_runs),
-      dw_psa_DT,
-      burden_psa_DT,
-      hpv_distribution_ratio_psa_DT
-    )
-
-    # add country specific table to full psa data table
-    psadat <- rbindlist (list (psadat, country_psa))
-
-
-  } # end of loop -- for (country_code in countries)
-
-  # drop hpv_distribution_non_vaccine_ratio column for vimc format file
-  psadat_temp <- psadat [, - ("hpv_distribution_non_vaccine_ratio")]
-
-  # reshape psa data table to wide format (for VIMC)
-  psadat_vimc <- dcast (data      = psadat_temp,
-                        formula   = run_id ~ country,
-                        sep       = ":",
-                        value.var = colnames (psadat_temp [, -c("run_id", "country")]))
-
-  # create list of psa data for internal runs and VIMC upload
-  psadat_list <- list (psadat      = psadat,
-                       psadat_vimc = psadat_vimc)
-
-  # save parameters values for sensitivity analysis -- internal
-  fwrite (x    = psadat_list [["psadat"]],
-          file = psadat_file)
-
-  # save parameters values for sensitivity analysis -- VIMC upload
-  fwrite (x    = psadat_list [["psadat_vimc"]],
-          file = psadat_vimc_file)
+  }
 
   # return psa data for probabilistic sensitivity analysis
   # return (list (psadat      = psadat,

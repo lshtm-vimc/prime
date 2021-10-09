@@ -10,7 +10,8 @@ CreatePsaData(
   psa_runs = 0,
   seed_state = 1,
   psadat_file = "psadat.csv",
-  psadat_vimc_file = "psadat_vimc.csv"
+  psadat_vimc_file = "psadat_vimc.csv",
+  run_lhs = FALSE
 )
 }
 \arguments{
@@ -27,6 +28,9 @@ sample of input parameters}
 
 \item{psadat_vimc_file}{character string, file to save Latin hyper cube
 sample of input parameters (VIMC format)}
+
+\item{run_lhs}{logical, if TRUE create new sample of input parameters,
+if FALSE, read sample of input parameters from file}
 }
 \value{
 Null return value; disease burden estimates are saved to corresponding files
@@ -36,11 +40,12 @@ Generate Latin hyper cube sample of input parameters based on their
   distributions for probabilistic sensitivity analysis.
 }
 \examples{
-  # CreatePsaData (
-  #   country_codes    = c("AFG", "ALB"),
-  #   vaccine          = "4vHPV",
-  #   psa_runs         = 200,
-  #   seed_state       = 1,
-  #   psadat_file      = "psadat.csv",
-  #   psadat_vimc_file = "psadat_vimc.csv")
+  CreatePsaData (
+    country_codes    = c("AFG", "ALB"),
+    vaccine          = "4vHPV",
+    psa_runs         = 200,
+    seed_state       = 1,
+    psadat_file      = "psadat.csv",
+    psadat_vimc_file = "psadat_vimc.csv",
+    run_lhs          = TRUE)
 }
