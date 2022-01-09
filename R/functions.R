@@ -3554,6 +3554,8 @@ EmulateVaccineImpactVimcStochastic <- function (disease_burden_template_file,
 #'   for no vaccination (cecx burden attributable to HPV all types - vimc format)
 #' @param disease_burden_vaccination_file_all csv file (output), disease burden estimates
 #'   for vaccination (cecx burden attributable to HPV all types - vimc format)
+#' @param disease_burden_vaccination_file_all csv file (output), disease burden estimates
+#'   for vaccination (cecx burden attributable to HPV all types - vimc format)
 #'
 #' @return Null return value; disease burden estimates are saved to corresponding files
 #' @export
@@ -3565,19 +3567,16 @@ EmulateVaccineImpactVimcStochastic <- function (disease_burden_template_file,
 #'       vaccine                                = "4vHPV",
 #'       disease_burden_template_file           = "central_burden_template_file.csv",
 #'       disease_burden_no_vaccination_file_all = "central_burden_no_vaccination_file_all_vimc_format.csv",
-#'       disease_burden_vaccination_file_all    = "central_burden_vaccination_file_all_vimc_format.csv" )
+#'       disease_burden_vaccination_file_all    = "central_burden_vaccination_file_all_vimc_format.csv",
+#'       vimc_output                            = TRUE)
 #'
 Estimate_all_cecx_burden_central <- function (cecx_burden_file,
                                               cecx_burden_file_all,
                                               vaccine,
-                                              disease_burden_template_file,
-                                              disease_burden_no_vaccination_file_all,
-                                              disease_burden_vaccination_file_all) {
-
-  # read vimc disease burden template file
-  vimc_template <- fread (file             = disease_burden_template_file,
-                          header           = "auto",
-                          stringsAsFactors = F)
+                                              disease_burden_template_file           = "",
+                                              disease_burden_no_vaccination_file_all = "",
+                                              disease_burden_vaccination_file_all    = "",
+                                              vimc_output                            = TRUE) {
 
   # read cecx burden estimates (vaccine HPV types) pre- and post-vaccination
   cecx_burden <- fread (file             = cecx_burden_file,
@@ -3712,24 +3711,35 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
           col.names = T,
           row.names = F)
 
-  # convert results to vimc format
-  convert_results <- OutputVimc (DT            = cecx_burden_all,
-                                 calendar_year = TRUE,
-                                 vimc_template = vimc_template)
+  # ----------------------------------------------------------------------------
+  # if output is to be saved in vimc format
+  if (vimc_output) {
 
-  # Saving output for no vaccination scenario (vimc format)
-  no_vaccination <- convert_results [scenario == "pre-vaccination"]
-  no_vaccination <- no_vaccination  [, colnames (vimc_template), with=FALSE]
-  no_vaccination <- no_vaccination  [!is.na(deaths)]
-  fwrite (x    = no_vaccination,
-          file = disease_burden_no_vaccination_file_all)
+    # read vimc disease burden template file
+    vimc_template <- fread (file             = disease_burden_template_file,
+                            header           = "auto",
+                            stringsAsFactors = F)
 
-  # Saving output for vaccination scenario (vimc format)
-  vaccination <- convert_results [scenario == "post-vaccination"]
-  vaccination <- vaccination     [, colnames (vimc_template), with=FALSE]
-  vaccination <- vaccination     [!is.na(deaths)]
-  fwrite (x    = vaccination,
-          file = disease_burden_vaccination_file_all)
+    # convert results to vimc format
+    convert_results <- OutputVimc (DT            = cecx_burden_all,
+                                   calendar_year = TRUE,
+                                   vimc_template = vimc_template)
+
+    # Saving output for no vaccination scenario (vimc format)
+    no_vaccination <- convert_results [scenario == "pre-vaccination"]
+    no_vaccination <- no_vaccination  [, colnames (vimc_template), with=FALSE]
+    no_vaccination <- no_vaccination  [!is.na(deaths)]
+    fwrite (x    = no_vaccination,
+            file = disease_burden_no_vaccination_file_all)
+
+    # Saving output for vaccination scenario (vimc format)
+    vaccination <- convert_results [scenario == "post-vaccination"]
+    vaccination <- vaccination     [, colnames (vimc_template), with=FALSE]
+    vaccination <- vaccination     [!is.na(deaths)]
+    fwrite (x    = vaccination,
+            file = disease_burden_vaccination_file_all)
+  }
+  # ----------------------------------------------------------------------------
 
 
   return ()

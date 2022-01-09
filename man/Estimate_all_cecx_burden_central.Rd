@@ -8,9 +8,10 @@ Estimate_all_cecx_burden_central(
   cecx_burden_file,
   cecx_burden_file_all,
   vaccine,
-  disease_burden_template_file,
-  disease_burden_no_vaccination_file_all,
-  disease_burden_vaccination_file_all
+  disease_burden_template_file = "",
+  disease_burden_no_vaccination_file_all = "",
+  disease_burden_vaccination_file_all = "",
+  vimc_output = TRUE
 )
 }
 \arguments{
@@ -55,6 +56,7 @@ Three disease burden estimates (HPV all types) are generated.
       vaccine                                = "4vHPV",
       disease_burden_template_file           = "central_burden_template_file.csv",
       disease_burden_no_vaccination_file_all = "central_burden_no_vaccination_file_all_vimc_format.csv",
-      disease_burden_vaccination_file_all    = "central_burden_vaccination_file_all_vimc_format.csv" )
+      disease_burden_vaccination_file_all    = "central_burden_vaccination_file_all_vimc_format.csv",
+      vimc_output                            = TRUE)
 
 }
