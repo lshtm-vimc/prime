@@ -5,7 +5,7 @@
 \alias{data.hpv_distribution}
 \title{Relative contribution of HPV 16/18/31/33/45/52/58 in ICC HPV-positive cases}
 \format{
-A data table with 249 observations of 12 variables.
+A data table with 249 observations of 39 variables.
 \describe{
   \item{Global}{World}
   \item{Region}{UN region}

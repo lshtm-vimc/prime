@@ -511,7 +511,7 @@
 #' A dataset containing relative contribution of HPV 16/18/31/33/45/52/58 in
 #' cases of ICC HPV-positive, by region and country
 #'
-#' @format A data table with 249 observations of 12 variables.
+#' @format A data table with 249 observations of 39 variables.
 #' \describe{
 #'   \item{Global}{World}
 #'   \item{Region}{UN region}
@@ -557,4 +557,25 @@
 #' Potential impact of a nine-valent vaccine in human papillomavirus related cervical disease.
 #' Infect Agents Cancer. 2012;7: 38. \url{https://doi.org/10.1186/1750-9378-7-38}}
 "data.hpv_distribution"
+
+
+#' Cross-protection effect of bivalent and quadrivalent vaccines
+#'
+#' A dataset containing cross-protection effect of bivalent and quadrivalent vaccines
+#'
+#' @format A data table with 5 observations of 7 variables.
+#' \describe{
+#'   \item{hpv_type}{HPV strain type}
+#'   \item{bivalent}{Cross-protection of bivalent vaccine against the corresponding HPV strain type (mean)}
+#'   \item{bivalent_low}{Cross-protection of bivalent vaccine against the corresponding HPV strain type (lower bound of 95\% uncertainty interval)}
+#'   \item{bivalent_high}{Cross-protection of bivalent vaccine against the corresponding HPV strain type (upper bound of 95\% uncertainty interval)}
+#'   \item{quadrivalent}{Cross-protection of quadrivalent vaccine against the corresponding HPV strain type (mean)}
+#'   \item{quadrivalent_low}{Cross-protection of quadrivalent vaccine against the corresponding HPV strain type (lower bound of 95\% uncertainty interval)}
+#'   \item{quadrivalent_high}{Cross-protection of quadrivalent vaccine against the corresponding HPV strain type (upper bound of 95\% uncertainty interval)}
+#' }
+#' @source {Malagón T, Drolet M, Boily MC, Franco EL, Jit M, Brisson J, Brisson M.
+#' Cross-protective efficacy of two human papillomavirus vaccines: a systematic review and meta-analysis.
+#' Lancet Infect Dis. 2012 Oct;12(10):781-9. \url{https://doi.org/10.1016/S1473-3099(12)70187-1}}
+"data.cross_protection"
+
 
