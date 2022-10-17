@@ -1,6 +1,6 @@
 Package: prime
 Title: PRIME -- Papillomavirus Rapid Interface for Modelling and Economics
-Version: 2.0.15
+Version: 2.0.16
 Author: Modelling and Economic Evaluation of Vaccines group, LSHTM (https://meev.lshtm.ac.uk)
 Maintainer: MEEV <meev@lshtm.ac.uk>
 Description: PRIME is a static model of HPV vaccination that uses proportional impact to estimate the health impact and cost-effectiveness of HPV vaccination in low- and middle-income countries.
