@@ -5,7 +5,7 @@
 \alias{data.mortall.unwpp.nqx}
 \title{UNWPP life table}
 \format{
-A data table with 122850 observations of 8 variables.
+A data table with 647790 observations of 8 variables.
 \describe{
   \item{country_code_numeric}{Country code numeric}
   \item{country_code}{ISO3 country code}
@@ -24,6 +24,6 @@ A data table with 122850 observations of 8 variables.
 data.mortall.unwpp.nqx
 }
 \description{
-A dataset containing the UNWPP life table (World Population Prospects 2019).
+A dataset containing the UNWPP life table (World Population Prospects 2022).
 }
 \keyword{datasets}
