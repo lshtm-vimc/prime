@@ -3172,21 +3172,6 @@ CreatePsaData <- function (country_codes,
                                   "mortality_ratio",
                                   "prevalence_ratio")
 
-
-
-      # --------------------------------------------------------------------------
-      # Switch back to original country for which proxy was set due to unavailable data
-      if (proxy) {
-        proxy <- FALSE
-        country_code <- switch (
-          country_code,
-          "ALB" = "XK",
-          country_code
-        )
-      }
-      # --------------------------------------------------------------------------
-
-
       #---------------------------------------------------------------------------
       # hpv distribution ratios -- psa values
       #---------------------------------------------------------------------------
@@ -3253,6 +3238,18 @@ CreatePsaData <- function (country_codes,
       # names (hpv_distribution_ratio_psa_DT) <- c ("hpv_distribution_ratio")
 
       #---------------------------------------------------------------------------
+
+      # --------------------------------------------------------------------------
+      # Switch back to original country for which proxy was set due to unavailable data
+      if (proxy) {
+        proxy <- FALSE
+        country_code <- switch (
+          country_code,
+          "ALB" = "XK",
+          country_code
+        )
+      }
+      # --------------------------------------------------------------------------
 
       # create data table specific for this country with psa parameter values
       country_psa <- data.table (
