@@ -2445,22 +2445,53 @@ ageCoverage <- function (ages,
         campaign_coverage <- 1
       }
 
+      # ------------------------------------------------------------------------
+      # older version: campaign coverage is spread randomly among the previous vaccinated cohort
+      #
+      # # coverage increases for all subsequent age-strata
+      # init_cov <- coverage[age >= campaign_age, coverage]
+      # coverage[age >= campaign_age, "coverage"] <- init_cov +
+      #   (1-init_cov) * campaign_coverage
+      #
+      # # vaccine not efficacious for girls that have sexually debuted
+      # coverage [age >= campaign_age, "effective_coverage"] <-
+      #   (coverage [age >= campaign_age, effective_coverage]) +
+      #   ((1 - init_cov) *
+      #      campaign_coverage *
+      #      (1 - propSexDebut (campaign_age, country_iso3)) *
+      #      vaccine_efficacy_nosexdebut) +
+      #   ((1 - init_cov) *
+      #      campaign_coverage *
+      #      (propSexDebut (campaign_age, country_iso3)) *
+      #      vaccine_efficacy_sexdebut)
+      # ------------------------------------------------------------------------
+
+
+      # ------------------------------------------------------------------------
+      # updated version: campaign coverage goes only to unvaccinated girls among the previous vaccinated cohort
+      #
       # coverage increases for all subsequent age-strata
       init_cov <- coverage[age >= campaign_age, coverage]
-      coverage[age >= campaign_age, "coverage"] <- init_cov +
-        (1-init_cov) * campaign_coverage
+
+      # check if campaign coverage will take cohort coverage beyond 100%;
+      # if yes, cap cohort coverage to 100%
+      if ( (init_cov [1] + campaign_coverage) > 1) {
+        campaign_coverage <- 1 - init_cov [1]
+      }
+
+      coverage [age >= campaign_age, "coverage"] <- init_cov + campaign_coverage
 
       # vaccine not efficacious for girls that have sexually debuted
       coverage [age >= campaign_age, "effective_coverage"] <-
         (coverage [age >= campaign_age, effective_coverage]) +
-        ((1 - init_cov) *
-           campaign_coverage *
+        (campaign_coverage *
            (1 - propSexDebut (campaign_age, country_iso3)) *
            vaccine_efficacy_nosexdebut) +
-        ((1 - init_cov) *
-           campaign_coverage *
+        (campaign_coverage *
            (propSexDebut (campaign_age, country_iso3)) *
            vaccine_efficacy_sexdebut)
+      # ------------------------------------------------------------------------
+
     }
   }
 
