@@ -2887,6 +2887,11 @@ EstimateVaccineImpactVimcCentral <- function (vaccine_coverage_file,
   # read files -- vaccination coverage
   vimc_coverage <- fread (vaccine_coverage_file)
 
+  # ----------------------------------------------------------------------------
+  # consider activity type "routine-intensified" as "campaign"
+  vimc_coverage [activity_type == "routine-intensified", activity_type := "campaign"]
+  # ----------------------------------------------------------------------------
+
   # read file -- central disease burden template
   vimc_template <- fread (disease_burden_template_file)
 
