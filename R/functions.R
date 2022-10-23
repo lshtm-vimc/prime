@@ -3643,6 +3643,9 @@ Estimate_all_cecx_burden_central <- function (cecx_burden_file,
     setnames (hpv_distribution, old = c("hpv_9v"), new = c ("hpv"))
   }
 
+  # add a row for XK (Kosovo)
+  new_row          <- data.table ("iso3" = "XK", "hpv" = hpv_distribution [iso3 == "ALB", hpv])
+  hpv_distribution <- rbindlist (list (hpv_distribution, new_row))
   # ----------------------------------------------------------------------------
 
   # ----------------------------------------------------------------------------
