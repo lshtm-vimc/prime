@@ -2,6 +2,7 @@
 % Please edit documentation in R/package.R
 \docType{package}
 \name{prime}
+\alias{prime-package}
 \alias{prime}
 \title{prime: Papillomavirus Rapid Interface for Modelling and Economics (PRIME).}
 \description{
