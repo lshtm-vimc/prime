@@ -778,6 +778,194 @@ OutputVimc <- function (DT,
     DT [, "mort.cecx"]  <- DT [, cohort_size] * DT [, mort.cecx]
     DT [, "disability"] <- DT [, cohort_size] * DT [, disability] +
       DT [, cohort_size] * DT[, lifey]
+    DT [, "lifey"]  <- DT [, cohort_size] * DT [, lifey]
+
+    if ("run_id" %in% colnames(DT)) {
+      DT <- DT[, c("scenario",
+                   "run_id",
+                   "country",
+                   "year",
+                   "age",
+                   "cohort_size",
+                   "inc.cecx",
+                   "mort.cecx",
+                   "disability",
+                   "lifey") ]
+
+      colnames(DT) <- c("scenario",
+                        "run_id",
+                        "country",
+                        "year",
+                        "age",
+                        "cohort_size",
+                        "cases",
+                        "deaths",
+                        "dalys",
+                        "yll")
+    } else {
+      DT <- DT[, c("scenario",
+                   "country",
+                   "year",
+                   "age",
+                   "cohort_size",
+                   "inc.cecx",
+                   "mort.cecx",
+                   "disability",
+                   "lifey") ]
+
+      colnames(DT) <- c("scenario",
+                        "country",
+                        "year",
+                        "age",
+                        "cohort_size",
+                        "cases",
+                        "deaths",
+                        "dalys",
+                        "yll")
+    }
+  } else {
+    DT[,"dalys"] <- DT[,lifey] + DT[,disability]
+    if ("run_id" %in% colnames(DT)) {
+      DT <- DT[, c("scenario",
+                   "run_id",
+                   "country",
+                   "year",
+                   "age",
+                   "cohort_size",
+                   "cases",
+                   "deaths",
+                   "dalys",
+                   "lifey")]
+
+      colnames(DT) <- c("scenario",
+                        "run_id",
+                        "country",
+                        "year",
+                        "age",
+                        "cohort_size",
+                        "cases",
+                        "deaths",
+                        "dalys",
+                        "yll")
+
+    } else {
+      DT <- DT[, c("scenario",
+                   "country",
+                   "year",
+                   "age",
+                   "cohort_size",
+                   "cases",
+                   "deaths",
+                   "dalys",
+                   "lifey") ]
+
+      colnames(DT) <- c("scenario",
+                        "country",
+                        "year",
+                        "age",
+                        "cohort_size",
+                        "cases",
+                        "deaths",
+                        "dalys",
+                        "yll")
+    }
+  }
+
+  if (is.data.table(vimc_template)) {
+    #calendar year is needed to select data in vimc_template
+    if (!is_by_calendar_year) {
+      DT[,"year"] <- DT[,year] + DT[,age]
+    }
+    DT <- DT[year %in% vimc_template[,year]]
+    for (y in sort(unique(DT[,year]))) {
+      DT <- DT[year!=y | (year==y & age %in% vimc_template[year==y,age])]
+    }
+    for (c in unique(DT[,country])) {
+      DT [country == c, "country_name"] <- unique (vimc_template[country == c,
+                                                                 country_name])
+    }
+    DT[,"disease"] <- unique(vimc_template[,"disease"])
+
+    #revert back to impact year
+    if (!is_by_calendar_year) {
+      DT[,"year"] <- DT[,year] - DT[,age]
+    }
+    if ("run_id" %in% colnames(DT)) {
+      DT <- DT[,c("scenario","run_id",colnames(vimc_template)),with=F]
+    } else {
+      DT <- DT[,c("scenario",colnames(vimc_template)),with=F]
+    }
+  }
+
+  #return correct year
+  if (calendar_year & !is_by_calendar_year) {
+    DT[,"year"] <- DT[,year] + DT[,age]
+  } else if (!calendar_year & is_by_calendar_year) {
+    DT[,"year"] <- DT[,year] - DT[,age]
+  }
+
+  if ("run_id" %in% colnames(DT)) {
+    if (!age_stratified) {
+      DT <- dtAggregate (DT, "age", c("cohort_size",
+                                      "cases",
+                                      "deaths",
+                                      "dalys",
+                                      "yll",
+                                      "run_id"))
+    }
+    setorder (DT, scenario, run_id, country, year, age)
+  } else {
+    if (!age_stratified) {
+      DT <- dtAggregate(DT, "age", c("cohort_size",
+                                     "cases",
+                                     "deaths",
+                                     "dalys",
+                                     "yll"))
+    }
+    setorder(DT, scenario, country, year, age)
+  }
+
+  return(DT)
+
+} # end of function -- OutputVimc
+#-------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------
+#' Formatting output for VIMC Montagu
+#'
+#' \code{OutputVimc_old} takes result of BatchRun and outputs it in format to be
+#'   uploaded to VIMC Montagu.
+#'
+#' @param DT data table with results
+#' @param age_stratified logical, whether output should be stratified by age
+#' @param calendar_year logical, whether output should be given by calendar year
+#'        of event OR by year of birth of cohort
+#' @param vimc_template data table with template file downloaded from montagu
+#'
+#' @return #
+#' @export
+#'
+#' @examples #
+OutputVimc_old <- function (DT,
+                        age_stratified = TRUE,
+                        calendar_year  = FALSE,
+                        vimc_template  = -1) {
+
+  #check if data by calendar_year
+  if ("year" %in% colnames(DT)) {
+    is_by_calendar_year <- TRUE
+  } else {
+    is_by_calendar_year <- FALSE
+    colnames(DT)[which(colnames(DT) == "birthcohort")] <- "year"
+  }
+
+  #check if values are proportions
+  if (!("cases" %in% colnames(DT))) {
+    DT [, "inc.cecx"]   <- DT [, cohort_size] * DT [, inc.cecx]
+    DT [, "mort.cecx"]  <- DT [, cohort_size] * DT [, mort.cecx]
+    DT [, "disability"] <- DT [, cohort_size] * DT [, disability] +
+      DT [, cohort_size] * DT[, lifey]
 
     if ("run_id" %in% colnames(DT)) {
       DT <- DT[, c("scenario",
@@ -897,7 +1085,7 @@ OutputVimc <- function (DT,
 
   return(DT)
 
-} # end of function -- OutputVimc
+} # end of function -- OutputVimc_old
 #-------------------------------------------------------------------------------
 
 
