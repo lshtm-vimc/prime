@@ -346,7 +346,8 @@ RegisterBatchDataVimc <- function (vimc_coverage,
                                       "coverage",
                                       "agevac",
                                       "activity_type",
-                                      "target")
+                                      "target",
+                                      "vaccine")
                                   ]
 
   # model countries without coverage data but in template (with coverage-level of 0)
@@ -562,8 +563,26 @@ BatchRun <- function (countries                       = -1,
     r=1:runs
   ) %dopar% {
     #) %do% {
+
+    # --------------------------------------------------------------------------
+    # single cohort
     .t_data.batch <- .data.batch [country_code == countries[cn] &
                                     birthcohort == years[y]]
+
+    # adjust vaccine efficacy for 1-dose
+    if (.t_data.batch$vaccine == "HPV_1D") {
+
+      vaccine_efficacy_beforesexdebut <- 0.975
+
+      # Single-dose efficacy: bivalent VE was 97.5% (95% CI 90.0-99.4%)
+      # Barnabas RV, et al (KEN SHE Study Team).
+      # Durability of single-dose HPV vaccination in young Kenyan women: randomized controlled trial 3-year results.
+      # Nat Med. 2023 Dec;29(12):3224-3232. doi: 10.1038/s41591-023-02658-0
+
+    }
+
+    # --------------------------------------------------------------------------
+
     if (init_coverage == -1){
       coverage <- .t_data.batch [1, coverage]
     } else {
