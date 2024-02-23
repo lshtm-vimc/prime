@@ -371,6 +371,25 @@ RegisterBatchDataVimc <- function (vimc_coverage,
   }
 
   setorder (coverage_data, country_code, birthcohort, agevac)
+
+  # sum coverage for each birth cohort (even if vaccinated across multiple years)
+  coverage_data <- coverage_data [, .(country_code,
+                                      agevac,
+                                      cov = sum (coverage),
+                                      activity_type,
+                                      target,
+                                      vaccine),
+                                  by = birthcohort]
+
+  # use single row per birth cohort
+  coverage_data <- coverage_data [, .SD [which.max (agevac)], by = birthcohort]
+
+  # rename coverage column
+  colnames(coverage_data) [colnames(coverage_data) == "cov"] <- "coverage"
+
+  # check if coverage exceeds 100% for any cohort
+  coverage_data [(coverage > 1), coverage := 1]
+
   .data.batch <<- coverage_data
 
   # sort by country code
