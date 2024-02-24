@@ -379,10 +379,10 @@ RegisterBatchDataVimc <- function (vimc_coverage,
                                       activity_type,
                                       target,
                                       vaccine),
-                                  by = birthcohort]
+                                  by = .(birthcohort, country_code)]
 
   # use single row per birth cohort
-  coverage_data <- coverage_data [, .SD [which.max (agevac)], by = birthcohort]
+  coverage_data <- coverage_data [, .SD [which.max (agevac)], by = .(birthcohort, country_code)]
 
   # rename coverage column
   colnames(coverage_data) [colnames(coverage_data) == "cov"] <- "coverage"
